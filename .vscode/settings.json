@@ -1,0 +1,4 @@
+{
+    "files.trimTrailingWhitespace": true,
+    "diffEditor.ignoreTrimWhitespace": false
+}

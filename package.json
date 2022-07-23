@@ -1,0 +1,30 @@
+{
+  "name": "01-auth_server2022",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --verbose",
+    "dev": "export NODE_ENV=development && node server.js",
+    "build": "export NODE_ENV=production && node server.js"
+  },
+  "jest": {
+    "collectCoverage": true
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.21.0",
+    "sequelize-cli": "^6.4.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.16.0",
+    "jest": "^28.1.0"
+  }
+}

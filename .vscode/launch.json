@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Program Debugger",
+            "program": "${workspaceFolder}/server.js",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+            "env": {
+                "NODE_ENV": "development",
+                "HOST": "localhost"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch JEST Tests",
+            "env": {
+                "NODE_ENV": "development",
+                "HOST": "localhost"
+            },
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args":["--verbose", "i", "no-cache"],
+            "console": "integratedTerminal",
+            "internalConsoleoOptions":"neverOpen",
+            "disableOptimisticBPs":true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+
+        },
+    ]
+}
