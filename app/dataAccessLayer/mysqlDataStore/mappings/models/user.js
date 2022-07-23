@@ -71,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
             value: undefined
         },
         Password: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING,
             allowNull: false,
             value: undefined
         },

@@ -56,6 +56,7 @@ let sanitizeInput = function (input, sequelizeModelPropertyType) {
     switch(sequelizeModelPropertyType){
 
         case Sequelize.DataTypes.STRING.key:
+        case Sequelize.DataTypes.TEXT.key:
             escapedValue = mysql.escape(trimmedImput);
             clearedValue = removeExtraQuotes(escapedValue);
             sanitizedValue = (clearedValue.toLowerCase() === 'null' ) ? null: clearedValue;
