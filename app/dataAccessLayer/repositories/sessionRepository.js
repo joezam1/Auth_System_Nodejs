@@ -7,7 +7,7 @@ const helpers = require('../../library/common/helpers.js');
 
 let context = null;
 let sessionTableName = null;
-
+//Test: DONE
 let insertSessionIntoTableAsync = async function (sessionDomainModel) {
     console.log('sessionDomainModel', sessionDomainModel);
     let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);

@@ -10,7 +10,7 @@ let encryptStringInputAsync = async function(input){
     }
     return encrypted;
 }
-//Test:DONEZ
+//Test:DONE
 let validateEncryptedPasswordAsync = async function(passwordRequest, passwordDb) {
     const comparison = await bcrypt.compare(passwordRequest, passwordDb);
     return comparison;

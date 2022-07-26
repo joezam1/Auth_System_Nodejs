@@ -6,7 +6,7 @@ const ValidationConfig = require('../../../configuration/validation/validationCo
 const FormFieldStatus = require('../../library/enumerations/formFieldStatus.js');
 const DataTypes = require('../../library/stringLiterals/dataTypes.js');
 
-
+//Test: DONE
 const inspectInputLength = function(objViewModel){
     let inputLengthReport = {};
     for(var key in objViewModel){
@@ -24,7 +24,7 @@ const inspectInputLength = function(objViewModel){
     return inputLengthReport;
 }
 
-
+//Test: DONE
 let inspectInputType = function(objViewModel){
     let reportTypeErrors = {};
     for(let key in objViewModel){
@@ -66,7 +66,7 @@ let inspectInputType = function(objViewModel){
     return reportTypeErrors;
 }
 
-
+//Test: DONE
 function inspectInputValue(objViewModel){
     let dataReportErrors = {};
     let selectedPassword = '';
