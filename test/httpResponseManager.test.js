@@ -1,7 +1,7 @@
-const httpResponseManager = require('../app/serviceLayer/httpProtocol/httpResponseManager.js');
+const httpResponseService = require('../app/serviceLayer/httpProtocol/httpResponseService.js');
 const httpResponseStatusCodes = require('../app/serviceLayer/httpProtocol/httpResponseStatusCodes.js');
 
-xdescribe('File: httpResponseManager.js', function(){
+describe('File: httpResponseService.js', function(){
 
     describe('Function : getResponseStatusObject', function(){
 
@@ -10,7 +10,7 @@ xdescribe('File: httpResponseManager.js', function(){
             let message = 'Code is not existing';
             let statusCode = 123;
             //Act
-            let result = httpResponseManager.getResponseResultStatus(message,statusCode)
+            let result = httpResponseService.getResponseResultStatus(message,statusCode)
             let resultStatus = result.status;
             let expectedStatusCode = httpResponseStatusCodes.unprocessableEntity422.code;
             //Assert
@@ -21,11 +21,13 @@ xdescribe('File: httpResponseManager.js', function(){
             let message = 'Code exists';
             let statusCode = 201;
             //Act
-            let result = httpResponseManager.getResponseResultStatus(message,statusCode)
+            let result = httpResponseService.getResponseResultStatus(message,statusCode)
             let resultStatus = result.status;
             let expectedStatusCode = httpResponseStatusCodes.created201.code;
             //Assert
             expect(resultStatus).toBe(expectedStatusCode);
         });
     });
+
+
 });

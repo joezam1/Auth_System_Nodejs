@@ -2,7 +2,7 @@ const formFieldStatus = require('../../library/enumerations/formFieldStatus.js')
 const dataTypes = require('../../library/stringLiterals/dataTypes.js');
 
 
-var userViewModel = function(model){
+var userRegisterViewModel = function(model){
     var firstName ={
         fieldValue: (model.firstName || ''),
         fieldStatus: formFieldStatus.Required,
@@ -51,4 +51,4 @@ var userViewModel = function(model){
 
 }
 
-module.exports = userViewModel;
+module.exports = userRegisterViewModel;

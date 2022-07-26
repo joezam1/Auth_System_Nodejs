@@ -4,7 +4,7 @@ const notificationService = require('../../app/serviceLayer/notifications/notifi
 
 const whitelistRemoteOrigins = ['http://localhost:8080']
 
-const serverConfig = {
+const configuration = {
     HTTP_PORT: 5500,
     HTTPS_PORT: 5443,
     corsOptions:{
@@ -13,8 +13,12 @@ const serverConfig = {
         }
     }
 }
+const service = {
+    configuration : configuration,
+    whitelistRemoteOrigins : whitelistRemoteOrigins
+}
 
-module.exports = serverConfig;
+module.exports = service;
 
 //#REGION Private functions
 function resolveOriginWhiteListing(origin, callback){

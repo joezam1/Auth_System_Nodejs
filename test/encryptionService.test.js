@@ -1,11 +1,10 @@
 
 const encryptionService = require('../app/serviceLayer/encryption/encryptionService.js');
-const validationConfig = require('../configuration/validation/validationConfig.js');
 const bcrypt = require('bcryptjs');
 
 
 
-xdescribe('File: encryptionService.js', function(){
+describe('File: encryptionService.js', function(){
     describe('Function: encryptStringInputAsync', function(){
 
         test('If input is Type STRING, then the string is encrypted',async function(){
@@ -34,25 +33,33 @@ xdescribe('File: encryptionService.js', function(){
             expect(resultType).toBe(true);
         });
     });
-});
 
+    describe('Function validateEncryptedPasswordAsync', function(){
+        test('When plain Text password is the same as encrypted Password Comparisson is SUCCESSFUL',async function(){
 
-/*
-describe('File: httpResponseManager.js', function(){
-
-    describe('Function : getResponseStatusObject', function(){
-
-        test('When Status code IS NOT EXISTING, response is 422 Unprocessable Entity', function(){
             //Arrange
-            let message = 'Code is not existing';
-            let statusCode = 123;
+            let plainTextInput = 'this is a string'
             //Act
-            let result = httpResponseManager.getResponseResultStatus(message,statusCode)
-            let resultStatus = result.status;
-            let expectedStatusCode = httpResponseStatusCodes.unprocessableEntity422.code;
+            let hashResult = await encryptionService.encryptStringInputAsync(plainTextInput);
+            var result = await encryptionService.validateEncryptedPasswordAsync (plainTextInput,hashResult);
             //Assert
-            expect(resultStatus).toBe(expectedStatusCode);
+            let resultType = (typeof hashResult === 'string');
+            expect(hashResult).not.toEqual(plainTextInput);
+            expect(result).toBe(true);
+            expect(resultType).toBe(true);
         });
 
+        test('When plain Text password is the same as encrypted Password Comparisson is SUCCESSFUL',async function(){
+
+            //Arrange
+            let plainTextInput = 'this is a string'
+            let differentInput = 'this is a wrong input';
+            //Act
+            let hashResult = await encryptionService.encryptStringInputAsync(plainTextInput);
+            var result = await encryptionService.validateEncryptedPasswordAsync (differentInput,hashResult);
+            //Assert
+            expect(hashResult).not.toEqual(plainTextInput);
+            expect(result).toBe(false);
+        });
     });
-})*/
+});

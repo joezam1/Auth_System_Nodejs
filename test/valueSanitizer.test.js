@@ -3,7 +3,7 @@ const valueSanitizer = require('../app/dataAccessLayer/mysqlDataStore/preparedSt
 
 
 
-xdescribe('File: valueSanitizer.js',function(){
+describe('File: valueSanitizer.js',function(){
 
         function getUserAttributes(){
             let dateNow = new Date();

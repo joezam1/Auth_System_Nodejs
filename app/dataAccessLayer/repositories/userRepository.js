@@ -1,14 +1,14 @@
-const dbAction = require('../mysqlDataStore/context/dbAction.js');
-const valueSanitizer = require('../mysqlDataStore/preparedStatements/valueSanitizer.js');
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
+const dbAction = require('../mysqlDataStore/context/dbAction.js');
 const queryManager = require('../mysqlDataStore/preparedStatements/queryManager.js');
+const valueSanitizer = require('../mysqlDataStore/preparedStatements/valueSanitizer.js');
 const helpers = require('../../library/common/helpers.js');
 
 let context = null;
 let userTableName = null;
 let userRoleTableName = null;
 //Test: DONE
-let getUserByDataAsync = async function (userDomainModel) {
+let getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
     console.log('context', context);
     console.log('userTableName', userTableName);
     let userDtoModel = getUserDtoModelMappedFromDomain(userDomainModel);
@@ -54,7 +54,7 @@ let insertUserRoleIntoTableTransactionAsync = async function (connectionPool, us
 onInit();
 
 let service = {
-    getUserByDataAsync: getUserByDataAsync,
+    getUserByUsernameAndEmailDataAsync: getUserByUsernameAndEmailDataAsync,
     insertUserIntoTableTransactionAsync: insertUserIntoTableTransactionAsync,
     insertUserRoleIntoTableTransactionAsync: insertUserRoleIntoTableTransactionAsync
 }

@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
             value: undefined
         },
         GeoLocation: {
-            type: Sequelize.TEXT,
+            type: DataTypes.TEXT,
             allowNull: false,
             value: undefined
         },

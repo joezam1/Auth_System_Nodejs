@@ -1,5 +1,5 @@
 const DataTypes = require('../../library/stringLiterals/dataTypes.js');
-const InputValidationSuffixes = require('../../library/stringLiterals/inputValidationSuffixes.js');
+
 
 //Test:DONE
 let stringIsNullOrEmpty = function(input){
@@ -14,11 +14,12 @@ let stringIsNullOrEmpty = function(input){
 //Test:DONE
 let objectIsNullOrEmpty = function(obj){
     let isObject = ((typeof obj === DataTypes.OBJECT ) && !Array.isArray(obj) && typeof obj !== undefined );
-    let isEmptyObj = ( obj !== null && Object.keys(obj).length === 0 );
+    let isEmptyObj = ( isObject &&  obj !== null && Object.keys(obj).length === 0 );
     let isNullObj = ( obj === null)
     let result =  (isObject && (isEmptyObj || isNullObj))
     return result;
 }
+
 
 
 let inputCommonInspectorService = {

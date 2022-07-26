@@ -1,5 +1,5 @@
 const ObjectModelInspector = require('../app/serviceLayer/validation/objectModelInspector.js');
-const userViewModel = require('../app/presentationLayer/viewModels/userViewModel.js');
+const userRegisterViewModel = require('../app/presentationLayer/viewModels/userRegisterViewModel.js');
 const InputCommonInspector = require('../app/serviceLayer/validation/inputCommonInspector.js');
 const UserRoles = require('../app/library/enumerations/userRoles.js');
 
@@ -17,7 +17,7 @@ describe('File: ObjectModelInspector.js', function () {
                 confirmPassword : 'abcd',
                 userRole : UserRoles.Customer,
             };
-            let userModel = new userViewModel(dataModel);
+            let userModel = new userRegisterViewModel(dataModel);
             //Act
             let resultInputLength = ObjectModelInspector.inspectInputLength(userModel);
             let errorReportDoesNotExist = InputCommonInspector.objectIsNullOrEmpty(resultInputLength);
@@ -37,7 +37,7 @@ describe('File: ObjectModelInspector.js', function () {
                 confirmPassword : 'abcd',
                 userRole : UserRoles.Customer,
             };
-            let userModel = new userViewModel(dataModel);
+            let userModel = new userRegisterViewModel(dataModel);
             //Act
             let resultInputLength = ObjectModelInspector.inspectInputLength(userModel);
             let result = InputCommonInspector.objectIsNullOrEmpty(resultInputLength);
@@ -59,7 +59,7 @@ describe('File: ObjectModelInspector.js', function () {
                 confirmPassword : 'abcd',
                 userRole : UserRoles.Customer,
             };
-            let userModel = new userViewModel(dataModel);
+            let userModel = new userRegisterViewModel(dataModel);
             //Act
 
             let resultInputType = ObjectModelInspector.inspectInputType(userModel);
@@ -80,7 +80,7 @@ describe('File: ObjectModelInspector.js', function () {
                 confirmPassword : 'abcd',
                 userRole : UserRoles.Customer,
             };
-            let userModel = new userViewModel(dataModel);
+            let userModel = new userRegisterViewModel(dataModel);
             //Act
 
             let resultInputType = ObjectModelInspector.inspectInputType(userModel);
@@ -104,7 +104,7 @@ describe('File: ObjectModelInspector.js', function () {
                 confirmPassword : 'abcd',
                 userRole : UserRoles.Customer,
             };
-            let userModel = new userViewModel(dataModel);
+            let userModel = new userRegisterViewModel(dataModel);
             //Act
             let resultInputValue = ObjectModelInspector.inspectInputValue(userModel);
             let result = InputCommonInspector.objectIsNullOrEmpty(resultInputValue);
@@ -125,7 +125,7 @@ describe('File: ObjectModelInspector.js', function () {
                 confirmPassword : 'abcd',
                 userRole : UserRoles.Customer,
             };
-            let userModel = new userViewModel(dataModel);
+            let userModel = new userRegisterViewModel(dataModel);
             //Act
             let resultInputValue = ObjectModelInspector.inspectInputValue(userModel);
             let result = InputCommonInspector.objectIsNullOrEmpty(resultInputValue);

@@ -16,6 +16,16 @@ var user = function(app){
             response.status(httpREsponseStatus._404notFound).send(userRegistrationResult);
         }
     });
+    app.post('/api/users/login', async function(request, response){
+        console.log('login-request.body', request.body);
+        var userLoginResult = await domainManager.resolveUserLoginSessionAsync(request);
+        console.log('userLoginResult', userLoginResult);
+        if(!inputCommonInspector.objectIsNullOrEmpty(userLoginResult) && !inputCommonInspector.objectIsNullOrEmpty(userLoginResult.status)){
+            response.status(userLoginResult.status).send(userLoginResult);
+        }else{
+            response.status(httpREsponseStatus._404notFound).send(userLoginResult);
+        }
+    });
 
     //READ
     app.get('api/users/{GUID}', async function(request, reqponse){

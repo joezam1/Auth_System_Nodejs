@@ -4,7 +4,7 @@ jest.mock('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');
 
 
 
-xdescribe('File: roleRepository.js', function(){
+describe('File: roleRepository.js', function(){
 
     afterAll(()=>{
         jest.resetAllMocks();

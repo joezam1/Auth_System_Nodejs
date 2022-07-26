@@ -4,7 +4,7 @@ const dbAction = require('../app/dataAccessLayer/mysqlDataStore/context/dbAction
 
 jest.mock('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');
 
-xdescribe('File: registerRepository,js',function(){
+describe('File: registerRepository,js',function(){
     afterAll(()=>{
         jest.resetAllMocks();
     });

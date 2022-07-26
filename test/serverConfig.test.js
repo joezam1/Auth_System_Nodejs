@@ -1,20 +1,20 @@
 const serverConfig = require('../configuration/server/serverConfig.js');
 const notificationService = require('../app/serviceLayer/notifications/notificationService.js');
-xdescribe('Jest Installed',()=>{
+/*xdescribe('Jest Installed',()=>{
     test('true is true, jest works OK', ()=>{expect(true).toBe(true);});
-});
+});*/
 
-xdescribe('FILE: ServerConfig',()=>{
+describe('FILE: ServerConfig',()=>{
     console.log('serverConfig', serverConfig);
 
     test('HTTP Port Exist and has a number', ()=>{
-        var httpPort = serverConfig.HTTPS_PORT;
+        var httpPort = serverConfig.configuration.HTTPS_PORT;
         expect(httpPort).toEqual(expect.any(Number));
         expect(httpPort).toBeGreaterThan(0);
     })
 
     test('HTTPS Port Exist and has a number',()=>{
-        var httpsPort = serverConfig.HTTPS_PORT;
+        var httpsPort = serverConfig.configuration.HTTPS_PORT;
         expect(httpsPort).toEqual(expect.any(Number));
         expect(httpsPort).toBeGreaterThan(0);
     });
@@ -27,7 +27,7 @@ xdescribe('FILE: ServerConfig',()=>{
              expect(response).toEqual(err);
         }
         var origin = 'https://google.com';
-        var corsOptionsFunc = serverConfig.corsOptions;
+        var corsOptionsFunc = serverConfig.configuration.corsOptions;
         corsOptionsFunc.origin(origin, corsCallbackError);
     });
 
@@ -36,8 +36,9 @@ xdescribe('FILE: ServerConfig',()=>{
             console.log('corsCallback-response', response);
              expect(response).toBeNull();
         }
-        var origin = 'http://localhost:3080';
-        var corsOptionsFunc = serverConfig.corsOptions;
-        corsOptionsFunc.origin(origin, corsCallbackError);
+        let whiteListOriginArray = serverConfig.whitelistRemoteOrigins;
+        let whitelistedOrigin = (whiteListOriginArray.length > 0 ) ? whiteListOriginArray[0] : '';
+        let corsOptionsFunc = serverConfig.configuration.corsOptions;
+        corsOptionsFunc.origin(whitelistedOrigin, corsCallbackError);
     });
 });

@@ -2,7 +2,7 @@ const ObjectModelInspector = require('./objectModelInspector.js');
 
 
 //Test: DONE
-let resolveUserRegisterValidation = function(userModel){
+let resolveUserModelValidation = function(userModel){
     let reportInputLength = ObjectModelInspector.inspectInputLength(userModel);
     let reportInputType = ObjectModelInspector.inspectInputType(userModel);
     let reportInputValue = ObjectModelInspector.inspectInputValue(userModel);
@@ -12,11 +12,11 @@ let resolveUserRegisterValidation = function(userModel){
 }
 
 
-let validationManagerService = {
-    resolveUserRegisterValidation : resolveUserRegisterValidation
+let validationService = {
+    resolveUserModelValidation : resolveUserModelValidation
 }
 
-module.exports = validationManagerService;
+module.exports = validationService;
 
 //#REGION Private Functions
 

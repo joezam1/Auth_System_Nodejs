@@ -3,19 +3,19 @@ var connection = require('../../dataAccessLayer/mysqlDataStore/context/dbConnect
 
 var dbAction = require('../../dataAccessLayer/mysqlDataStore/context/dbAction.js');
 var userRepository = require('../../dataAccessLayer/repositories/userRepository.js');
-const httpResponseManager = require('../../serviceLayer/httpProtocol/httpResponseManager.js');
+const httpResponseService = require('../../serviceLayer/httpProtocol/httpResponseService.js');
 const httpResponseStatus = require('../../library/enumerations/HttpResponseStatus.js');
 
 var helloWorld = async function(app){
 
     app.get('/', async (request, response)=>{
-        let objRes = httpResponseManager.getResponseResultStatus("hello",httpResponseStatus._401unauthorized);
+        let objRes = httpResponseService.getResponseResultStatus("hello",httpResponseStatus._401unauthorized);
 
 
         var username = 'jthornton1';
         var email = 'john.thornton11@west.com';
         var password = 'abc';
-        var userInfo = await userRepository.getUserByDataAsync(username,email,password);
+        var userInfo = await userRepository.getUserByUsernameAndEmailDataAsync(username,email,password);
         console.log('userInd', userInfo);
 
         //var executeStat = await dbAction.executeStatementAsync('SELECT 1');

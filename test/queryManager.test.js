@@ -3,7 +3,7 @@ const dbContext = require('../app/dataAccessLayer/mysqlDataStore/context/dbConte
 
 
 //let selectWhereEqualsAnd = function(tableName, sequelizePropertiesArray){
-xdescribe('File: queryManager.js', function(){
+describe('File: queryManager.js', function(){
 
 
 

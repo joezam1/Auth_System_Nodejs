@@ -1,8 +1,8 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
+const dbAction = require('../mysqlDataStore/context/dbAction.js');
 const queryManager = require('../mysqlDataStore/preparedStatements/queryManager.js');
 const valueSanitizer = require('../mysqlDataStore/preparedStatements/valueSanitizer.js');
 const helpers = require('../../library/common/helpers.js');
-const dbAction = require('../mysqlDataStore/context/dbAction.js');
 
 let context = null;
 let registerTableName = null;
@@ -54,4 +54,4 @@ function getRegisterDtoModelMappedFromDomain(registerDomainModel){
     return clonedAttributes;
 }
 
-//ENDRAGION Private Functions
+//ENDREGION Private Functions

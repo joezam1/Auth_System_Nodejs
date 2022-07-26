@@ -1,4 +1,5 @@
 const inputCommonInspector = require('../serviceLayer/validation/inputCommonInspector.js');
+const inputTypeInspector = require('../serviceLayer/validation/inputTypeInspector.js');
 
 var userInfo = function () {
     let _userId = '';
@@ -43,25 +44,25 @@ var userInfo = function () {
     }
 
     let setUserDetails = function(userViewModel){
-        if(!inputCommonInspector.objectIsNullOrEmpty(userViewModel.firstName )){
+        if(inputTypeInspector.isTypeObject( userViewModel.firstName ) && !inputCommonInspector.objectIsNullOrEmpty(userViewModel.firstName )){
             setFirstName(userViewModel.firstName.fieldValue);
         }
-        if(!inputCommonInspector.objectIsNullOrEmpty(userViewModel.middleName )){
+        if(inputTypeInspector.isTypeObject( userViewModel.middleName ) && !inputCommonInspector.objectIsNullOrEmpty(userViewModel.middleName )){
             setMiddleName(userViewModel.middleName.fieldValue);
         }
 
-        if(!inputCommonInspector.objectIsNullOrEmpty(userViewModel.lastName )){
+        if(inputTypeInspector.isTypeObject( userViewModel.lastName ) && !inputCommonInspector.objectIsNullOrEmpty(userViewModel.lastName )){
             setLastName(userViewModel.lastName.fieldValue);
         }
 
-        if(!inputCommonInspector.objectIsNullOrEmpty(userViewModel.username )){
+        if(inputTypeInspector.isTypeObject( userViewModel.username ) && !inputCommonInspector.objectIsNullOrEmpty(userViewModel.username )){
             setUsername(userViewModel.username.fieldValue);
         }
 
-        if(!inputCommonInspector.objectIsNullOrEmpty(userViewModel.email )){
+        if(inputTypeInspector.isTypeObject( userViewModel.email ) && !inputCommonInspector.objectIsNullOrEmpty(userViewModel.email )){
             setEmail(userViewModel.email.fieldValue);
         }
-        if(!inputCommonInspector.objectIsNullOrEmpty(userViewModel.password )){
+        if(inputTypeInspector.isTypeObject( userViewModel.password ) && !inputCommonInspector.objectIsNullOrEmpty(userViewModel.password )){
             setPassword(userViewModel.password.fieldValue);
         }
 

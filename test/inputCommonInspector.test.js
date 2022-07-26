@@ -1,7 +1,7 @@
 const inputCommonInspector = require('../app/serviceLayer/validation/inputCommonInspector.js');
 
 
-xdescribe('File: inputCommonInspector.js', () => {
+describe('File: inputCommonInspector.js', () => {
     //test('True is True', ()=>{ expect(true).toBe(true); });
 
     describe('Function: stringIsNullOrEmpty', function () {

@@ -1,11 +1,11 @@
-const validationManager = require('../app/serviceLayer/validation/validationManager.js');
-const userModel = require('../app/presentationLayer/viewModels/userViewModel.js');
+const validationService = require('../app/serviceLayer/validation/validationService.js');
+const userRegisterViewModel = require('../app/presentationLayer/viewModels/userRegisterViewModel.js');
 const inputCommonInspector = require('../app/serviceLayer/validation/inputCommonInspector.js');
 
-xdescribe('File: validationManager.js',()=>{
+describe('File: validationService.js',()=>{
 
     //test('True is True', ()=>{ expect(true).toBe(true); });
-    describe('Function: resolveUserRegisterValidation',function(){
+    describe('Function: resolveUserModelValidation',function(){
         test('Model is complete, The Errors reports is Empty', function(){
             //Arrange
             let userObject = {
@@ -18,10 +18,10 @@ xdescribe('File: validationManager.js',()=>{
                 confirmPassword:'abcde12345!@#$%'
 
             }
-            let user = new userModel(userObject);
+            let user = new userRegisterViewModel(userObject);
 
             //Act
-            let report = validationManager.resolveUserRegisterValidation(user);
+            let report = validationService.resolveUserModelValidation(user);
             let objectIsEmpty = inputCommonInspector.objectIsNullOrEmpty(report);
             //Assert
             expect(objectIsEmpty).toBe(true);
@@ -39,10 +39,10 @@ xdescribe('File: validationManager.js',()=>{
                 confirmPassword:'abcde12345'
 
             }
-            let user = new userModel(userObject);
+            let user = new userRegisterViewModel(userObject);
 
             //Act
-            let report = validationManager.resolveUserRegisterValidation(user);
+            let report = validationService.resolveUserModelValidation(user);
             let objectIsEmpty = inputCommonInspector.objectIsNullOrEmpty(report);
             //Assert
             expect(report.firstName).not.toEqual('');

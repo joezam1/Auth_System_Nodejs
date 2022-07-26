@@ -22,7 +22,6 @@ var role = function () {
         _isActive = status;
     }
 
-
     let getRoleId = function(){
         return _roleId;
     }

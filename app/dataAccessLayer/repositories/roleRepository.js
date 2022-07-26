@@ -1,6 +1,6 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
-const queryManager = require('../mysqlDataStore/preparedStatements/queryManager.js');
 const dbAction = require('../mysqlDataStore/context/dbAction.js');
+const queryManager = require('../mysqlDataStore/preparedStatements/queryManager.js');
 
 let context = '';
 let roleTableName = '';

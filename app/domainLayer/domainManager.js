@@ -1,46 +1,52 @@
 const httpResponseStatus = require('../library/enumerations/httpResponseStatus');
-const httpResponseManager = require('../serviceLayer/httpProtocol/httpResponseManager.js');
-const userViewModel = require('../presentationLayer/viewModels/userViewModel.js');
-const validationManager = require('../serviceLayer/validation/validationManager.js');
+const httpResponseService = require('../serviceLayer/httpProtocol/httpResponseService.js');
+const userRegisterViewModel = require('../presentationLayer/viewModels/userRegisterViewModel.js');
+const userLoginViewModel = require('../presentationLayer/viewModels/userLoginViewModel.js');
+const validationService = require('../serviceLayer/validation/validationService.js');
 const inputCommonInspector = require('../serviceLayer/validation/inputcommonInspector.js');
-const user = require('./user.js');
-const userRepository = require('../dataAccessLayer/repositories/userRepository.js');
 const userRoles = require('../library/enumerations/userRoles.js');
-const roleRepository = require('../dataAccessLayer/repositories/roleRepository.js');
 const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
+const user = require('./user.js');
 const role = require('./role.js');
 const userRole = require('./userRole.js');
 const register = require('./register.js');
+const session = require('./session.js');
+const cookieModel = require('./cookie.js');
 const dbAction = require('../dataAccessLayer/mysqlDataStore/context/dbAction.js');
-const registerRepository = require('../dataAccessLayer/repositories/registerRepository.js');
-const encryptionService = require('../serviceLayer/encryption/encryptionService.js');
 
+const userRepository = require('../dataAccessLayer/repositories/userRepository.js');
+const roleRepository = require('../dataAccessLayer/repositories/roleRepository.js');
+const registerRepository = require('../dataAccessLayer/repositories/registerRepository.js');
+const sessionRepository = require('../dataAccessLayer/repositories/sessionRepository.js');
+const encryptionService = require('../serviceLayer/encryption/encryptionService.js');
+const loginSessionService = require('../serviceLayer/authentication/loginSessionService.js');
+const sessionConfig = require('../../configuration/authentication/sessionConfig.js');
 
 let resolveUserRegistrationAsync =async function(request){
-    let _user = new userViewModel(request.body);
-    let errorsReport = validationManager.resolveUserRegisterValidation(_user);
+    let _user = new userRegisterViewModel(request.body);
+    let errorsReport = validationService.resolveUserModelValidation(_user);
     if(!inputCommonInspector.objectIsNullOrEmpty(errorsReport)){
-        return httpResponseManager.getResponseResultStatus(errorsReport,httpResponseStatus._401unauthorized );
+        return httpResponseService.getResponseResultStatus(errorsReport,httpResponseStatus._401unauthorized );
     }
 
     let userInfo = new user();
     userInfo.setUserDetails(_user);
-    var userResult = await userRepository.getUserByDataAsync(userInfo);
+    var userResult = await userRepository.getUserByUsernameAndEmailDataAsync(userInfo);
     if(userResult instanceof Error){
-        return httpResponseManager.getResponseResultStatus(userResult,httpResponseStatus._400badRequest );
+        return httpResponseService.getResponseResultStatus(userResult,httpResponseStatus._400badRequest );
     }
 
     if( userResult.length > 0 ){
         let message = 'username or email already taken';
-        return httpResponseManager.getResponseResultStatus(message, httpResponseStatus._401unauthorized);
+        return httpResponseService.getResponseResultStatus(message, httpResponseStatus._401unauthorized);
     }
 
     let userRoleEnum = request.body.userRole;
     let selectedRoleDescription = userRoles[userRoleEnum];
     let selectedRoleObj = await getSelectedRoleAsync(selectedRoleDescription);
     if(selectedRoleObj instanceof Error){
-        return httpResponseManager.getResponseResultStatus(selectedRoleObj ,httpResponseStatus._400badRequest );
+        return httpResponseService.getResponseResultStatus(selectedRoleObj ,httpResponseStatus._400badRequest );
     }
 
     if(selectedRoleObj != null){
@@ -52,11 +58,54 @@ let resolveUserRegistrationAsync =async function(request){
     }
 
     let message = 'Registration could not be completed.';
-    return httpResponseManager.getResponseResultStatus(message , httpResponseStatus._400badRequest );
+    return httpResponseService.getResponseResultStatus(message , httpResponseStatus._400badRequest );
+}
+
+
+
+let resolveUserLoginSessionAsync = async function(request){
+    let _user = new userLoginViewModel(request.body);
+    let errorsReport = validationService.resolveUserModelValidation(_user);
+    if(!inputCommonInspector.objectIsNullOrEmpty(errorsReport)){
+        return httpResponseService.getResponseResultStatus(errorsReport,httpResponseStatus._401unauthorized );
+    }
+    //Create user DOMAIN MODEL
+    let userInfo = new user();
+    userInfo.setUserDetails(_user);
+    var UsersDtoModelArray = await userRepository.getUserByUsernameAndEmailDataAsync(userInfo);
+    if(UsersDtoModelArray instanceof Error){
+        return httpResponseService.getResponseResultStatus(UsersDtoModelArray,httpResponseStatus._400badRequest );
+    }
+    else if( UsersDtoModelArray.length === 0 ){
+        let message = 'username or password do not match records.';
+        return httpResponseService.getResponseResultStatus(message, httpResponseStatus._401unauthorized);
+    }
+
+    let pwdPlainText = userInfo.getPassword();
+    let UsersDtoModel = UsersDtoModelArray[0];
+    let pwdDatabase = UsersDtoModel.Password.value;
+    let passwordsAreTheSame = await encryptionService.validateEncryptedPasswordAsync( pwdPlainText, pwdDatabase);
+    if(!passwordsAreTheSame){
+        let message = 'username or password do not match records.';
+        return httpResponseService.getResponseResultStatus(message, httpResponseStatus._401unauthorized);
+    }
+
+    let sessionToken =await loginSessionService.generateSessionTokenAsync();
+    let cookieObj = createCookieObj(sessionToken);
+    let cookieJson = JSON.stringify(cookieObj);
+    let sessionModel = createSessionModel(UsersDtoModel.UserId.value, sessionToken, cookieJson, sessionConfig.SESSION_EXPIRATION_TIME);
+
+    let sessionResult = await sessionRepository.insertSessionIntoTableAsync(sessionModel);
+    if(sessionResult instanceof Error){
+        return httpResponseService.getResponseResultStatus(sessionResult ,httpResponseStatus._400badRequest );
+    }
+    return httpResponseService.getResponseResultStatus(cookieObj,httpResponseStatus._200ok );
+
 }
 
 var service = {
-    resolveUserRegistrationAsync : resolveUserRegistrationAsync
+    resolveUserRegistrationAsync : resolveUserRegistrationAsync,
+    resolveUserLoginSessionAsync : resolveUserLoginSessionAsync
 }
 
 
@@ -68,7 +117,7 @@ async function getSelectedRoleAsync(roleName){
 
     let allRolesResult = await roleRepository.getAllRolesAsync();
     if(allRolesResult instanceof Error){
-        let objResponse = httpResponseManager.getResponseResultStatus(allRolesResult,httpResponseStatus._400badRequest );
+        let objResponse = httpResponseService.getResponseResultStatus(allRolesResult,httpResponseStatus._400badRequest );
         return objResponse;
     }
 
@@ -114,6 +163,28 @@ function createRegisterModel(userId){
     return _registerInfo
 }
 
+function createCookieObj(sessionToken){
+    let _cookieModel = new cookieModel();
+    _cookieModel.setName(sessionConfig.SESSION_NAME);
+    _cookieModel.setValue(sessionToken);
+    _cookieModel.setProperties(sessionConfig.SESSION_EXPIRATION_TIME,true);
+    let cookieObject = _cookieModel.getCookieObject();
+    return cookieObject;
+}
+
+function createSessionModel(userId, sessionToken, data, expirationTimeMilliseconds){
+    let sessionUuid = uuid();
+    let _sessionModel  = new session();
+    _sessionModel.setSessionId(sessionUuid);
+    _sessionModel.setUserId(userId);
+    _sessionModel.setSessionToken(sessionToken);
+    _sessionModel.setData(data);
+    _sessionModel.setExpiryInMilliseconds(expirationTimeMilliseconds);
+    _sessionModel.setSessionStatusIsActive(true);
+
+    return _sessionModel;
+}
+
 async function createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj){
     let newUuid = uuid();
     userInfo.setUserId(newUuid);
@@ -124,7 +195,7 @@ async function createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj){
 
         if(insertedUserResult instanceof Error){
             dbAction.rollbackTransactionSingleConnection(singleConnection);
-            return httpResponseManager.getResponseResultStatus(insertedUserResult,httpResponseStatus._400badRequest );
+            return httpResponseService.getResponseResultStatus(insertedUserResult,httpResponseStatus._400badRequest );
         }
 
         let _userId = userInfo.getUserId();
@@ -133,23 +204,23 @@ async function createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj){
         let userRoleCreated = await userRepository.insertUserRoleIntoTableTransactionAsync( singleConnection , userRoleInfo);
         if(userRoleCreated instanceof Error){
             dbAction.rollbackTransactionSingleConnection(singleConnection);
-            return httpResponseManager.getResponseResultStatus(userRoleCreated,httpResponseStatus._400badRequest );
+            return httpResponseService.getResponseResultStatus(userRoleCreated,httpResponseStatus._400badRequest );
         }
 
         let registerInfo = createRegisterModel(_userId);
         let registerCreated = await registerRepository.insertRegisterIntoTableTransactionAsync(singleConnection , registerInfo );
         if(registerCreated instanceof Error){
             dbAction.rollbackTransactionSingleConnection(singleConnection);
-            return httpResponseManager.getResponseResultStatus(registerCreated,httpResponseStatus._400badRequest );
+            return httpResponseService.getResponseResultStatus(registerCreated,httpResponseStatus._400badRequest );
         }
 
         dbAction.commitTransactionSingleConnection(singleConnection);
-        return httpResponseManager.getResponseResultStatus(registerCreated,httpResponseStatus._201created );
+        return httpResponseService.getResponseResultStatus(registerCreated,httpResponseStatus._201created );
     }
     catch(error){
         console.log('error', error)
         dbAction.rollbackTransactionSingleConnection(singleConnection);
-        return httpResponseManager.getResponseResultStatus(error , httpResponseStatus._400badRequest );
+        return httpResponseService.getResponseResultStatus(error , httpResponseStatus._400badRequest );
     }
 }
 

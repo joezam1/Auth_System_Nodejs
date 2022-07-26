@@ -5,12 +5,12 @@ const dbAction = require('../app/dataAccessLayer/mysqlDataStore/context/dbAction
 const userrole = require('../app/dataAccessLayer/mysqlDataStore/mappings/models/userrole.js');
 jest.mock('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');
 
-xdescribe('File: userRepository.js',function(){
+describe('File: userRepository.js',function(){
     afterAll(()=>{
         jest.resetAllMocks();
     });
 
-    describe('Function: getUserByDataAsync', function(){
+    describe('Function: getUserByUsernameAndEmailDataAsync', function(){
         test('Database Function is called once and result is returned',async function(){
             //Arrange
             let _user = new userDomainModel();
@@ -34,7 +34,7 @@ xdescribe('File: userRepository.js',function(){
 
             let resultDatabaseMock = [[userResultMock],[]]
             dbAction.executeStatementAsync =jest.fn().mockResolvedValueOnce(resultDatabaseMock);
-            var userResult = await userRepository.getUserByDataAsync(_user);
+            var userResult = await userRepository.getUserByUsernameAndEmailDataAsync(_user);
             let resultLength = userResult.length;
             let resultEmail = userResult[0].Email.value;
             //Assert
