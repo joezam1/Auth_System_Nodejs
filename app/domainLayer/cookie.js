@@ -3,7 +3,8 @@ let cookie = function(){
     let _name = '';
     let _value = '';
     let _properties = {
-        maxAge : '',
+        path:'',
+        maxAge : 0,
         httpOnly : true,
     }
 
@@ -16,7 +17,8 @@ let cookie = function(){
         _value = value;
     }
 
-    let setProperties = function(maxAge, httpOnly){
+    let setProperties = function(path, maxAge, httpOnly){
+        _properties.path = path;
         _properties.maxAge = maxAge;
         _properties.httpOnly = httpOnly
     }

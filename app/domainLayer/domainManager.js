@@ -97,7 +97,7 @@ let resolveUserLoginSessionAsync = async function(request){
 
     let sessionResult = await sessionRepository.insertSessionIntoTableAsync(sessionModel);
     if(sessionResult instanceof Error){
-        return httpResponseService.getResponseResultStatus(sessionResult ,httpResponseStatus._400badRequest );
+       return httpResponseService.getResponseResultStatus(sessionResult ,httpResponseStatus._400badRequest );
     }
     return httpResponseService.getResponseResultStatus(cookieObj,httpResponseStatus._200ok );
 
@@ -164,10 +164,11 @@ function createRegisterModel(userId){
 }
 
 function createCookieObj(sessionToken){
+    let defaultPath = '/';
     let _cookieModel = new cookieModel();
     _cookieModel.setName(sessionConfig.SESSION_NAME);
     _cookieModel.setValue(sessionToken);
-    _cookieModel.setProperties(sessionConfig.SESSION_EXPIRATION_TIME,true);
+    _cookieModel.setProperties(defaultPath, sessionConfig.SESSION_EXPIRATION_TIME,true);
     let cookieObject = _cookieModel.getCookieObject();
     return cookieObject;
 }
