@@ -62,7 +62,7 @@ let resolveSessionUpdateAsync = async function (request) {
 let resolveGetSessionAsync = async function(request){
 
     let tempUserId = null;
-    let currentSessionToken = request.params.uuid;
+    let currentSessionToken = request.headers.x_session_id;
     let tempCookieJson = null;
     let tempSessionModel = domainManagerHelper.createSessionModel(tempUserId, currentSessionToken, tempCookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
 
@@ -87,7 +87,7 @@ let resolveGetSessionAsync = async function(request){
     currentSessionViewModel.isActive.fieldValue = currentSessionDtoModel.IsActive.value;
     currentSessionViewModel.utcDateCreated.fieldValue = currentSessionDtoModel.UTCDateCreated.value;
 
-    return httpResponseService.getResponseResultStatus(sessionDomainModel, httpResponseStatus._200ok);
+    return httpResponseService.getResponseResultStatus(currentSessionViewModel, httpResponseStatus._200ok);
 }
 
 var service = {

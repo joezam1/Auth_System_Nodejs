@@ -6,9 +6,9 @@ var sessionController = function(app){
     //METHOD
     //CREATE
     //READ
-    app.get('/api/sessions/:uuid', async function(request, response){
-        console.log('api/sessions/:uuid', request);
-        var sessionResult = await sessionDomainManager.resolveSessionUpdateAsync(request);
+    app.get('/api/sessions/sessiontoken', async function(request, response){
+        console.log('api/sessions/sessiontoken', request);
+        var sessionResult = await sessionDomainManager.resolveGetSessionAsync(request);
         console.log('sessionResult', sessionResult);
         httpResponseService.sendHttpResponse(sessionResult,response);
     });

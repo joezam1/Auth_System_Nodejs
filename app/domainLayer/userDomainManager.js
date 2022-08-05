@@ -113,6 +113,9 @@ let resolveUserLogoutSessionAsync = async function(request){
     else if( sessionResultArray.length === 0 ){
         return httpResponseService.getResponseResultStatus(notificationService.sessionRemoved, httpResponseStatus._422unprocessableEntity);
     }
+    else if (sessionResultArray.length > 0 && sessionResultArray[0].affectedRows === 1){
+        return httpResponseService.getResponseResultStatus(notificationService.sessionRemoved, httpResponseStatus._200ok);
+    }
 
     return httpResponseService.getResponseResultStatus(notificationService.sessionNoLongerActive, httpResponseStatus._401unauthorized);
 }
