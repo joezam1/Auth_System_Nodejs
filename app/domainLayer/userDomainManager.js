@@ -12,7 +12,7 @@ const role = require('./role.js');
 const userRole = require('./userRole.js');
 const register = require('./register.js');
 const session = require('./session.js');
-const cookieModel = require('./cookie.js');
+const domainManagerHelper = require('./domainManagerHelper.js');
 const dbAction = require('../dataAccessLayer/mysqlDataStore/context/dbAction.js');
 
 const userRepository = require('../dataAccessLayer/repositories/userRepository.js');
@@ -20,8 +20,10 @@ const roleRepository = require('../dataAccessLayer/repositories/roleRepository.j
 const registerRepository = require('../dataAccessLayer/repositories/registerRepository.js');
 const sessionRepository = require('../dataAccessLayer/repositories/sessionRepository.js');
 const encryptionService = require('../serviceLayer/encryption/encryptionService.js');
-const loginSessionService = require('../serviceLayer/authentication/loginSessionService.js');
+const sessionService = require('../serviceLayer/authentication/sessionService.js');
 const sessionConfig = require('../../configuration/authentication/sessionConfig.js');
+const notificationService = require('../serviceLayer/notifications/notificationService.js');
+
 
 let resolveUserRegistrationAsync =async function(request){
     let _user = new userRegisterViewModel(request.body);
@@ -37,9 +39,8 @@ let resolveUserRegistrationAsync =async function(request){
         return httpResponseService.getResponseResultStatus(userResult,httpResponseStatus._400badRequest );
     }
 
-    if( userResult.length > 0 ){
-        let message = 'username or email already taken';
-        return httpResponseService.getResponseResultStatus(message, httpResponseStatus._401unauthorized);
+    else if( userResult.length > 0 ){
+        return httpResponseService.getResponseResultStatus(notificationService.usernameOrEmailTaken, httpResponseStatus._401unauthorized);
     }
 
     let userRoleEnum = request.body.userRole;
@@ -49,7 +50,7 @@ let resolveUserRegistrationAsync =async function(request){
         return httpResponseService.getResponseResultStatus(selectedRoleObj ,httpResponseStatus._400badRequest );
     }
 
-    if(selectedRoleObj != null){
+    else if(selectedRoleObj != null){
         let userPassword = userInfo.getPassword();
         let encryptedPassword = await encryptionService.encryptStringInputAsync(userPassword);
         userInfo.setPassword(encryptedPassword);
@@ -57,11 +58,8 @@ let resolveUserRegistrationAsync =async function(request){
         return resultTransaction;
     }
 
-    let message = 'Registration could not be completed.';
-    return httpResponseService.getResponseResultStatus(message , httpResponseStatus._400badRequest );
+    return httpResponseService.getResponseResultStatus(notificationService.registrationNotCompleted , httpResponseStatus._400badRequest );
 }
-
-
 
 let resolveUserLoginSessionAsync = async function(request){
     let _user = new userLoginViewModel(request.body);
@@ -69,7 +67,7 @@ let resolveUserLoginSessionAsync = async function(request){
     if(!inputCommonInspector.objectIsNullOrEmpty(errorsReport)){
         return httpResponseService.getResponseResultStatus(errorsReport,httpResponseStatus._401unauthorized );
     }
-    //Create user DOMAIN MODEL
+
     let userInfo = new user();
     userInfo.setUserDetails(_user);
     var UsersDtoModelArray = await userRepository.getUserByUsernameAndEmailDataAsync(userInfo);
@@ -77,8 +75,7 @@ let resolveUserLoginSessionAsync = async function(request){
         return httpResponseService.getResponseResultStatus(UsersDtoModelArray,httpResponseStatus._400badRequest );
     }
     else if( UsersDtoModelArray.length === 0 ){
-        let message = 'username or password do not match records.';
-        return httpResponseService.getResponseResultStatus(message, httpResponseStatus._401unauthorized);
+        return httpResponseService.getResponseResultStatus(notificationService.usernameOrPasswordNotMatching, httpResponseStatus._401unauthorized);
     }
 
     let pwdPlainText = userInfo.getPassword();
@@ -86,26 +83,44 @@ let resolveUserLoginSessionAsync = async function(request){
     let pwdDatabase = UsersDtoModel.Password.value;
     let passwordsAreTheSame = await encryptionService.validateEncryptedPasswordAsync( pwdPlainText, pwdDatabase);
     if(!passwordsAreTheSame){
-        let message = 'username or password do not match records.';
-        return httpResponseService.getResponseResultStatus(message, httpResponseStatus._401unauthorized);
+        return httpResponseService.getResponseResultStatus(notificationService.usernameOrPasswordNotMatching, httpResponseStatus._401unauthorized);
     }
 
-    let sessionToken =await loginSessionService.generateSessionTokenAsync();
-    let cookieObj = createCookieObj(sessionToken);
+    let sessionToken =await sessionService.generateSessionTokenAsync();
+    let cookieObj = domainManagerHelper.createCookieObj(sessionToken);
     let cookieJson = JSON.stringify(cookieObj);
-    let sessionModel = createSessionModel(UsersDtoModel.UserId.value, sessionToken, cookieJson, sessionConfig.SESSION_EXPIRATION_TIME);
+    let sessionModel = domainManagerHelper.createSessionModel(UsersDtoModel.UserId.value, sessionToken, cookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
 
-    let sessionResult = await sessionRepository.insertSessionIntoTableAsync(sessionModel);
-    if(sessionResult instanceof Error){
-       return httpResponseService.getResponseResultStatus(sessionResult ,httpResponseStatus._400badRequest );
+    let sessionResultArray = await sessionRepository.insertSessionIntoTableAsync(sessionModel);
+    if(sessionResultArray instanceof Error){
+       return httpResponseService.getResponseResultStatus(sessionResultArray ,httpResponseStatus._400badRequest );
     }
-    return httpResponseService.getResponseResultStatus(cookieObj,httpResponseStatus._200ok );
+    else if(sessionResultArray.length > 0  && sessionResultArray[0].affectedRows === 1 ){
+        return httpResponseService.getResponseResultStatus(cookieObj,httpResponseStatus._200ok );
+    }
 
+    return httpResponseService.getResponseResultStatus(notificationService.errorProcessingUserLogin, httpResponseStatus._422unprocessableEntity );
+}
+
+let resolveUserLogoutSessionAsync = async function(request){
+    let sessionValue = request.body.session;
+    let sessionModel = new session();
+    sessionModel.setSessionToken(sessionValue)
+    let sessionResultArray = await sessionRepository.deleteSessionFromDatabaseAsync(sessionModel);
+    if(sessionResultArray instanceof Error){
+        return httpResponseService.getResponseResultStatus(sessionResultArray, httpResponseStatus._400badRequest );
+    }
+    else if( sessionResultArray.length === 0 ){
+        return httpResponseService.getResponseResultStatus(notificationService.sessionRemoved, httpResponseStatus._422unprocessableEntity);
+    }
+
+    return httpResponseService.getResponseResultStatus(notificationService.sessionNoLongerActive, httpResponseStatus._401unauthorized);
 }
 
 var service = {
     resolveUserRegistrationAsync : resolveUserRegistrationAsync,
-    resolveUserLoginSessionAsync : resolveUserLoginSessionAsync
+    resolveUserLoginSessionAsync : resolveUserLoginSessionAsync,
+    resolveUserLogoutSessionAsync : resolveUserLogoutSessionAsync
 }
 
 
@@ -163,29 +178,6 @@ function createRegisterModel(userId){
     return _registerInfo
 }
 
-function createCookieObj(sessionToken){
-    let defaultPath = '/';
-    let _cookieModel = new cookieModel();
-    _cookieModel.setName(sessionConfig.SESSION_NAME);
-    _cookieModel.setValue(sessionToken);
-    _cookieModel.setProperties(defaultPath, sessionConfig.SESSION_EXPIRATION_TIME,true);
-    let cookieObject = _cookieModel.getCookieObject();
-    return cookieObject;
-}
-
-function createSessionModel(userId, sessionToken, data, expirationTimeMilliseconds){
-    let sessionUuid = uuid();
-    let _sessionModel  = new session();
-    _sessionModel.setSessionId(sessionUuid);
-    _sessionModel.setUserId(userId);
-    _sessionModel.setSessionToken(sessionToken);
-    _sessionModel.setData(data);
-    _sessionModel.setExpiryInMilliseconds(expirationTimeMilliseconds);
-    _sessionModel.setSessionStatusIsActive(true);
-
-    return _sessionModel;
-}
-
 async function createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj){
     let newUuid = uuid();
     userInfo.setUserId(newUuid);
@@ -219,7 +211,7 @@ async function createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj){
         return httpResponseService.getResponseResultStatus(registerCreated,httpResponseStatus._201created );
     }
     catch(error){
-        console.log('error', error)
+        console.log('message: error', error)
         dbAction.rollbackTransactionSingleConnection(singleConnection);
         return httpResponseService.getResponseResultStatus(error , httpResponseStatus._400badRequest );
     }

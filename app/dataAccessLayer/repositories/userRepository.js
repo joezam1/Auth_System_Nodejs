@@ -1,8 +1,7 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
-const dbAction = require('../mysqlDataStore/context/dbAction.js');
-const queryManager = require('../mysqlDataStore/preparedStatements/queryManager.js');
-const valueSanitizer = require('../mysqlDataStore/preparedStatements/valueSanitizer.js');
 const helpers = require('../../library/common/helpers.js');
+const repositoryHelper = require('../repositories/repositoryHelper.js');
+const genericQueryStatements = require('../../library/enumerations/genericQueryStatements.js');
 
 let context = null;
 let userTableName = null;
@@ -13,11 +12,7 @@ let getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
     console.log('userTableName', userTableName);
     let userDtoModel = getUserDtoModelMappedFromDomain(userDomainModel);
     let propertiesArray = [userDtoModel.Username, userDtoModel.Email];
-    let truthyPropertiesArray = valueSanitizer.getTruthySequelizeAttributesValues(propertiesArray);
-    let selectStatement = queryManager.selectWhereEqualsAnd(userTableName, truthyPropertiesArray);
-
-    let sanitizedValues = valueSanitizer.getSanitizedInputs(truthyPropertiesArray);
-    let statementResult = await dbAction.executeStatementAsync(selectStatement, sanitizedValues);
+    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatements.selectWhereEqualsAnd, userTableName);
     if (statementResult instanceof Error) {
         return statementResult;
     }
@@ -30,11 +25,7 @@ let insertUserIntoTableTransactionAsync = async function (connectionPool, userDo
     console.log('userDomainModel', userDomainModel);
     let userDtoModel = getUserDtoModelMappedFromDomain(userDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(userDtoModel);
-    let truthyPropertiesArray = valueSanitizer.getTruthySequelizeAttributesValues(propertiesArray);
-    let insertStatement = queryManager.insertIntoTableValues(userTableName, truthyPropertiesArray);
-
-    let sanitizedValues = valueSanitizer.getSanitizedInputs(truthyPropertiesArray);
-    let statementResult = await dbAction.executeSingleConnectionStatementAsync(connectionPool, insertStatement, sanitizedValues);
+    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatements.insertIntoTableValues, userTableName, null, connectionPool);
 
     return statementResult;
 }
@@ -42,11 +33,7 @@ let insertUserIntoTableTransactionAsync = async function (connectionPool, userDo
 let insertUserRoleIntoTableTransactionAsync = async function (connectionPool, userRoleDomainModel) {
     let userRoleDtoModel = getUserRoleDtoModelMappedFromDomain(userRoleDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(userRoleDtoModel);
-    let truthyPropertiesArray = valueSanitizer.getTruthySequelizeAttributesValues(propertiesArray);
-    let insertStatement = queryManager.insertIntoTableValues(userRoleTableName, truthyPropertiesArray);
-
-    let sanitizedInputs = valueSanitizer.getSanitizedInputs(truthyPropertiesArray);
-    let statementResult = await dbAction.executeSingleConnectionStatementAsync(connectionPool, insertStatement, sanitizedInputs);
+    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatements.insertIntoTableValues, userRoleTableName, null, connectionPool);
 
     return statementResult;
 }

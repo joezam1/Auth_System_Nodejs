@@ -13,18 +13,53 @@ let stringIsNullOrEmpty = function(input){
 }
 //Test:DONE
 let objectIsNullOrEmpty = function(obj){
-    let isObject = ((typeof obj === DataTypes.OBJECT ) && !Array.isArray(obj) && typeof obj !== undefined );
-    let isEmptyObj = ( isObject &&  obj !== null && Object.keys(obj).length === 0 );
-    let isNullObj = ( obj === null)
-    let result =  (isObject && (isEmptyObj || isNullObj))
+    let isObjectType = (typeof obj == DataTypes.OBJECT)
+    let isArrayType = Array.isArray(obj);
+    let isNotUndefinedType = typeof obj !== 'undefined';
+
+    let isNullValue = ( obj === null)
+
+    let isObject = ( isObjectType && !isArrayType && isNotUndefinedType );
+    let isEmptyObj = ( isObject && !isNullValue && Object.keys(obj).length === 0 );
+
+    let result =  (isObject && (isEmptyObj || isNullValue))
+    return result;
+}
+
+let valueIsUndefined = function(value){
+    let objUndefinedType = typeof value === 'undefined';
+    let valueIsUndefined = (value === undefined)
+    let result = (objUndefinedType && valueIsUndefined);
     return result;
 }
 
 
+function stringIsValid(inputStr){
+    let isNullOrEmpty = stringIsNullOrEmpty(inputStr);
+    let isUndefined = valueIsUndefined(inputStr);
+    if(isNullOrEmpty || isUndefined) {
+        return false;
+    }
+    return true;
+}
+
+
+function objectIsValid(obj){
+    let isNullOrEmpty = objectIsNullOrEmpty(obj);
+    let isUndefined = valueIsUndefined(obj);
+    if(isNullOrEmpty || isUndefined) {
+        return false;
+    }
+    return true;
+}
+
 
 let inputCommonInspectorService = {
     stringIsNullOrEmpty : stringIsNullOrEmpty,
-    objectIsNullOrEmpty:objectIsNullOrEmpty
+    objectIsNullOrEmpty:objectIsNullOrEmpty,
+    valueIsUndefined : valueIsUndefined,
+    objectIsValid : objectIsValid,
+    stringIsValid : stringIsValid
 }
 
 module.exports = inputCommonInspectorService

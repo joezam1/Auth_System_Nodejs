@@ -1,5 +1,5 @@
 
-var sessionBusinessModel = function () {
+var sessionDomainModel = function () {
     let _sessionId = '';
     let _userId = '';
     let _sessionToken = '';
@@ -86,4 +86,4 @@ var sessionBusinessModel = function () {
     return service
 }
 
-module.exports = sessionBusinessModel;
+module.exports = sessionDomainModel;

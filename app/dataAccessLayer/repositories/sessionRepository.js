@@ -1,28 +1,64 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
-const dbAction = require('../mysqlDataStore/context/dbAction.js');
-const queryManager = require('../mysqlDataStore/preparedStatements/queryManager.js');
-const valueSanitizer = require('../mysqlDataStore/preparedStatements/valueSanitizer.js');
 const helpers = require('../../library/common/helpers.js');
+const repositoryHelper = require('../repositories/repositoryHelper.js');
+const genericQueryStatements = require('../../library/enumerations/genericQueryStatements.js');
 
 
 let context = null;
 let sessionTableName = null;
 //Test: DONE
 let insertSessionIntoTableAsync = async function (sessionDomainModel) {
+    console.log('context', context);
+    console.log('sessionTableName', sessionTableName);
     console.log('sessionDomainModel', sessionDomainModel);
     let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(sessionDtoModel);
-    let truthyPropertiesArray = valueSanitizer.getTruthySequelizeAttributesValues(propertiesArray);
-    let insertStatement = queryManager.insertIntoTableValues(sessionTableName, truthyPropertiesArray);
 
-    let sanitizedValues = valueSanitizer.getSanitizedInputs(truthyPropertiesArray);
-    let statementResult = await dbAction.executeStatementAsync(insertStatement, sanitizedValues);
+    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatements.insertIntoTableValues, sessionTableName);
+
+    return statementResult;
+}
+
+let getSessionFromDatabaseAsync = async function(sessionDomainModel){
+    console.log('context', context);
+    console.log('sessionTableName', sessionTableName);
+    let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);
+    let propertiesArray = [sessionDtoModel.SessionToken];
+
+    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatements.selectWhereEqualsAnd, sessionTableName);
+
+    if (statementResult instanceof Error) {
+        return statementResult;
+    }
+    let sessionDtoResult = getSessionsDtoModelMappedFromDatabase(statementResult[0]);
+
+    return sessionDtoResult;
+}
+
+let deleteSessionFromDatabaseAsync = async function(sessionDomainModel){
+    let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);
+    let propertiesArray = [sessionDtoModel.SessionToken];
+
+    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatements.deleteFromTableWhere, sessionTableName);
+
+    return statementResult;
+}
+
+let updateTableSetColumnValuesWhereAsync = async function(sessionDomainModel){
+
+    let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);
+    let propertiesArray = [sessionDtoModel.SessionToken];
+    let conditionalPropertiesArray = [ sessionDtoModel.SessionId ];
+    let statementResult = await repositoryHelper.resolveConditionalWhereEqualsStatementAsync (propertiesArray, conditionalPropertiesArray, sessionTableName);
 
     return statementResult;
 }
 onInit();
 const service = {
-    insertSessionIntoTableAsync: insertSessionIntoTableAsync
+    insertSessionIntoTableAsync : insertSessionIntoTableAsync,
+    getSessionFromDatabaseAsync : getSessionFromDatabaseAsync,
+    updateTableSetColumnValuesWhereAsync : updateTableSetColumnValuesWhereAsync,
+    deleteSessionFromDatabaseAsync : deleteSessionFromDatabaseAsync
 }
 
 module.exports = service;
@@ -37,7 +73,8 @@ function onInit(){
 
 function getSessionDtoModelMappedFromDomain(sessionDomainModel){
     let dateNow = new Date();
-    let resolvedSessionStatus = (sessionDomainModel.getSessionStatusIsActive() === true)
+    let sessionStatus = (sessionDomainModel.getSessionStatusIsActive());
+    let resolvedSessionStatus = (sessionStatus === true)
     ? sessionDomainModel.getSessionStatusIsActive()
     : sessionDomainModel.setSessionStatusIsActive(true); sessionDomainModel.getSessionStatusIsActive() ;
 
@@ -62,5 +99,32 @@ function getSessionDtoModelMappedFromDomain(sessionDomainModel){
     let clonedAttributes = JSON.parse(JSON.stringify(_sessionDto.rawAttributes));
     return clonedAttributes;
 }
+
+
+function getSessionsDtoModelMappedFromDatabase(databaseResultArray) {
+    let allSessionsDtoModels = [];
+    for (let a = 0; a < databaseResultArray.length; a++) {
+        let sessionDatabase = databaseResultArray[a];
+        console.log('sessionDatabase', sessionDatabase);
+        let _sessionDtoModel =new context.sessionDtoModel();
+        console.log('_sessionDtoModel', _sessionDtoModel);
+
+        _sessionDtoModel.rawAttributes.SessionId.value = sessionDatabase.SessionId;
+        _sessionDtoModel.rawAttributes.UserId.value = sessionDatabase.UserId;
+        _sessionDtoModel.rawAttributes.SessionToken.value = sessionDatabase.SessionToken;
+        _sessionDtoModel.rawAttributes.Expires.value = sessionDatabase.Expires;
+        _sessionDtoModel.rawAttributes.Data.value = sessionDatabase.Data;
+        _sessionDtoModel.rawAttributes.IsActive.value = (sessionDatabase.IsActive !== 0);
+
+        _sessionDtoModel.rawAttributes.UTCDateCreated.value = sessionDatabase.UTCDateCreated;
+        _sessionDtoModel.rawAttributes.UTCDateUpdated.value = sessionDatabase.UTCDateUpdated;
+
+        let clonedAttributes = JSON.parse(JSON.stringify(_sessionDtoModel.rawAttributes));
+        allSessionsDtoModels.push(clonedAttributes);
+    }
+
+    return allSessionsDtoModels;
+}
+
 
 //#ENDREGION Private Functions

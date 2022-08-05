@@ -1,9 +1,9 @@
-const queryManager = require('../app/dataAccessLayer/mysqlDataStore/preparedStatements/queryManager.js');
+const queryFactory = require('../app/dataAccessLayer/mysqlDataStore/preparedStatements/queryFactory.js');
 const dbContext = require('../app/dataAccessLayer/mysqlDataStore/context/dbContext.js');
 
 
 //let selectWhereEqualsAnd = function(tableName, sequelizePropertiesArray){
-describe('File: queryManager.js', function(){
+describe('File: queryFactory.js', function(){
 
 
 
@@ -49,7 +49,7 @@ describe('File: queryManager.js', function(){
             let attributesArray = [ userAttributes.FirstName, userAttributes.MiddleName, userAttributes.LastName]
 
             //Act
-            let result = queryManager.selectWhereEqualsAnd(tableName, attributesArray);
+            let result = queryFactory.selectWhereEqualsAnd(tableName, attributesArray);
             //Assert
 
             expect(result).toContain('FirstName');
@@ -63,7 +63,7 @@ describe('File: queryManager.js', function(){
             //Arrange
             let tableName = 'test'
             //Act
-            let result = queryManager.selectAllFromTable(tableName);
+            let result = queryFactory.selectAllFromTable(tableName);
             //Assert
             expect(result).toContain(tableName);
 
@@ -79,7 +79,7 @@ describe('File: queryManager.js', function(){
             let userAttributes = getUserAttributes();
             let attributesArray = [ userAttributes.FirstName, userAttributes.MiddleName, userAttributes.LastName]
             //Act
-            let result = queryManager.insertIntoTableValues(tableName, attributesArray);
+            let result = queryFactory.insertIntoTableValues(tableName, attributesArray);
             //Assert
             expect(result).toContain('FirstName');
         });

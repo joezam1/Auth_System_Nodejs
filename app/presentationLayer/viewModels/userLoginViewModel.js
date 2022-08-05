@@ -1,27 +1,25 @@
 const formFieldStatus = require('../../library/enumerations/formFieldStatus.js');
 const dataTypes = require('../../library/stringLiterals/dataTypes.js');
+const inputCommonInspector = require('../../serviceLayer/validation/inputCommonInspector.js');
 
+const userRegisterViewModel = function(model){
 
-var userRegisterViewModel = function(model){
-
-    var username = {
-        fieldValue: (model.username || ''),
+    let username = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.username || ''): '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
 
-    var password = {
-        fieldValue: (model.password || ''),
+    let password = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.password || ''): '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-
 
     return {
         username:username,
         password:password
     }
-
 }
 
 module.exports = userRegisterViewModel;

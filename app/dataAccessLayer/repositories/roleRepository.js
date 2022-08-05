@@ -1,13 +1,13 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
 const dbAction = require('../mysqlDataStore/context/dbAction.js');
-const queryManager = require('../mysqlDataStore/preparedStatements/queryManager.js');
+const queryFactory = require('../mysqlDataStore/preparedStatements/queryFactory.js');
 
 let context = '';
 let roleTableName = '';
 
 //Test: DONE
 let getAllRolesAsync = async function(){
-    let selectStatement = queryManager.selectAllFromTable(roleTableName);
+    let selectStatement = queryFactory.selectAllFromTable(roleTableName);
     let statementResult = await dbAction.executeStatementAsync(selectStatement);
     if(statementResult instanceof Error){
         return statementResult;

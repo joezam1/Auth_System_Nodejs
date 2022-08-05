@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Program Debugger",
+            "name": "Launch DEBUGGER Program",
             "program": "${workspaceFolder}/server.js",
             "request": "launch",
             "skipFiles": [
@@ -15,9 +15,9 @@
             }
         },
         {
+            "name": "Launch JEST Tests",
             "type": "node",
             "request": "launch",
-            "name": "Launch JEST Tests",
             "env": {
                 "NODE_ENV": "development",
                 "HOST": "localhost"

@@ -1,8 +1,8 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
-const dbAction = require('../mysqlDataStore/context/dbAction.js');
-const queryManager = require('../mysqlDataStore/preparedStatements/queryManager.js');
-const valueSanitizer = require('../mysqlDataStore/preparedStatements/valueSanitizer.js');
 const helpers = require('../../library/common/helpers.js');
+const repositoryHelper = require('../repositories/repositoryHelper.js');
+const genericQueryStatements = require('../../library/enumerations/genericQueryStatements.js');
+
 
 let context = null;
 let registerTableName = null;
@@ -10,10 +10,7 @@ let registerTableName = null;
 let insertRegisterIntoTableTransactionAsync = async function(connectionPool, registerDomainModel){
     let registerDtoModel = getRegisterDtoModelMappedFromDomain(registerDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(registerDtoModel);
-    let truthyPropertiesArray = valueSanitizer.getTruthySequelizeAttributesValues(propertiesArray);
-    let insertStatement = queryManager.insertIntoTableValues(registerTableName, truthyPropertiesArray);
-    let sanitizedValues = valueSanitizer.getSanitizedInputs(truthyPropertiesArray);
-    let statementResult =await dbAction.executeSingleConnectionStatementAsync(connectionPool,insertStatement, sanitizedValues);
+    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatements.insertIntoTableValues, registerTableName, null, connectionPool);
 
     return statementResult;
 
@@ -24,7 +21,6 @@ onInit();
 let services = {
     insertRegisterIntoTableTransactionAsync : insertRegisterIntoTableTransactionAsync,
 }
-
 module.exports = services;
 
 //REGION Private Functions

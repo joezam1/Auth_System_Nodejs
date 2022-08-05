@@ -1,40 +1,40 @@
 const formFieldStatus = require('../../library/enumerations/formFieldStatus.js');
 const dataTypes = require('../../library/stringLiterals/dataTypes.js');
+const inputCommonInspector = require('../../serviceLayer/validation/inputCommonInspector.js');
 
-
-var userRegisterViewModel = function(model){
-    var firstName ={
-        fieldValue: (model.firstName || ''),
+const userRegisterViewModel = function(model){
+    let firstName ={
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.firstName || '') : '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-    var middleName = {
-        fieldValue: (model.middleName || ''),
+    let middleName = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.middleName || '') : '',
         fieldStatus:formFieldStatus.Optional,
         fieldDataType: dataTypes.STRING
     };
-    var lastName = {
-        fieldValue: (model.lastName || ''),
+    let lastName = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.lastName || '') : '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-    var username = {
-        fieldValue: (model.username || ''),
+    let username = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.username || '') : '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-    var email = {
-        fieldValue: (model.email || ''),
+    let email = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.email || '') : '',
         fieldStatus:formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-    var password = {
-        fieldValue: (model.password || ''),
+    let password = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.password || ''): '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-    var confirmPassword = {
-        fieldValue: (model.confirmPassword || ''),
+    let confirmPassword = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.confirmPassword || '') : '',
         fieldStatus:formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };

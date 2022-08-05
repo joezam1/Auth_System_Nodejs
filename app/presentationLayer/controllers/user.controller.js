@@ -1,36 +1,28 @@
-const domainManager = require('../../domainLayer/domainManager.js');
-const inputCommonInspector = require('../../serviceLayer/validation/inputCommonInspector.js');
-const httpREsponseStatus = require('../../library/enumerations/httpResponseStatus.js');
+const userDomainManager = require('../../domainLayer/userDomainManager.js');
+const httpResponseService = require('../../serviceLayer/httpProtocol/httpResponseService.js');
 
-
-var user = function(app){
+var userController = function(app){
 
     //METHOD
     //CREATE
     app.post('/api/users/register', async function(request, response){
         console.log('register-request.body', request.body);
-        var userRegistrationResult = await domainManager.resolveUserRegistrationAsync(request);
-        if(!inputCommonInspector.objectIsNullOrEmpty(userRegistrationResult) && !inputCommonInspector.objectIsNullOrEmpty(userRegistrationResult.status)){
-            response.status(userRegistrationResult.status).send(userRegistrationResult);
-        }else{
-            response.status(httpREsponseStatus._404notFound).send(userRegistrationResult);
-        }
+        var userRegistrationResult = await userDomainManager.resolveUserRegistrationAsync(request);
+        httpResponseService.sendHttpResponse(userRegistrationResult,response);
     });
+
     app.post('/api/users/login', async function(request, response){
         console.log('login-request.body', request.body);
-        var userLoginResult = await domainManager.resolveUserLoginSessionAsync(request);
+        var userLoginResult = await userDomainManager.resolveUserLoginSessionAsync(request);
         console.log('userLoginResult', userLoginResult);
-        if(!inputCommonInspector.objectIsNullOrEmpty(userLoginResult) && !inputCommonInspector.objectIsNullOrEmpty(userLoginResult.status)){
-            response.status(userLoginResult.status).send(userLoginResult);
-        }else{
-            response.status(httpREsponseStatus._404notFound).send(userLoginResult);
-        }
+        httpResponseService.sendHttpResponse(userLoginResult,response);
     });
 
     //READ
     app.get('api/users/{GUID}', async function(request, reqponse){
 
     });
+
     app.get('/api/users', async function(request, response){
 
     });
@@ -44,6 +36,13 @@ var user = function(app){
     app.delete('/api/users/{GUID}', async function(request, response){
 
     });
+
+    app.delete('/api/users/logout', async function(request, response){
+        console.log('request', request);
+        let userLogoutResult = await userDomainManager.resolveUserLogoutSessionAsync(request);
+        console.log('userLogoutResult', userLogoutResult);
+        httpResponseService.sendHttpResponse(userLogoutResult, response);
+    })
 }
 
-module.exports = user;
+module.exports = userController;
