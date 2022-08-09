@@ -2,9 +2,9 @@ const sessionRepository = require('../dataAccessLayer/repositories/sessionReposi
 const sessionConfig = require('../../configuration/authentication/sessionConfig.js');
 const httpResponseStatus = require('../library/enumerations/httpResponseStatus.js');
 const domainManagerHelper = require('../domainLayer/domainManagerHelper.js');
-const httpResponseService = require('../serviceLayer/httpProtocol/httpResponseService.js');
-const sessionService = require('../serviceLayer/authentication/sessionService.js');
-const notificationService = require('../serviceLayer/notifications/notificationService.js');
+const httpResponseService = require('../services/httpProtocol/httpResponseService.js.js');
+const sessionService = require('../services/authentication/sessionService.js.js');
+const notificationService = require('../services/notifications/notificationService.js');
 const userDomainManager = require('./userDomainManager.js');
 const sessionViewModel = require('../presentationLayer/viewModels/sessionViewModel.js');
 

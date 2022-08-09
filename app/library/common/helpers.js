@@ -1,5 +1,5 @@
 const DataTypes = require('../stringLiterals/dataTypes.js');
-const CommonValidators = require('../../serviceLayer/validation/commonValidators.js');//require('../../serviceLayer/validation/commonValidators.js');
+const CommonValidators = require('../../services/validation/commonValidators.js.js');//require('../../serviceLayer/validation/commonValidators.js');
 
 //Test: DONE
 let removeLeadingAndTrailinsSpaces = function(input){

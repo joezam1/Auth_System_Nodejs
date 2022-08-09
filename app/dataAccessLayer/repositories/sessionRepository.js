@@ -2,7 +2,7 @@ const dbContext = require('../mysqlDataStore/context/dbContext.js');
 const helpers = require('../../library/common/helpers.js');
 const repositoryHelper = require('../repositories/repositoryHelper.js');
 const genericQueryStatements = require('../../library/enumerations/genericQueryStatements.js');
-const sessionService = require('../../serviceLayer/authentication/sessionService.js');
+const sessionService = require('../../services/authentication/sessionService.js.js');
 
 
 let context = null;

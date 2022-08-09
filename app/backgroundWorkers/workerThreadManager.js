@@ -1,4 +1,4 @@
-const inputCommonInspector = require('../serviceLayer/validation/inputCommonInspector.js');
+const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
 const { Worker } = require('worker_threads');
 const path = require('path');
 

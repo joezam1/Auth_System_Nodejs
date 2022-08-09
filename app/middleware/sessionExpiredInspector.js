@@ -1,5 +1,5 @@
-const reducerServices = require('../serviceLayer/inMemoryStorage/reducerService.js');
-const inputCommonInspector = require('../serviceLayer/validation/inputCommonInspector.js');
+const reducerServices = require('../services/inMemoryStorage/reducerService.js');
+const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
 const reducerServiceActions = require('../library/enumerations/reducerServiceActions.js');
 const workerThreadManager = require('../backgroundWorkers/workerThreadManager.js');
 const databaseQueryWorkerFile = '../backgroundWorkers/databaseQueryWorker.js';

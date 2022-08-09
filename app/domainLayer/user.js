@@ -1,5 +1,5 @@
-const inputCommonInspector = require('../serviceLayer/validation/inputCommonInspector.js');
-const inputTypeInspector = require('../serviceLayer/validation/inputTypeInspector.js');
+const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
+const inputTypeInspector = require('../services/validation/inputTypeInspector.js');
 
 var userInfo = function () {
     let _userId = '';

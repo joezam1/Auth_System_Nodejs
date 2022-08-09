@@ -1,4 +1,4 @@
-const inputCommonInspector = require('../../../serviceLayer/validation/inputCommonInspector.js');
+const inputCommonInspector = require('../../../services/validation/inputCommonInspector.js');
 const dbConnection = require('./dbConnection.js');
 
 let executeStatementAsync = async function(statement, valuesArray = null){

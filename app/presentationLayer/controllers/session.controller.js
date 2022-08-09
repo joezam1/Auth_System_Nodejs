@@ -1,5 +1,5 @@
 const sessionDomainManager = require('../../domainLayer/sessionDomainManager.js');
-const httpResponseService = require('../../serviceLayer/httpProtocol/httpResponseService.js');
+const httpResponseService = require('../../services/httpProtocol/httpResponseService.js.js');
 
 var sessionController = function(app){
 

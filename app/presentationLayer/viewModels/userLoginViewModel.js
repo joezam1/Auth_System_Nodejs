@@ -1,6 +1,6 @@
 const formFieldStatus = require('../../library/enumerations/formFieldStatus.js');
 const dataTypes = require('../../library/stringLiterals/dataTypes.js');
-const inputCommonInspector = require('../../serviceLayer/validation/inputCommonInspector.js');
+const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
 
 const userRegisterViewModel = function(model){
 

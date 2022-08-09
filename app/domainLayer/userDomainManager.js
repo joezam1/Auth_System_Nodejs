@@ -1,9 +1,9 @@
 const httpResponseStatus = require('../library/enumerations/httpResponseStatus');
-const httpResponseService = require('../serviceLayer/httpProtocol/httpResponseService.js');
+const httpResponseService = require('../services/httpProtocol/httpResponseService.js.js');
 const userRegisterViewModel = require('../presentationLayer/viewModels/userRegisterViewModel.js');
 const userLoginViewModel = require('../presentationLayer/viewModels/userLoginViewModel.js');
-const validationService = require('../serviceLayer/validation/validationService.js');
-const inputCommonInspector = require('../serviceLayer/validation/inputcommonInspector.js');
+const validationService = require('../services/validation/validationService.js.js');
+const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
 const userRoles = require('../library/enumerations/userRoles.js');
 const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
@@ -19,10 +19,10 @@ const userRepository = require('../dataAccessLayer/repositories/userRepository.j
 const roleRepository = require('../dataAccessLayer/repositories/roleRepository.js');
 const registerRepository = require('../dataAccessLayer/repositories/registerRepository.js');
 const sessionRepository = require('../dataAccessLayer/repositories/sessionRepository.js');
-const encryptionService = require('../serviceLayer/encryption/encryptionService.js');
-const sessionService = require('../serviceLayer/authentication/sessionService.js');
+const encryptionService = require('../services/encryption/encryptionService.js');
+const sessionService = require('../services/authentication/sessionService.js.js');
 const sessionConfig = require('../../configuration/authentication/sessionConfig.js');
-const notificationService = require('../serviceLayer/notifications/notificationService.js');
+const notificationService = require('../services/notifications/notificationService.js');
 const sessionExpiredInspector = require('../middleware/sessionExpiredInspector.js');
 
 let resolveUserRegistrationAsync =async function(request){
