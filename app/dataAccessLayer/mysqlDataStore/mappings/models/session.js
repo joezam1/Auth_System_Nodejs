@@ -63,9 +63,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       value: undefined
     },
-    UTCDateUpdated: {
+    UTCDateExpired: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
       value: undefined
     }
   }, {

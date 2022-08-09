@@ -2,6 +2,7 @@ const dbContext = require('../mysqlDataStore/context/dbContext.js');
 const helpers = require('../../library/common/helpers.js');
 const repositoryHelper = require('../repositories/repositoryHelper.js');
 const genericQueryStatements = require('../../library/enumerations/genericQueryStatements.js');
+const sessionService = require('../../serviceLayer/authentication/sessionService.js');
 
 
 let context = null;
@@ -73,6 +74,11 @@ function onInit(){
 
 function getSessionDtoModelMappedFromDomain(sessionDomainModel){
     let dateNow = new Date();
+    let utcDateCreated = helpers.getDateUTCFormatForDatabase(dateNow);
+    let expiryInMilliseconds = sessionDomainModel.getExpiryInMilliseconds();
+    let dateExpiredCalculation = sessionService.getSessionDateExpired(dateNow,expiryInMilliseconds );
+    let dateExpiredAsDate = new Date(dateExpiredCalculation);
+    let utcDateExpiredFormatted = helpers.getDateUTCFormatForDatabase(dateExpiredAsDate);
     let sessionStatus = (sessionDomainModel.getSessionStatusIsActive());
     let resolvedSessionStatus = (sessionStatus === true)
     ? sessionDomainModel.getSessionStatusIsActive()
@@ -85,16 +91,16 @@ function getSessionDtoModelMappedFromDomain(sessionDomainModel){
     _sessionDto.rawAttributes.UserId.type.key = _sessionDto.rawAttributes.UserId.type.key.toString();
     _sessionDto.rawAttributes.SessionToken.value = sessionDomainModel.getSessionToken();
     _sessionDto.rawAttributes.SessionToken.type.key = _sessionDto.rawAttributes.SessionToken.type.key;
-    _sessionDto.rawAttributes.Expires.value = sessionDomainModel.getExpiryInMilliseconds();
+    _sessionDto.rawAttributes.Expires.value = expiryInMilliseconds;
     _sessionDto.rawAttributes.Expires.type.key = _sessionDto.rawAttributes.Expires.type.key;
     _sessionDto.rawAttributes.Data.value = sessionDomainModel.getData();
     _sessionDto.rawAttributes.Data.type.key = _sessionDto.rawAttributes.Data.type.key;
     _sessionDto.rawAttributes.IsActive.value = resolvedSessionStatus;
     _sessionDto.rawAttributes.IsActive.type.key = _sessionDto.rawAttributes.IsActive.type.key;
-    _sessionDto.rawAttributes.UTCDateCreated.value = helpers.getDateUTCFormat(dateNow);
+    _sessionDto.rawAttributes.UTCDateCreated.value = utcDateCreated;
     _sessionDto.rawAttributes.UTCDateCreated.type.key =  _sessionDto.rawAttributes.UTCDateCreated.type.key.toString();
-    _sessionDto.rawAttributes.UTCDateUpdated.value = helpers.getDateUTCFormat(dateNow);
-    _sessionDto.rawAttributes.UTCDateUpdated.type.key =  _sessionDto.rawAttributes.UTCDateUpdated.type.key.toString();
+    _sessionDto.rawAttributes.UTCDateExpired.value = utcDateExpiredFormatted;
+    _sessionDto.rawAttributes.UTCDateExpired.type.key =  _sessionDto.rawAttributes.UTCDateExpired.type.key.toString();
 
     let clonedAttributes = JSON.parse(JSON.stringify(_sessionDto.rawAttributes));
     return clonedAttributes;
@@ -117,7 +123,7 @@ function getSessionsDtoModelMappedFromDatabase(databaseResultArray) {
         _sessionDtoModel.rawAttributes.IsActive.value = (sessionDatabase.IsActive !== 0);
 
         _sessionDtoModel.rawAttributes.UTCDateCreated.value = sessionDatabase.UTCDateCreated;
-        _sessionDtoModel.rawAttributes.UTCDateUpdated.value = sessionDatabase.UTCDateUpdated;
+        _sessionDtoModel.rawAttributes.UTCDateExpired.value = sessionDatabase.UTCDateExpired;
 
         let clonedAttributes = JSON.parse(JSON.stringify(_sessionDtoModel.rawAttributes));
         allSessionsDtoModels.push(clonedAttributes);

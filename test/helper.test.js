@@ -20,14 +20,14 @@ describe('File: Helper.js',function(){
     });
 
 
-    describe('Function: getDateUTCFormat', function(){
+    describe('Function: getDateUTCFormatForDatabase', function(){
         test('Common LOCALE Date gets converted to UTC-Date', function(){
             //Arrange
             let localeDate = new Date();
             let localeDateUtc = localeDate.toISOString().replace('T', ' ').substring(0, 19);
 
             //Act
-            let utcDate = helper.getDateUTCFormat(localeDate);
+            let utcDate = helper.getDateUTCFormatForDatabase(localeDate);
 
             //Assert
             expect(utcDate).toEqual(localeDateUtc);

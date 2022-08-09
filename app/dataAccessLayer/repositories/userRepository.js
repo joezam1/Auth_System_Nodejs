@@ -82,9 +82,9 @@ function getUserDtoModelMappedFromDomain(userDomainModel) {
     _userDtoModel.rawAttributes.Password.type.key =  _userDtoModel.rawAttributes.Password.type.key.toString();
     _userDtoModel.rawAttributes.IsActive.value = resolvedUserStatus;
     _userDtoModel.rawAttributes.IsActive.type.key =  _userDtoModel.rawAttributes.IsActive.type.key.toString();
-    _userDtoModel.rawAttributes.UTCDateCreated.value = helpers.getDateUTCFormat(dateNow);
+    _userDtoModel.rawAttributes.UTCDateCreated.value = helpers.getDateUTCFormatForDatabase(dateNow);
     _userDtoModel.rawAttributes.UTCDateCreated.type.key =  _userDtoModel.rawAttributes.UTCDateCreated.type.key.toString();
-    _userDtoModel.rawAttributes.UTCDateUpdated.value = helpers.getDateUTCFormat(dateNow);
+    _userDtoModel.rawAttributes.UTCDateUpdated.value = helpers.getDateUTCFormatForDatabase(dateNow);
     _userDtoModel.rawAttributes.UTCDateUpdated.type.key =  _userDtoModel.rawAttributes.UTCDateUpdated.type.key.toString();
 
     let clonedAttributes = JSON.parse(JSON.stringify(_userDtoModel.rawAttributes));
@@ -127,9 +127,9 @@ function getUserRoleDtoModelMappedFromDomain(userRoleDomainModel) {
     _userRoleDtoModel.rawAttributes.UserId.type.key =  _userRoleDtoModel.rawAttributes.UserId.type.key.toString();
     _userRoleDtoModel.rawAttributes.RoleId.value = userRoleDomainModel.getRoleId();
     _userRoleDtoModel.rawAttributes.RoleId.type.key =  _userRoleDtoModel.rawAttributes.RoleId.type.key.toString();
-    _userRoleDtoModel.rawAttributes.UTCDateCreated.value = helpers.getDateUTCFormat(dateNow);
+    _userRoleDtoModel.rawAttributes.UTCDateCreated.value = helpers.getDateUTCFormatForDatabase(dateNow);
     _userRoleDtoModel.rawAttributes.UTCDateCreated.type.key =  _userRoleDtoModel.rawAttributes.UTCDateCreated.type.key.toString();
-    _userRoleDtoModel.rawAttributes.UTCDateUpdated.value = helpers.getDateUTCFormat(dateNow);
+    _userRoleDtoModel.rawAttributes.UTCDateUpdated.value = helpers.getDateUTCFormatForDatabase(dateNow);
     _userRoleDtoModel.rawAttributes.UTCDateUpdated.type.key =  _userRoleDtoModel.rawAttributes.UTCDateUpdated.type.key.toString();
 
     let clonedAttributes = JSON.parse(JSON.stringify(_userRoleDtoModel.rawAttributes));

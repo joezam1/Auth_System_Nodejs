@@ -10,11 +10,11 @@ let removeLeadingAndTrailinsSpaces = function(input){
     return inputNoSpaces;
 }
 //Test: DONE
-let getDateUTCFormat = function(selectedLocaleDate){
-    let dateNowUTC = selectedLocaleDate.toISOString();
-    let dateNowUTCDateTimeFormat = dateNowUTC.replace('T', ' ').substring(0,19);
+let getDateUTCFormatForDatabase = function(selectedLocaleDate){
+    let dateUTC = selectedLocaleDate.toISOString();
+    let dateUTCDateTimeFormat = dateUTC.replace('T', ' ').substring(0,19);
 
-    return dateNowUTCDateTimeFormat;
+    return dateUTCDateTimeFormat;
 }
 //Test: DONE
 let createPropertiesArrayFromObjectProperties = function(obj){
@@ -62,7 +62,7 @@ function getmessageFormatForDisplay(input){
 
 let service={
     removeLeadingAndTrailinsSpaces : removeLeadingAndTrailinsSpaces,
-    getDateUTCFormat : getDateUTCFormat,
+    getDateUTCFormatForDatabase : getDateUTCFormatForDatabase,
     createPropertiesArrayFromObjectProperties : createPropertiesArrayFromObjectProperties,
     formatStringFirstLetterCapital : formatStringFirstLetterCapital,
     getHtmlBreakSeparator : getHtmlBreakSeparator,

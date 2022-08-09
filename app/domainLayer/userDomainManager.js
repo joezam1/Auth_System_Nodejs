@@ -23,7 +23,7 @@ const encryptionService = require('../serviceLayer/encryption/encryptionService.
 const sessionService = require('../serviceLayer/authentication/sessionService.js');
 const sessionConfig = require('../../configuration/authentication/sessionConfig.js');
 const notificationService = require('../serviceLayer/notifications/notificationService.js');
-
+const sessionExpiredInspector = require('../middleware/sessionExpiredInspector.js');
 
 let resolveUserRegistrationAsync =async function(request){
     let _user = new userRegisterViewModel(request.body);
@@ -96,6 +96,7 @@ let resolveUserLoginSessionAsync = async function(request){
        return httpResponseService.getResponseResultStatus(sessionResultArray ,httpResponseStatus._400badRequest );
     }
     else if(sessionResultArray.length > 0  && sessionResultArray[0].affectedRows === 1 ){
+        //sessionExpiredInspector.resolveRemoveExpiredSessions();
         return httpResponseService.getResponseResultStatus(cookieObj,httpResponseStatus._200ok );
     }
 
@@ -220,5 +221,9 @@ async function createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj){
     }
 }
 
+function resolveExpiredSessionInspector(){
+
+
+}
 
 //#ENDREGION Private Methods

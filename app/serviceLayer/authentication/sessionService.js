@@ -5,28 +5,32 @@ const sessionConfig = require('../../../configuration/authentication/sessionConf
 
 
 let generateSessionTokenAsync = async function(){
-
     let sessionUuid = uuid();
     let sessionToken = await encryptionService.encryptStringInputAsync(sessionUuid);
     return sessionToken;
 }
 
-function sessionIsExpired(sessionDtoModel){
+function sessionIsExpired(utcDateExpired){
     let dateNow = new Date();
     let dateNowUtc = dateNow.toISOString();
-    let sessionDateCreatedUtc = new Date(sessionDtoModel.UTCDateCreated.value);
-    let sessionExpiryInSeconds = sessionDtoModel.Expires.value / sessionConfig.ONE_SECOND_IN_MILLISECONDS;
-    let sessionExpiryInMinutes = sessionDtoModel.Expires.value / sessionConfig.ONE_MINUTE_IN_MILLISECONDS;
-    let expirationDateUtcInMinutes = sessionDateCreatedUtc.setMinutes( sessionDateCreatedUtc.getMinutes() + sessionExpiryInMinutes );
-    let expirationDateUTCAsDate = sessionDateCreatedUtc.toISOString();
+    let expirationDateUTCAsDate = new Date(utcDateExpired);
     if(dateNowUtc > expirationDateUTCAsDate){
         return true;
     }
     return false;
 }
 
+function getSessionDateExpired(dateCreated, expiresInMilliseconds){
+    let sessionDate = new Date(dateCreated);
+    let sessionExpiryInMinutes = expiresInMilliseconds/ sessionConfig.ONE_MINUTE_IN_MILLISECONDS;
+    let expirationDateInMinutes = sessionDate.setMinutes( sessionDate.getMinutes() + sessionExpiryInMinutes );
+
+    return sessionDate;
+}
+
 const service ={
     generateSessionTokenAsync : generateSessionTokenAsync,
-    sessionIsExpired : sessionIsExpired
+    sessionIsExpired : sessionIsExpired,
+    getSessionDateExpired : getSessionDateExpired
 }
 module.exports = service;

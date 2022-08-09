@@ -30,7 +30,13 @@ var sessionViewModel = function(model){
     var utcDateCreated = {
         fieldValue: inputCommonInspector.objectIsValid(model) ? (model.utcDateCreated || ''): '',
         fieldStatus: formFieldStatus.Required,
-        fieldDataType: dataTypes.BOOLEAN
+        fieldDataType: dataTypes.DATE
+    };
+
+    var utcDateExpired = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.utcDateExpired || ''): '',
+        fieldStatus: formFieldStatus.Required,
+        fieldDataType: dataTypes.DATE
     };
 
 
@@ -40,7 +46,8 @@ var sessionViewModel = function(model){
         expires : expires,
         data : data,
         isActive : isActive,
-        utcDateCreated : utcDateCreated
+        utcDateCreated : utcDateCreated,
+        utcDateExpired : utcDateExpired
     }
 }
 

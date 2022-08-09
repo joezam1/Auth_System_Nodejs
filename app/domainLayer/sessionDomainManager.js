@@ -9,7 +9,6 @@ const userDomainManager = require('./userDomainManager.js');
 const sessionViewModel = require('../presentationLayer/viewModels/sessionViewModel.js');
 
 
-
 let resolveSessionUpdateAsync = async function (request) {
 
     let tempUserId = null;
@@ -27,7 +26,7 @@ let resolveSessionUpdateAsync = async function (request) {
     }
     let currentSessionDtoModel = sesionsDtoModelResultArray[0];
 
-    if(sessionService.sessionIsExpired(currentSessionDtoModel)){
+    if(sessionService.sessionIsExpired(currentSessionDtoModel.UTCDateExpired.value)){
         userDomainManager.resolveUserLogoutSessionAsync(request);
     }
 
@@ -51,6 +50,8 @@ let resolveSessionUpdateAsync = async function (request) {
         newSessionViewModel.data.fieldValue = cookieObj;
         newSessionViewModel.isActive.fieldValue = currentSessionDtoModel.IsActive.value;
         newSessionViewModel.utcDateCreated.fieldValue = currentSessionDtoModel.UTCDateCreated.value;
+        newSessionViewModel.utcDateExpired.fieldValue = currentSessionDtoModel.UTCDateExpired.value;
+
 
         return httpResponseService.getResponseResultStatus(newSessionViewModel, httpResponseStatus._200ok);
     }
@@ -76,7 +77,7 @@ let resolveGetSessionAsync = async function(request){
     }
 
     let currentSessionDtoModel = sesionsDtoModelResultArray[0];
-    if(sessionService.sessionIsExpired(currentSessionDtoModel)){
+    if(sessionService.sessionIsExpired(currentSessionDtoModel.UTCDateExpired.value)){
         return userDomainManager.resolveUserLogoutSessionAsync(request);
     }
 
@@ -86,7 +87,7 @@ let resolveGetSessionAsync = async function(request){
     currentSessionViewModel.data.fieldValue = currentSessionDtoModel.Data.value;
     currentSessionViewModel.isActive.fieldValue = currentSessionDtoModel.IsActive.value;
     currentSessionViewModel.utcDateCreated.fieldValue = currentSessionDtoModel.UTCDateCreated.value;
-
+    currentSessionViewModel.utcDateExpired.fieldValue = currentSessionDtoModel.UTCDateExpired.value;
     return httpResponseService.getResponseResultStatus(currentSessionViewModel, httpResponseStatus._200ok);
 }
 

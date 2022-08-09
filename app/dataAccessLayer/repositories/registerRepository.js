@@ -43,7 +43,7 @@ function getRegisterDtoModelMappedFromDomain(registerDomainModel){
     _registerDto.rawAttributes.UserId.type.key =  _registerDto.rawAttributes.UserId.type.key.toString();
     _registerDto.rawAttributes.IsActive.value = resolvedRegisterStatus;
     _registerDto.rawAttributes.IsActive.type.key =  _registerDto.rawAttributes.IsActive.type.key.toString();
-    _registerDto.rawAttributes.UTCDateCreated.value = helpers.getDateUTCFormat(dateNow);
+    _registerDto.rawAttributes.UTCDateCreated.value = helpers.getDateUTCFormatForDatabase(dateNow);
     _registerDto.rawAttributes.UTCDateCreated.type.key =  _registerDto.rawAttributes.UTCDateCreated.type.key.toString();
 
     let clonedAttributes = JSON.parse(JSON.stringify(_registerDto.rawAttributes));

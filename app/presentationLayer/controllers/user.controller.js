@@ -9,6 +9,7 @@ var userController = function(app){
         console.log('register-request.body', request.body);
         var userRegistrationResult = await userDomainManager.resolveUserRegistrationAsync(request);
         httpResponseService.sendHttpResponse(userRegistrationResult,response);
+        return;
     });
 
     app.post('/api/users/login', async function(request, response){
@@ -16,6 +17,7 @@ var userController = function(app){
         var userLoginResult = await userDomainManager.resolveUserLoginSessionAsync(request);
         console.log('userLoginResult', userLoginResult);
         httpResponseService.sendHttpResponse(userLoginResult,response);
+        return;
     });
 
     //READ
@@ -42,6 +44,7 @@ var userController = function(app){
         let userLogoutResult = await userDomainManager.resolveUserLogoutSessionAsync(request);
         console.log('userLogoutResult', userLogoutResult);
         httpResponseService.sendHttpResponse(userLogoutResult, response);
+        return;
     })
 }
 

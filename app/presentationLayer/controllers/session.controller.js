@@ -11,6 +11,7 @@ var sessionController = function(app){
         var sessionResult = await sessionDomainManager.resolveGetSessionAsync(request);
         console.log('sessionResult', sessionResult);
         httpResponseService.sendHttpResponse(sessionResult,response);
+        return;
     });
 
     //UPDATE
@@ -19,6 +20,7 @@ var sessionController = function(app){
         var sessionResult = await sessionDomainManager.resolveSessionUpdateAsync(request);
         console.log('sessionResult', sessionResult);
         httpResponseService.sendHttpResponse(sessionResult,response);
+        return;
     });
     //DELETE
 }
