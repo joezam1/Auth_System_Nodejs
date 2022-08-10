@@ -2,6 +2,8 @@ const mysql = require('mysql2');
 const {workerData, parentPort, isMainThread } = require("worker_threads");
 
 console.log('parentPort', parentPort);
+
+
 parentPort.on("message", async function (event) {
     console.log('WORKER-FUNCTION-on.message-event', event);
     console.log('manager-worker-connection:');
@@ -25,11 +27,7 @@ parentPort.on("message", async function (event) {
             parentPort.postMessage(replyObj);
             break;
     }
-
 });
-
-
-
 
 const mysqlConfig = {
     host: 'localhost',
@@ -55,10 +53,6 @@ function createMysqlPool() {
     let poolCreated = mysql.createPool(mysqlConfig);
     return poolCreated;
 }
-
-//#ENDREGION Private Functions
-
-
 
 let executeStatementAsync = async function (statement, valuesArray = null) {
     try {

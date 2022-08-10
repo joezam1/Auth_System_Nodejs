@@ -1,5 +1,5 @@
 
-const encryptionService = require('../app/serviceLayer/encryption/encryptionService.js');
+const encryptionService = require('../app/services/encryption/encryptionService.js');
 const bcrypt = require('bcryptjs');
 
 

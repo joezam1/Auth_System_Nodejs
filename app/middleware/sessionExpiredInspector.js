@@ -17,19 +17,20 @@ const _dataStoreCleanupIntervalId = '_expiredSessionCleanupIntervalId';
 
 
 const sessionExpiredInspector = (function(){
+    //Test:DONE
     const resolveRemoveExpiredSessions = function(){
 
         let inspectorStateIsActive = reducerServices.getCurrentStateByProperty(_dataStoreSessionInspectorProperty);
-        if(!inputCommonInspector.stringIsValid(inspectorStateIsActive) || !inspectorStateIsActive){
+        if(inspectorStateIsActive != true && (inspectorStateIsActive === null || inspectorStateIsActive === false)){
 
             workerThreadManager.starNewtWorkerThread(databaseQueryWorkerFile ,queryWorkerCallback);
             let intervalId = setInterval(function(){
-                let reply ={
+                let messageObj ={
                     message : 'query',
                     statement : getCountRowsFromTable(),
                     valuesArray : null
                 }
-                workerThreadManager.sendMessageToWorker(reply);
+                workerThreadManager.sendMessageToWorker(messageObj);
 
             },sessionConfig.EXPIRED_SESSION_CLEANUP_FREQUENCY_IN_MILLISECONDS );
             updateInspectorStateDataStore(true);

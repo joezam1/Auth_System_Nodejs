@@ -3,24 +3,26 @@ const uuid = uuidV4.v4;
 const encryptionService = require('../encryption/encryptionService.js');
 const sessionConfig = require('../../../configuration/authentication/sessionConfig.js');
 
-
+//Test:DONE
 let generateSessionTokenAsync = async function(){
     let sessionUuid = uuid();
     let sessionToken = await encryptionService.encryptStringInputAsync(sessionUuid);
     return sessionToken;
 }
-
-function sessionIsExpired(utcDateExpired){
+//Test: DONE
+let sessionIsExpired = function(dateExpiredUTCAsDate ){
     let dateNow = new Date();
-    let dateNowUtc = dateNow.toISOString();
-    let expirationDateUTCAsDate = new Date(utcDateExpired);
-    if(dateNowUtc > expirationDateUTCAsDate){
+    //To convert to UTC datetime by subtracting the current Timezone offset
+    let utcDate =  new Date(dateNow.getTime() + (dateNow.getTimezoneOffset()*60000));
+    let dateNowUtcAsTime = utcDate.getTime();
+    let dateExpiredUtcAsTime = dateExpiredUTCAsDate.getTime();
+    if( dateNowUtcAsTime > dateExpiredUtcAsTime){
         return true;
     }
     return false;
 }
-
-function getSessionDateExpired(dateCreated, expiresInMilliseconds){
+//test:DONE
+let getSessionDateExpired = function(dateCreated, expiresInMilliseconds){
     let sessionDate = new Date(dateCreated);
     let sessionExpiryInMinutes = expiresInMilliseconds/ sessionConfig.ONE_MINUTE_IN_MILLISECONDS;
     let expirationDateInMinutes = sessionDate.setMinutes( sessionDate.getMinutes() + sessionExpiryInMinutes );

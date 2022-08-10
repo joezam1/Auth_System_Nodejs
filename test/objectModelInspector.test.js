@@ -1,6 +1,6 @@
-const ObjectModelInspector = require('../app/serviceLayer/validation/objectModelInspector.js');
+const ObjectModelInspector = require('../app/services/validation/objectModelInspector.js');
 const userRegisterViewModel = require('../app/presentationLayer/viewModels/userRegisterViewModel.js');
-const InputCommonInspector = require('../app/serviceLayer/validation/inputCommonInspector.js');
+const InputCommonInspector = require('../app/services/validation/inputCommonInspector.js');
 const UserRoles = require('../app/library/enumerations/userRoles.js');
 
 describe('File: ObjectModelInspector.js', function () {

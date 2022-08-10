@@ -6,6 +6,7 @@ const genericQueryStatements = require('../../library/enumerations/genericQueryS
 
 let context = null;
 let registerTableName = null;
+
 //Test: DONE
 let insertRegisterIntoTableTransactionAsync = async function(connectionPool, registerDomainModel){
     let registerDtoModel = getRegisterDtoModelMappedFromDomain(registerDomainModel);

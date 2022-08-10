@@ -1,6 +1,6 @@
 const envConfig = require('../../configuration/environment/envConfig.js');
 const environmentDescription = require('../environment/environmentDescription.js');
-const notificationService = require('../../app/serviceLayer/notifications/notificationService.js');
+const notificationService = require('../../app/services/notifications/notificationService.js');
 
 const whitelistRemoteOrigins = ['http://localhost:8080']
 

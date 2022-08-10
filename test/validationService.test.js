@@ -1,6 +1,6 @@
-const validationService = require('../app/serviceLayer/validation/validationService.js');
+const validationService = require('../app/services/validation/validationService.js');
 const userRegisterViewModel = require('../app/presentationLayer/viewModels/userRegisterViewModel.js');
-const inputCommonInspector = require('../app/serviceLayer/validation/inputCommonInspector.js');
+const inputCommonInspector = require('../app/services/validation/inputCommonInspector.js');
 
 describe('File: validationService.js',()=>{
 

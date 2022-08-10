@@ -43,7 +43,7 @@ let insertIntoTableValues = function(tableName, sequelizePropertiesArray){
 
     return statement;
 }
-
+//Test: DONE
 let deleteFromTableWhere = function(tableName, sequelizePropertiesArray){
 
     let allProperties = '';
@@ -60,7 +60,7 @@ let deleteFromTableWhere = function(tableName, sequelizePropertiesArray){
 
     return statement;
 }
-
+//Test: DONE
 let updateTableSetColumnValuesWhere = function(tableName, sequelizePropertiesArray , sequelizeWhereConditionPropertiesArray){
     let allProperties = '';
     let totalArrayElements = sequelizePropertiesArray.length;
@@ -92,36 +92,6 @@ let updateTableSetColumnValuesWhere = function(tableName, sequelizePropertiesArr
 }
 
 
-let getSelectedQueryStatement = function(genericQueryStatementsEnum, tableName, sequelizePropertiesArray , sequelizeWhereConditionPropertiesArray){
-
-    let selectedStatement = '';
-    switch(genericQueryStatementsEnum){
-
-        case genericQueryStatements.selectWhereEqualsAnd:
-            selectedStatement = selectWhereEqualsAnd(tableName, sequelizePropertiesArray);
-            break;
-
-        case genericQueryStatements.selectAllFromTable:
-            selectedStatement = selectAllFromTable(tableName);
-            break;
-
-        case genericQueryStatements.insertIntoTableValues:
-            selectedStatement = insertIntoTableValues(tableName, sequelizePropertiesArray);
-            break;
-
-        case genericQueryStatements.deleteFromTableWhere:
-            selectedStatement = deleteFromTableWhere(tableName, sequelizePropertiesArray);
-            break;
-
-        case genericQueryStatements.updateTableSetColumnValuesWhere:
-            selectedStatement = updateTableSetColumnValuesWhere(tableName, sequelizePropertiesArray, sequelizeWhereConditionPropertiesArray);
-            break;
-    }
-
-    return selectedStatement;
-}
-
-
 let createSimpleQueryStatement = function( genericQueryStatementsEnum, tableName, sequelizePropertiesArray ){
 
     let selectedStatement = '';
@@ -149,7 +119,7 @@ let createSimpleQueryStatement = function( genericQueryStatementsEnum, tableName
 }
 
 let service = {
-    getSelectedQueryStatement : getSelectedQueryStatement,
+
     createSimpleQueryStatement : createSimpleQueryStatement,
     selectWhereEqualsAnd : selectWhereEqualsAnd,
     selectAllFromTable : selectAllFromTable,

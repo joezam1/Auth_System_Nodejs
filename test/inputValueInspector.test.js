@@ -1,4 +1,4 @@
-const inputValueInspector = require('../app/serviceLayer/validation/inputValueInspector.js');
+const inputValueInspector = require('../app/services/validation/inputValueInspector.js');
 
 describe('File: InputValueInspector',()=>{
     //test('True is True', ()=>{ expect(true).toBe(true); });

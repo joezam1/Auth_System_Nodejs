@@ -3,7 +3,7 @@ var connection = require('../../dataAccessLayer/mysqlDataStore/context/dbConnect
 
 var dbAction = require('../../dataAccessLayer/mysqlDataStore/context/dbAction.js');
 var userRepository = require('../../dataAccessLayer/repositories/userRepository.js');
-const httpResponseService = require('../../serviceLayer/httpProtocol/httpResponseService.js');
+const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
 const httpResponseStatus = require('../../library/enumerations/HttpResponseStatus.js');
 
 var helloWorld = async function(app){

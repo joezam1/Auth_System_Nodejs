@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.57% </span>
+                <span class="strong">64.28% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/14</span>
+                <span class='fraction'>18/28</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -118,7 +118,7 @@
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">8x</span>
@@ -171,41 +171,41 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span></td><td class="text"><pre class="prettyprint lang-js">const formFieldStatus = require('../../library/enumerations/formFieldStatus.js');
 const dataTypes = require('../../library/stringLiterals/dataTypes.js');
+const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
 &nbsp;
-&nbsp;
-var userRegisterViewModel = function(model){
-    var firstName ={
-        fieldValue: (model.firstName || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>,
+const userRegisterViewModel = function(model){
+    let firstName ={
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.firstName || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span> : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
         fieldStatus: formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-    var middleName = {
-        fieldValue: (model.middleName || ''),
+    let middleName = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.middleName || '') : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
         fieldStatus:formFieldStatus.Optional,
         fieldDataType: dataTypes.STRING
     };
-    var lastName = {
-        fieldValue: (model.lastName || ''),
+    let lastName = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.lastName || '') : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
         fieldStatus: formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-    var username = {
-        fieldValue: (model.username || ''),
+    let username = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.username || '') : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
         fieldStatus: formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-    var email = {
-        fieldValue: (model.email || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>,
+    let email = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.email || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span> : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
         fieldStatus:formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-    var password = {
-        fieldValue: (model.password || ''),
+    let password = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.password || ''): <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
         fieldStatus: formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
-    var confirmPassword = {
-        fieldValue: (model.confirmPassword || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>,
+    let confirmPassword = {
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.confirmPassword || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span> : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
         fieldStatus:formFieldStatus.Required,
         fieldDataType: dataTypes.STRING
     };
@@ -229,7 +229,7 @@ module.exports = userRegisterViewModel;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Mon Jul 25 2022 23:22:38 GMT-0500 (Central Daylight Time)
+                at Wed Aug 10 2022 16:48:24 GMT-0500 (Central Daylight Time)
             </div>
         <script src="../../../prettify.js"></script>
         <script>

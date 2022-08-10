@@ -1,5 +1,5 @@
 const serverConfig = require('../configuration/server/serverConfig.js');
-const notificationService = require('../app/serviceLayer/notifications/notificationService.js');
+const notificationService = require('../app/services/notifications/notificationService.js');
 /*xdescribe('Jest Installed',()=>{
     test('true is true, jest works OK', ()=>{expect(true).toBe(true);});
 });*/

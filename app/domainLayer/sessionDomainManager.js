@@ -2,8 +2,8 @@ const sessionRepository = require('../dataAccessLayer/repositories/sessionReposi
 const sessionConfig = require('../../configuration/authentication/sessionConfig.js');
 const httpResponseStatus = require('../library/enumerations/httpResponseStatus.js');
 const domainManagerHelper = require('../domainLayer/domainManagerHelper.js');
-const httpResponseService = require('../services/httpProtocol/httpResponseService.js.js');
-const sessionService = require('../services/authentication/sessionService.js.js');
+const httpResponseService = require('../services/httpProtocol/httpResponseService.js');
+const sessionService = require('../services/authentication/sessionService.js');
 const notificationService = require('../services/notifications/notificationService.js');
 const userDomainManager = require('./userDomainManager.js');
 const sessionViewModel = require('../presentationLayer/viewModels/sessionViewModel.js');
@@ -49,9 +49,8 @@ let resolveSessionUpdateAsync = async function (request) {
         newSessionViewModel.expires.fieldValue = currentSessionDtoModel.Expires.value;
         newSessionViewModel.data.fieldValue = cookieObj;
         newSessionViewModel.isActive.fieldValue = currentSessionDtoModel.IsActive.value;
-        newSessionViewModel.utcDateCreated.fieldValue = currentSessionDtoModel.UTCDateCreated.value;
-        newSessionViewModel.utcDateExpired.fieldValue = currentSessionDtoModel.UTCDateExpired.value;
-
+        newSessionViewModel.utcDateCreated.fieldValue = currentSessionDtoModel.UTCDateCreated.value.toString();
+        newSessionViewModel.utcDateExpired.fieldValue = currentSessionDtoModel.UTCDateExpired.value.toString();
 
         return httpResponseService.getResponseResultStatus(newSessionViewModel, httpResponseStatus._200ok);
     }
@@ -86,8 +85,8 @@ let resolveGetSessionAsync = async function(request){
     currentSessionViewModel.expires.fieldValue = currentSessionDtoModel.Expires.value;
     currentSessionViewModel.data.fieldValue = currentSessionDtoModel.Data.value;
     currentSessionViewModel.isActive.fieldValue = currentSessionDtoModel.IsActive.value;
-    currentSessionViewModel.utcDateCreated.fieldValue = currentSessionDtoModel.UTCDateCreated.value;
-    currentSessionViewModel.utcDateExpired.fieldValue = currentSessionDtoModel.UTCDateExpired.value;
+    currentSessionViewModel.utcDateCreated.fieldValue = currentSessionDtoModel.UTCDateCreated.value.toString();
+    currentSessionViewModel.utcDateExpired.fieldValue = currentSessionDtoModel.UTCDateExpired.value.toString();
     return httpResponseService.getResponseResultStatus(currentSessionViewModel, httpResponseStatus._200ok);
 }
 

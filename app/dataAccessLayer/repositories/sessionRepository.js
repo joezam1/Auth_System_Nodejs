@@ -2,7 +2,7 @@ const dbContext = require('../mysqlDataStore/context/dbContext.js');
 const helpers = require('../../library/common/helpers.js');
 const repositoryHelper = require('../repositories/repositoryHelper.js');
 const genericQueryStatements = require('../../library/enumerations/genericQueryStatements.js');
-const sessionService = require('../../services/authentication/sessionService.js.js');
+const sessionService = require('../../services/authentication/sessionService.js');
 
 
 let context = null;
@@ -19,7 +19,7 @@ let insertSessionIntoTableAsync = async function (sessionDomainModel) {
 
     return statementResult;
 }
-
+//Test:DONE
 let getSessionFromDatabaseAsync = async function(sessionDomainModel){
     console.log('context', context);
     console.log('sessionTableName', sessionTableName);
@@ -35,7 +35,7 @@ let getSessionFromDatabaseAsync = async function(sessionDomainModel){
 
     return sessionDtoResult;
 }
-
+//Test: DONE
 let deleteSessionFromDatabaseAsync = async function(sessionDomainModel){
     let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);
     let propertiesArray = [sessionDtoModel.SessionToken];
@@ -44,7 +44,7 @@ let deleteSessionFromDatabaseAsync = async function(sessionDomainModel){
 
     return statementResult;
 }
-
+//Test:DONE
 let updateTableSetColumnValuesWhereAsync = async function(sessionDomainModel){
 
     let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);
@@ -77,8 +77,8 @@ function getSessionDtoModelMappedFromDomain(sessionDomainModel){
     let utcDateCreated = helpers.getDateUTCFormatForDatabase(dateNow);
     let expiryInMilliseconds = sessionDomainModel.getExpiryInMilliseconds();
     let dateExpiredCalculation = sessionService.getSessionDateExpired(dateNow,expiryInMilliseconds );
-    let dateExpiredAsDate = new Date(dateExpiredCalculation);
-    let utcDateExpiredFormatted = helpers.getDateUTCFormatForDatabase(dateExpiredAsDate);
+
+    let utcDateExpiredFormatted = helpers.getDateUTCFormatForDatabase(dateExpiredCalculation);
     let sessionStatus = (sessionDomainModel.getSessionStatusIsActive());
     let resolvedSessionStatus = (sessionStatus === true)
     ? sessionDomainModel.getSessionStatusIsActive()
@@ -126,6 +126,9 @@ function getSessionsDtoModelMappedFromDatabase(databaseResultArray) {
         _sessionDtoModel.rawAttributes.UTCDateExpired.value = sessionDatabase.UTCDateExpired;
 
         let clonedAttributes = JSON.parse(JSON.stringify(_sessionDtoModel.rawAttributes));
+        //NOTE: JSON Parse, converts Date values to Locale, We re-insert the original UTD Dates
+        clonedAttributes.UTCDateCreated.value = sessionDatabase.UTCDateCreated;
+        clonedAttributes.UTCDateExpired.value = sessionDatabase.UTCDateExpired;
         allSessionsDtoModels.push(clonedAttributes);
     }
 

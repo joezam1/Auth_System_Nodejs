@@ -1,15 +1,14 @@
 const helper = require('../app/library/common/helpers.js');
 
 describe('File: Helper.js',function(){
-    describe('Function: removeLeadingAndTrailinsSpaces',function(){
+    describe('Function: removeLeadingAndTrailingSpaces',function(){
 
         test('Input with Spaces will have them removed',function(){
-
             //Arrange
             let inputWithSpaces = '  input with spaces    ';
             let inputWithSpacesLength = inputWithSpaces.length;
             //Act
-            let noSpacesInput = helper.removeLeadingAndTrailinsSpaces(inputWithSpaces);
+            let noSpacesInput = helper.removeLeadingAndTrailingSpaces(inputWithSpaces);
             let inputNoSpacesLength = noSpacesInput.length;
             //Assert
 
@@ -91,48 +90,4 @@ describe('File: Helper.js',function(){
     })
 
 
-    describe('Function: getHtmlBreakSeparator',function(){
-
-        test('When the input is VALID, the HTML Separator is generated', function(){
-            //Arrange
-            let input = 'any text';
-            let expectedSeparator = '<br/>';
-            //Act
-            let result = helper.getHtmlBreakSeparator(input);
-            //Assert
-            expect(result).toEqual(expectedSeparator);
-        });
-
-        test('When the input is EMPTY, the HTML Separator is NOT generated', function(){
-            //Arrange
-            let input = null;
-            let expectedSeparator = '';
-            //Act
-            let result = helper.getHtmlBreakSeparator(input);
-            //Assert
-            expect(result).toBe(expectedSeparator);
-        });
-    });
-
-    describe('Function: getmessageFormatForDisplay', function(){
-        test('When the input has some VALID VALUE, The Input is returned for Display', function(){
-            //Arrange
-            let input = 'any text';
-            let expectedResult =input;
-            //Act
-            let result = helper.getmessageFormatForDisplay(input);
-            //Assert
-            expect(result).toEqual(expectedResult);
-        });
-
-        test('When the input has some VALID VALUE, The Input is returned for Display', function(){
-            //Arrange
-            let input = null;
-            let expectedResult ='';
-            //Act
-            let result = helper.getmessageFormatForDisplay(input);
-            //Assert
-            expect(result).toEqual(expectedResult);
-        });
-    });
 });

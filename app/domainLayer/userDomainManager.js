@@ -1,8 +1,8 @@
 const httpResponseStatus = require('../library/enumerations/httpResponseStatus');
-const httpResponseService = require('../services/httpProtocol/httpResponseService.js.js');
+const httpResponseService = require('../services/httpProtocol/httpResponseService.js');
 const userRegisterViewModel = require('../presentationLayer/viewModels/userRegisterViewModel.js');
 const userLoginViewModel = require('../presentationLayer/viewModels/userLoginViewModel.js');
-const validationService = require('../services/validation/validationService.js.js');
+const validationService = require('../services/validation/validationService.js');
 const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
 const userRoles = require('../library/enumerations/userRoles.js');
 const uuidV4 = require('uuid');
@@ -20,7 +20,7 @@ const roleRepository = require('../dataAccessLayer/repositories/roleRepository.j
 const registerRepository = require('../dataAccessLayer/repositories/registerRepository.js');
 const sessionRepository = require('../dataAccessLayer/repositories/sessionRepository.js');
 const encryptionService = require('../services/encryption/encryptionService.js');
-const sessionService = require('../services/authentication/sessionService.js.js');
+const sessionService = require('../services/authentication/sessionService.js');
 const sessionConfig = require('../../configuration/authentication/sessionConfig.js');
 const notificationService = require('../services/notifications/notificationService.js');
 const sessionExpiredInspector = require('../middleware/sessionExpiredInspector.js');
@@ -106,7 +106,7 @@ let resolveUserLoginSessionAsync = async function(request){
 let resolveUserLogoutSessionAsync = async function(request){
     let sessionValue = request.body.session;
     let sessionModel = new session();
-    sessionModel.setSessionToken(sessionValue)
+    sessionModel.setSessionToken(sessionValue);
     let sessionResultArray = await sessionRepository.deleteSessionFromDatabaseAsync(sessionModel);
     if(sessionResultArray instanceof Error){
         return httpResponseService.getResponseResultStatus(sessionResultArray, httpResponseStatus._400badRequest );
@@ -221,9 +221,5 @@ async function createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj){
     }
 }
 
-function resolveExpiredSessionInspector(){
-
-
-}
 
 //#ENDREGION Private Methods

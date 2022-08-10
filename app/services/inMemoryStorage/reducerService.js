@@ -4,26 +4,25 @@ const inputTypeInspector = require('../validation/inputTypeInspector.js');
 const reducerServiceActions = require('../../library/enumerations/reducerServiceActions.js');
 
 function reducerService(payloadObj, action){
-    let newDataStoreObj ={};
+    let originalDataStore = inMemoryDataStore.getDataStore();
+    let newDataStore ={};
     switch(action.type){
         case reducerServiceActions.startSessionInspector:
         case reducerServiceActions.stopSessionInspector:
-            newDataStoreObj = getUpdatedDataStore(payloadObj);
+            newDataStore = getUpdatedDataStore(payloadObj, originalDataStore);
 
         case reducerServiceActions.updateCleanupIntervalId:
             if(inputCommonInspector.objectIsValid(payloadObj._expiredSessionCleanupIntervalId)){
-                newDataStoreObj = getUpdatedDataStore(payloadObj);
+                newDataStore = getUpdatedDataStore(payloadObj , originalDataStore);
             }
         break;
     }
-    inMemoryDataStore.updateDataStore(newDataStoreObj);
-    return newDataStoreObj;
+    inMemoryDataStore.updateDataStore(newDataStore);
+    return newDataStore;
 }
 
-function getUpdatedDataStore(temporaryStateObj){
-
-    let originalDataStore = inMemoryDataStore.getDataStore();
-    let newDataStore = Object.assign({}, originalDataStore);
+function getUpdatedDataStore(temporaryStateObj, originalDataStoreObj){
+    let newDataStore = Object.assign({}, originalDataStoreObj);
     if(inputCommonInspector.objectIsValid(temporaryStateObj)){
         for(let tempKey in temporaryStateObj){
             if(temporaryStateObj.hasOwnProperty(tempKey)){

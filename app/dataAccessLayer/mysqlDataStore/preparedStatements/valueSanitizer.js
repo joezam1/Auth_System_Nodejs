@@ -51,7 +51,7 @@ let sanitizeInput = function (input, sequelizeModelPropertyType) {
     let escapedValue = '';
     let clearedValue =   '';
     let sanitizedValue = '';
-    let trimmedImput = helpers.removeLeadingAndTrailinsSpaces(input);
+    let trimmedImput = helpers.removeLeadingAndTrailingSpaces(input);
 
     switch(sequelizeModelPropertyType){
 

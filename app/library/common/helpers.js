@@ -1,8 +1,8 @@
 const DataTypes = require('../stringLiterals/dataTypes.js');
-const CommonValidators = require('../../services/validation/commonValidators.js.js');//require('../../serviceLayer/validation/commonValidators.js');
+
 
 //Test: DONE
-let removeLeadingAndTrailinsSpaces = function(input){
+let removeLeadingAndTrailingSpaces = function(input){
     let inputNoSpaces = input;
     if(typeof input === DataTypes.STRING){
         inputNoSpaces = input.trim();
@@ -46,27 +46,12 @@ let formatStringFirstLetterCapital = function(input){
 
 }
 
-//Test: DONE
-function getHtmlBreakSeparator(input){
-    let inputIsValid = CommonValidators.isValidString(input);
-    return (inputIsValid ? '<br/>' : '');
-}
-//Test: DONE
-function getmessageFormatForDisplay(input){
-    if(CommonValidators.isValidString(input)){
-        return input;
-    }
-    return '';
-}
-
 
 let service={
-    removeLeadingAndTrailinsSpaces : removeLeadingAndTrailinsSpaces,
+    removeLeadingAndTrailingSpaces : removeLeadingAndTrailingSpaces,
     getDateUTCFormatForDatabase : getDateUTCFormatForDatabase,
     createPropertiesArrayFromObjectProperties : createPropertiesArrayFromObjectProperties,
-    formatStringFirstLetterCapital : formatStringFirstLetterCapital,
-    getHtmlBreakSeparator : getHtmlBreakSeparator,
-    getmessageFormatForDisplay : getmessageFormatForDisplay
+    formatStringFirstLetterCapital : formatStringFirstLetterCapital
 }
 
 module.exports = service;

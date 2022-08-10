@@ -1,12 +1,8 @@
 const queryFactory = require('../app/dataAccessLayer/mysqlDataStore/preparedStatements/queryFactory.js');
 const dbContext = require('../app/dataAccessLayer/mysqlDataStore/context/dbContext.js');
+const genericQueryStatements = require('../app/library/enumerations/genericQueryStatements.js');
 
-
-//let selectWhereEqualsAnd = function(tableName, sequelizePropertiesArray){
 describe('File: queryFactory.js', function(){
-
-
-
     function getUserAttributes(){
         let dateNow = new Date();
         let dateNowUtc = dateNow.toISOString();
@@ -42,7 +38,6 @@ describe('File: queryFactory.js', function(){
 
     describe('Function: selectWhereEqualsAnd', function(){
         test('Selected attributes are added OK', function(){
-
             //Arrange
             let tableName = 'TestingTable';
             let userAttributes = getUserAttributes();
@@ -57,9 +52,7 @@ describe('File: queryFactory.js', function(){
     });
 
     describe('Function: selectAllFromTable', function(){
-
         test('Table name is included in statement', function(){
-
             //Arrange
             let tableName = 'test'
             //Act
@@ -70,8 +63,7 @@ describe('File: queryFactory.js', function(){
         });
     });
 
-    describe('', function(){
-        //let insertIntoTableValues = function(tableName, sequelizePropertiesArray){
+    describe('Function: insertIntoTableValues', function(){
         test('Statement contains Attribute in column name', function(){
 
             //Arrange
@@ -84,4 +76,50 @@ describe('File: queryFactory.js', function(){
             expect(result).toContain('FirstName');
         });
     });
+
+
+    describe('Function: deleteFromTableWhere', function(){
+        test('Statement contains Attribute in column name', function(){
+
+            //Arrange
+            let tableName = 'Test';
+            let userAttributes = getUserAttributes();
+            let attributesArray = [ userAttributes.FirstName, userAttributes.MiddleName, userAttributes.LastName]
+            //Act
+            let result = queryFactory.deleteFromTableWhere(tableName, attributesArray);
+            //Assert
+            expect(result).toContain('FirstName');
+        });
+    });
+
+
+    describe('Function: updateTableSetColumnValuesWhere', function(){
+        test('Statement contains USERID in Where Condition', function(){
+
+            //Arrange
+            let tableName = 'Test';
+            let userAttributes = getUserAttributes();
+            let attributesArray = [ userAttributes.FirstName, userAttributes.MiddleName, userAttributes.LastName]
+            let attributesWhereConditionArray = [userAttributes.UserId]
+            //Act
+            let result = queryFactory.updateTableSetColumnValuesWhere(tableName, attributesArray, attributesWhereConditionArray);
+            //Assert
+            expect(result).toContain('WHERE UserId = ?');
+        });
+    });
+
+    describe('Function: createSimpleQueryStatement', function(){
+        test('Statement contains Attribute in column name', function(){
+
+            //Arrange
+            let tableName = 'Test';
+            let userAttributes = getUserAttributes();
+            let attributesArray = [ userAttributes.FirstName, userAttributes.MiddleName, userAttributes.LastName]
+            //Act
+            let result = queryFactory.createSimpleQueryStatement(genericQueryStatements.insertIntoTableValues, tableName, attributesArray);
+            //Assert
+            expect(result).toContain('FirstName');
+        });
+    });
+
 });

@@ -1,4 +1,4 @@
-const inputCommonInspector = require('../app/serviceLayer/validation/inputCommonInspector.js');
+const inputCommonInspector = require('../app/services/validation/inputCommonInspector.js');
 
 
 describe('File: inputCommonInspector.js', () => {
@@ -82,4 +82,142 @@ describe('File: inputCommonInspector.js', () => {
 
     });
 
+    describe('Function: valueIsUndefined', function(){
+        test('Variable on purpose defined UNDEFINED, returns TRUE', function(){
+            //Arrange
+            let value = undefined;
+            //Act
+            let result = inputCommonInspector.valueIsUndefined(value);
+            //Assert
+            expect(result).toBe(true);
+        });
+
+        test('Variable left initialized and not assigned value returns TRUE', function(){
+            //Arrange
+            let value;
+            //Act
+            let result = inputCommonInspector.valueIsUndefined(value);
+            //Assert
+            expect(result).toBe(true);
+        });
+
+
+        test('Variable with an initialized value returns FALSE', function(){
+            //Arrange
+            let value = 'this is a string';
+            //Act
+            let result = inputCommonInspector.valueIsUndefined(value);
+            //Assert
+            expect(result).toBe(false);
+        });
+    });
+
+    describe('Function: stringIsValid', function(){
+        test('variable with numeric value returns FALSE', function(){
+            //Arrange
+            let value = 15;
+            //Act
+            let result = inputCommonInspector.stringIsValid(value);
+            //Assert
+            expect(result).toBe(false);
+        })
+
+        test('variable with string value returns TRUE', function(){
+            //Arrange
+            let value = '15';
+            let typeResult = (typeof(value));
+            //Act
+            let result = inputCommonInspector.stringIsValid(value);
+            //Assert
+            expect(result).toBe(true);
+        })
+
+        test('variable not defined returns FALSE', function(){
+            //Arrange
+            let value;
+            //Act
+            let result = inputCommonInspector.stringIsValid(value);
+            //Assert
+            expect(result).toBe(false);
+        })
+    });
+
+    describe('Function: objectIsValid', function(){
+        test('Object with properties will return TRUE',function(){
+
+            //Arrange
+            let value = {name:'John'};
+            //Act
+            let result = inputCommonInspector.objectIsValid(value);
+            //Assert
+            expect(result).toBe(true);
+
+        });
+
+        test('Input Array Object returns FALSE', function(){
+            //Arrange
+            jsObj = ['item1', 1, {code:1}];
+            //Act
+            let result = inputCommonInspector.objectIsValid(jsObj);
+            //Assert
+            expect(result).toBe(false);
+        });
+
+        test('Object with NO properties will return FALSE',function(){
+
+            //Arrange
+            let value = {};
+            //Act
+            let result = inputCommonInspector.objectIsValid(value);
+            //Assert
+            expect(result).toBe(false);
+
+        });
+
+        test('Object with NULL value will return FALSE',function(){
+
+            //Arrange
+            let value = null;
+            //Act
+            let result = inputCommonInspector.objectIsValid(value);
+            //Assert
+            expect(result).toBe(false);
+
+        });
+
+        test('Object with UNDEDFINED value will return FALSE',function(){
+
+            //Arrange
+            let value = undefined;
+            //Act
+            let result = inputCommonInspector.objectIsValid(value);
+            //Assert
+            expect(result).toBe(false);
+
+        });
+
+        test('Object NOT DEDFINED will return FALSE',function(){
+
+            //Arrange
+            let value;
+            //Act
+            let result = inputCommonInspector.objectIsValid(value);
+            //Assert
+            expect(result).toBe(false);
+
+        });
+
+        test('Object with Only INHERITED/PROTYPED PROPERTIES AND NOT OWN PROPERTIES will return FALSE',function(){
+
+            //Arrange
+            let value = new Object();
+            value.__proto__.name = 'John';
+            value.__proto__.age = 35;
+            //Act
+            let result = inputCommonInspector.objectIsValid(value);
+            //Assert
+            expect(result).toBe(false);
+
+        });
+    });
 });
