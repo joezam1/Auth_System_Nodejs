@@ -156,7 +156,7 @@ describe('File: inputCommonInspector.js', () => {
 
         test('Input Array Object returns FALSE', function(){
             //Arrange
-            jsObj = ['item1', 1, {code:1}];
+            let jsObj = ['item1', 1, {code:1}];
             //Act
             let result = inputCommonInspector.objectIsValid(jsObj);
             //Assert

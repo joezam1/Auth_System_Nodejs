@@ -3,6 +3,9 @@ const DataTypes = require('../../library/stringLiterals/dataTypes.js');
 
 //Test:DONE
 let stringIsNullOrEmpty = function(input){
+    if(valueIsUndefined(input)) {
+        return false;
+    }
     let isValidType = (typeof input === DataTypes.STRING || typeof input === DataTypes.OBJECT);
     let isValidValue = (input === null || (input !==null && input !== undefined && input.length === 0));
 
