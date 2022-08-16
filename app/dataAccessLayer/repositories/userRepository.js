@@ -1,7 +1,7 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
 const helpers = require('../../library/common/helpers.js');
 const repositoryHelper = require('../repositories/repositoryHelper.js');
-const genericQueryStatements = require('../../library/enumerations/genericQueryStatements.js');
+const genericQueryStatement = require('../../library/enumerations/genericQueryStatement.js');
 
 let context = null;
 let userTableName = null;
@@ -12,7 +12,7 @@ let getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
     console.log('userTableName', userTableName);
     let userDtoModel = getUserDtoModelMappedFromDomain(userDomainModel);
     let propertiesArray = [userDtoModel.Username, userDtoModel.Email];
-    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatements.selectWhereEqualsAnd, userTableName);
+    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatement.selectWherePropertyEqualsAnd, userTableName);
     if (statementResult instanceof Error) {
         return statementResult;
     }
@@ -25,7 +25,7 @@ let insertUserIntoTableTransactionAsync = async function (connectionPool, userDo
     console.log('userDomainModel', userDomainModel);
     let userDtoModel = getUserDtoModelMappedFromDomain(userDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(userDtoModel);
-    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatements.insertIntoTableValues, userTableName, null, connectionPool);
+    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, userTableName, connectionPool);
 
     return statementResult;
 }
@@ -33,7 +33,7 @@ let insertUserIntoTableTransactionAsync = async function (connectionPool, userDo
 let insertUserRoleIntoTableTransactionAsync = async function (connectionPool, userRoleDomainModel) {
     let userRoleDtoModel = getUserRoleDtoModelMappedFromDomain(userRoleDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(userRoleDtoModel);
-    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatements.insertIntoTableValues, userRoleTableName, null, connectionPool);
+    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, userRoleTableName, connectionPool);
 
     return statementResult;
 }

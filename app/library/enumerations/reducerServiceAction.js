@@ -1,4 +1,4 @@
-const reducerServiceActions = Object.freeze({
+const reducerServiceAction = Object.freeze({
     startSessionInspector : 0,
     stopSessionInspector : 1,
     updateCleanupIntervalId:2,
@@ -7,4 +7,4 @@ const reducerServiceActions = Object.freeze({
     2:'updateCleanupIntervalId'
 });
 
-module.exports = reducerServiceActions;
+module.exports = reducerServiceAction;

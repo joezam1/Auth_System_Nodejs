@@ -1,7 +1,7 @@
 const ObjectModelInspector = require('../app/services/validation/objectModelInspector.js');
 const userRegisterViewModel = require('../app/presentationLayer/viewModels/userRegisterViewModel.js');
 const InputCommonInspector = require('../app/services/validation/inputCommonInspector.js');
-const UserRoles = require('../app/library/enumerations/userRoles.js');
+const UserRolesEnum = require('../app/library/enumerations/userRole.js');
 
 describe('File: ObjectModelInspector.js', function () {
 
@@ -15,7 +15,7 @@ describe('File: ObjectModelInspector.js', function () {
                 email : 'thomas11@west.com',
                 password : 'abcd',
                 confirmPassword : 'abcd',
-                userRole : UserRoles.Customer,
+                userRole : UserRolesEnum.Customer,
             };
             let userModel = new userRegisterViewModel(dataModel);
             //Act
@@ -35,7 +35,7 @@ describe('File: ObjectModelInspector.js', function () {
                 email : 'thomas11@west.com',
                 password : 'abcd',
                 confirmPassword : 'abcd',
-                userRole : UserRoles.Customer,
+                userRole : UserRolesEnum.Customer,
             };
             let userModel = new userRegisterViewModel(dataModel);
             //Act
@@ -57,7 +57,7 @@ describe('File: ObjectModelInspector.js', function () {
                 email : 'thomas11@west.com',
                 password : 'abcd',
                 confirmPassword : 'abcd',
-                userRole : UserRoles.Customer,
+                userRole : UserRolesEnum.Customer,
             };
             let userModel = new userRegisterViewModel(dataModel);
             //Act
@@ -78,7 +78,7 @@ describe('File: ObjectModelInspector.js', function () {
                 email : 'thomas11@west.com',
                 password : null,
                 confirmPassword : 'abcd',
-                userRole : UserRoles.Customer,
+                userRole : UserRolesEnum.Customer,
             };
             let userModel = new userRegisterViewModel(dataModel);
             //Act
@@ -102,7 +102,7 @@ describe('File: ObjectModelInspector.js', function () {
                 email : 'thomas11@west.com',
                 password : 'abcd',
                 confirmPassword : 'abcd',
-                userRole : UserRoles.Customer,
+                userRole : UserRolesEnum.Customer,
             };
             let userModel = new userRegisterViewModel(dataModel);
             //Act
@@ -123,7 +123,7 @@ describe('File: ObjectModelInspector.js', function () {
                 email : 'thomas11@west.com',
                 password : 'abcd',
                 confirmPassword : 'abcd',
-                userRole : UserRoles.Customer,
+                userRole : UserRolesEnum.Customer,
             };
             let userModel = new userRegisterViewModel(dataModel);
             //Act

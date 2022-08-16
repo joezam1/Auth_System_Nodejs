@@ -1,5 +1,5 @@
 
-var register = function () {
+const register = function () {
     let _registerId = '';
     let _userId = '';
     let _isActive = false
@@ -38,7 +38,7 @@ var register = function () {
             isActive : getRegisterStatusIsActive()
         }
     }
-    let service = {
+    return Object.freeze({
         setRegisterId : setRegisterId,
         setUserId : setUserId,
         setRegisterIsActive : setRegisterIsActive,
@@ -47,8 +47,8 @@ var register = function () {
         getRegisterStatusIsActive : getRegisterStatusIsActive,
         getRegisterDetails : getRegisterDetails
 
-    }
-    return service
+    });
+
 }
 
 module.exports = register;

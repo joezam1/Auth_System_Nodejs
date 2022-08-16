@@ -1,7 +1,7 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
 const helpers = require('../../library/common/helpers.js');
 const repositoryHelper = require('../repositories/repositoryHelper.js');
-const genericQueryStatements = require('../../library/enumerations/genericQueryStatements.js');
+const genericQueryStatement = require('../../library/enumerations/genericQueryStatement.js');
 
 
 let context = null;
@@ -11,7 +11,7 @@ let registerTableName = null;
 let insertRegisterIntoTableTransactionAsync = async function(connectionPool, registerDomainModel){
     let registerDtoModel = getRegisterDtoModelMappedFromDomain(registerDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(registerDtoModel);
-    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatements.insertIntoTableValues, registerTableName, null, connectionPool);
+    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, registerTableName, connectionPool);
 
     return statementResult;
 

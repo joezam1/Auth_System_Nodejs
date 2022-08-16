@@ -1,17 +1,28 @@
 const reducerServices = require('../services/inMemoryStorage/reducerService.js');
 const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
-const reducerServiceActions = require('../library/enumerations/reducerServiceActions.js');
+const reducerServiceAction = require('../library/enumerations/reducerServiceAction.js');
 const workerThreadManager = require('../backgroundWorkers/workerThreadManager.js');
 const databaseQueryWorkerFile = '../backgroundWorkers/databaseQueryWorker.js';
 const sessionConfig = require('../../configuration/authentication/sessionConfig.js');
 const dbContext = require('../dataAccessLayer/mysqlDataStore/context/dbContext.js');
+const expiredSessionEventCode = require('../library/enumerations/expiredSessionEventCode.js');
+const helpers = require('../library/common/helpers.js');
+
 
 
 let _context = null;
 let _sessionTableName = null;
 let _sessionDto = null;
-let _columName = null;
-const stopIntervalId = -1;
+let _columnNameSessionId = null;
+let _columNameUTCDateExpired = null;
+
+let _sessionActivityTableName = null;
+let _sessionActivityDto = null;
+let _columnNameUserId = null;
+let _columnNameUTCLoginDate = null;
+let _columnNameUTCLogoutDate = null;
+
+const _stopIntervalId = -1;
 const _dataStoreSessionInspectorProperty = '_sessionInspectorIsActive';
 const _dataStoreCleanupIntervalId = '_expiredSessionCleanupIntervalId';
 
@@ -27,7 +38,7 @@ const sessionExpiredInspector = (function(){
             let intervalId = setInterval(function(){
                 let messageObj ={
                     message : 'query',
-                    statement : getCountRowsFromTable(),
+                    statement : countRowsFromTable(),
                     valuesArray : null
                 }
                 workerThreadManager.sendMessageToWorker(messageObj);
@@ -50,13 +61,20 @@ function onInit(){
     _context = dbContext.getSequelizeContext();
     _sessionTableName = dbContext.getActiveDatabaseName() + '.' + _context.sessionDtoModel.tableName;
     _sessionDto = new _context.sessionDtoModel();
-    _columName = _sessionDto.rawAttributes.UTCDateExpired.fieldName;
+    _columnNameSessionId = _sessionDto.rawAttributes.SessionId.fieldName;
+    _columNameUTCDateExpired = _sessionDto.rawAttributes.UTCDateExpired.fieldName;
+
+    _sessionActivityTableName = dbContext.getActiveDatabaseName() + '.' + _context.sessionActivityDtoModel.tableName;
+    _sessionActivityDto = new _context.sessionActivityDtoModel();
+    _columnNameUserId = _sessionActivityDto.rawAttributes.UserId.fieldName;
+    _columnNameUTCLoginDate = _sessionActivityDto.rawAttributes.UTCLoginDate.fieldName;
+    _columnNameUTCLogoutDate = _sessionActivityDto.rawAttributes.UTCLogoutDate.fieldName;
 }
 
 function updateExpiredSessionRemovalIdDataStore(intervalId){
     let payload = {}
     payload[_dataStoreCleanupIntervalId] = intervalId ;
-    let action = { type: reducerServiceActions.updateCleanupIntervalId };
+    let action = { type: reducerServiceAction.updateCleanupIntervalId };
     let result = reducerServices.dispatch(payload, action);
     console.log('reducerService-dispatch-result', result);
     return result;
@@ -66,55 +84,144 @@ function updateExpiredSessionRemovalIdDataStore(intervalId){
 function updateInspectorStateDataStore(status){
     let payload = {};
     payload[ _dataStoreSessionInspectorProperty] = status;
-    let action = { type: reducerServiceActions.startSessionInspector };
+    let action = { type: reducerServiceAction.startSessionInspector };
     let result = reducerServices.dispatch(payload, action);
     console.log('reducerService-dispatch-result', result);
     return result;
 }
 
-function getCountRowsFromTable(){
+function countRowsFromTable(){
     return `SELECT COUNT(*) FROM ${_sessionTableName};`;
 }
 
-function getRemoveRowsWhereQuery(){
-    return `DELETE FROM ${_sessionTableName} WHERE ${_columName} < UTC_TIMESTAMP() `;
+function selectAllExpiredSessionsOrderByAsc(){
+    return `SELECT * FROM ${_sessionTableName} WHERE ${_columNameUTCDateExpired} < UTC_TIMESTAMP() ORDER BY ${_columNameUTCDateExpired} ASC`;
+}
+
+function updateSessionActivityWhere(userId, utcLoginDate){
+    return `UPDATE ${_sessionActivityTableName} SET ${_columnNameUTCLogoutDate} = UTC_TIMESTAMP() WHERE ${_columnNameUserId} = '${userId}' and ${_columnNameUTCLoginDate} = '${utcLoginDate}' `;
+}
+
+function removeSingleRowWhereQuery(sessionId){
+    return `DELETE FROM ${_sessionTableName} WHERE ${_columnNameSessionId} = '${sessionId}' `;
+}
+
+function removeAllRowsWhereQuery(){
+    return `DELETE FROM ${_sessionTableName} WHERE ${_columNameUTCDateExpired} < UTC_TIMESTAMP() `;
 }
 
 function queryWorkerCallback(event){
     console.log('INSPECTOR-queryWorkerCallback-event', event);
-    if( inputCommonInspector.objectIsValid(event.data) && Array.isArray(event.data)){
-        let resultCountArray = event.data[0];
-        let totalSessionRows = getCountValue(resultCountArray);
-        if(totalSessionRows>0){
-            executeRemoveExpiredRows();
+    if(event.data !==null && !inputCommonInspector.valueIsUndefined(event.data) && Array.isArray(event.data)){
+        let resultEventArray = event.data[0];
+        let firstItem = {};
+        if(resultEventArray.length>0){
+            firstItem = resultEventArray[0];
+        }else if(inputCommonInspector.objectIsValid(resultEventArray)){
+            firstItem = resultEventArray;
+        }
 
-        }else if(totalSessionRows === 0){
+        let eventResult = getEventCode(firstItem);
+        if(eventResult.code === expiredSessionEventCode.expiredSessionsTargeted && eventResult.count === -1){
+
+            updateSessionActivitiesAndRemoveSessions(resultEventArray);
+        }
+        else if( eventResult.code === expiredSessionEventCode.expiredSessionsCount && eventResult.count > 0){
+
+            getAllExpiredSessions();
+
+        }else if( eventResult.code === expiredSessionEventCode.expiredSessionsCount && eventResult.count === 0){
+
             stopSessionExpiredInspector();
+
+        }
+        else if(eventResult.code === expiredSessionEventCode.expiredSessionsRemoved && eventResult.count === null){
+            //do nothing
         }
     }
 }
 
-function getCountValue(resultCountArray){
-    let count = -1;
-    if( inputCommonInspector.objectIsValid(resultCountArray) && Array.isArray(resultCountArray)){
-        let resultCountObj = resultCountArray[0];
-        console.log('resultCount', resultCountObj);
 
-        for(let key in resultCountObj){
-            if(resultCountObj.hasOwnProperty(key)){
-                if(key === 'COUNT(*)' &&  key.toLowerCase().includes('count')){
-                    count = resultCountObj[key];
-                    break;
-                }
+function getEventCode(resultEventObj){
+    let event = {
+        code:null,
+        count:null
+    }
+
+    console.log('resultEventObj', resultEventObj);
+    for(let key in resultEventObj){
+        if(resultEventObj.hasOwnProperty(key)){
+            if(key === 'COUNT(*)' &&  key.toLowerCase().includes('count')){
+                event.code = expiredSessionEventCode.expiredSessionsCount;
+                event.count = resultEventObj[key];
+                break;
+            }
+            if(key === 'SessionId'){
+                event.code = expiredSessionEventCode.expiredSessionsTargeted;
+                event.count = -1;
+                break;
+            }
+            if(key === 'affectedRows'){
+                event.code = expiredSessionEventCode.expiredSessionsRemoved;
+                event.count = null;
+                break;
             }
         }
     }
-    return count;
+
+    return event;
 }
+
+
+function getAllExpiredSessions(){
+    let reply = {
+        message : 'query',
+        statement : selectAllExpiredSessionsOrderByAsc(),
+        valuesArray : null
+    }
+    workerThreadManager.sendMessageToWorker(reply);
+}
+function updateSessionActivitiesAndRemoveSessions(allExpiredSessionsArray){
+
+    executeUpdateSessionActivities(allExpiredSessionsArray);
+    executeRemoveExpiredSessions(allExpiredSessionsArray);
+}
+
+function executeUpdateSessionActivities(itemsArray){
+
+    for(let a=0; a<itemsArray.length; a++){
+        let userId = itemsArray[a].UserId;
+        let utcLoginDate = helpers.getDateUTCFormatForDatabase(itemsArray[a].UTCDateCreated);
+        let utcLoginDateDbFormat = helpers.composeUTCDateToFormatForDatabase(itemsArray[a].UTCDateCreated);
+        let updateSessionActivity = updateSessionActivityWhere(userId ,utcLoginDateDbFormat )
+        let reply = {
+            message : 'query',
+            statement : updateSessionActivity,
+            valuesArray : null
+        }
+        workerThreadManager.sendMessageToWorker(reply);
+    }
+}
+
+function executeRemoveExpiredSessions(itemsArray){
+
+    for(let a=0; a<itemsArray.length; a++){
+        let sessionId = itemsArray[a].SessionId;
+        let removeSession = removeSingleRowWhereQuery(sessionId);
+        let reply = {
+            message : 'query',
+            statement : removeSession,
+            valuesArray : null
+        }
+        workerThreadManager.sendMessageToWorker(reply);
+    }
+}
+
+//from each expired session get userId
 function executeRemoveExpiredRows(){
     let reply = {
         message : 'query',
-        statement : getRemoveRowsWhereQuery(),
+        statement : removeAllRowsWhereQuery(),
         valuesArray : null
     }
     workerThreadManager.sendMessageToWorker(reply);
@@ -123,11 +230,11 @@ function executeRemoveExpiredRows(){
 function stopSessionExpiredInspector(){
     let intervalId = reducerServices.getCurrentStateByProperty(_dataStoreCleanupIntervalId);
     clearInterval(intervalId);
-    updateExpiredSessionRemovalIdDataStore(stopIntervalId);
+    updateExpiredSessionRemovalIdDataStore(_stopIntervalId);
     let inspectorIsActive = reducerServices.getCurrentStateByProperty(_dataStoreSessionInspectorProperty);
     if(inputCommonInspector.objectIsValid(inspectorIsActive) && inspectorIsActive ){
         updateInspectorStateDataStore(false);
     }
     workerThreadManager.terminateActiveWorker();
 }
-//#ENDREGION Private Function des
+//#ENDREGION Private Function

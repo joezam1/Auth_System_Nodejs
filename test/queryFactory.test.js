@@ -1,6 +1,6 @@
 const queryFactory = require('../app/dataAccessLayer/mysqlDataStore/preparedStatements/queryFactory.js');
 const dbContext = require('../app/dataAccessLayer/mysqlDataStore/context/dbContext.js');
-const genericQueryStatements = require('../app/library/enumerations/genericQueryStatements.js');
+const genericQueryStatement = require('../app/library/enumerations/genericQueryStatement.js');
 
 describe('File: queryFactory.js', function(){
     function getUserAttributes(){
@@ -36,7 +36,7 @@ describe('File: queryFactory.js', function(){
     }
 
 
-    describe('Function: selectWhereEqualsAnd', function(){
+    describe('Function: selectWherePropertyEqualsAnd', function(){
         test('Selected attributes are added OK', function(){
             //Arrange
             let tableName = 'TestingTable';
@@ -44,7 +44,7 @@ describe('File: queryFactory.js', function(){
             let attributesArray = [ userAttributes.FirstName, userAttributes.MiddleName, userAttributes.LastName]
 
             //Act
-            let result = queryFactory.selectWhereEqualsAnd(tableName, attributesArray);
+            let result = queryFactory.selectWherePropertyEqualsAnd(tableName, attributesArray);
             //Assert
 
             expect(result).toContain('FirstName');
@@ -116,7 +116,7 @@ describe('File: queryFactory.js', function(){
             let userAttributes = getUserAttributes();
             let attributesArray = [ userAttributes.FirstName, userAttributes.MiddleName, userAttributes.LastName]
             //Act
-            let result = queryFactory.createSimpleQueryStatement(genericQueryStatements.insertIntoTableValues, tableName, attributesArray);
+            let result = queryFactory.createSimpleQueryStatement(genericQueryStatement.insertIntoTableValues, tableName, attributesArray);
             //Assert
             expect(result).toContain('FirstName');
         });

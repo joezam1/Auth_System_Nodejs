@@ -1,8 +1,8 @@
 const sessionRepository = require('../app/dataAccessLayer/repositories/sessionRepository.js');
-const sessionModel = require('../app/domainLayer/session.js');
+const sessionModel = require('../app/domainLayer/domainModels/session.js');
 const dbAction = require('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');
 const repositoryHelper = require('../app/dataAccessLayer/repositories/repositoryHelper.js');
-const domainManagerHeloer = require('../app/domainLayer/domainManagerHelper.js');
+const domainManagerHelper = require('../app/domainLayer/domainManagerHelper.js');
 
 jest.mock('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');
 jest.mock('../app/dataAccessLayer/repositories/repositoryHelper.js');
@@ -64,7 +64,7 @@ describe('File: sessionRepository.js',function(){
             let mockSessionObjectResult =[[sessionDTOModel],[]];
             repositoryHelper.resolveStatementAsync = jest.fn().mockReturnValueOnce(mockSessionObjectResult);
 
-            let sessionDomainModel = domainManagerHeloer.createSessionModel(userId, sessionToken,data, expirationTimeMilliseconds);
+            let sessionDomainModel = domainManagerHelper.createSessionModel(userId, sessionToken,data, expirationTimeMilliseconds);
             //Act
             let result = await sessionRepository.getSessionFromDatabaseAsync(sessionDomainModel);
             let tokenValue = result[0].SessionToken.value
@@ -102,7 +102,7 @@ describe('File: sessionRepository.js',function(){
         })
     });
 
-    describe('Function: updateTableSetColumnValuesWhereAsync',function(){
+    describe('Function: updateSessionTableSetColumnValuesWhereAsync',function(){
         test('When Session is UPDATED in the database, the call to database is done and results returns OK', async function(){
             //Arrange
             let updatedResult = {
@@ -121,7 +121,7 @@ describe('File: sessionRepository.js',function(){
             sessionDomain.setSessionStatusIsActive(true);
             //Act
 
-            let sessionResult = await sessionRepository.updateTableSetColumnValuesWhereAsync(sessionDomain);
+            let sessionResult = await sessionRepository.updateSessionTableSetColumnValuesWhereAsync(sessionDomain);
             console.log('sessionResult',sessionResult)
             //Assert
             expect(sessionResult).toEqual(resultDatabaseMock);

@@ -1,5 +1,5 @@
 
-let userRole = function () {
+const userRole = function () {
     let _userRoleId = '';
     let _userId = '';
     let _roleId = '';
@@ -36,7 +36,7 @@ let userRole = function () {
         }
     }
 
-    let service = {
+    return Object.freeze({
         setUserRoleId : setUserRoleId,
         setUserId : setUserId,
         setRoleId : setRoleId,
@@ -44,9 +44,9 @@ let userRole = function () {
         getUserId : getUserId,
         getRoleId : getRoleId,
         getUserRoleDetails : getUserRoleDetails
-    }
+    });
 
-    return service
+
 }
 
 module.exports = userRole;

@@ -1,24 +1,44 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
 const helpers = require('../../library/common/helpers.js');
 const repositoryHelper = require('../repositories/repositoryHelper.js');
-const genericQueryStatements = require('../../library/enumerations/genericQueryStatements.js');
+const genericQueryStatement = require('../../library/enumerations/genericQueryStatement.js');
 const sessionService = require('../../services/authentication/sessionService.js');
+const session = require('express-session');
+
 
 
 let context = null;
 let sessionTableName = null;
+let sessionActivityTableName = null;
 //Test: DONE
-let insertSessionIntoTableAsync = async function (sessionDomainModel) {
+let insertSessionIntoTableTransactionAsync = async function ( connectionPool, sessionDomainModel ) {
     console.log('context', context);
     console.log('sessionTableName', sessionTableName);
     console.log('sessionDomainModel', sessionDomainModel);
     let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);
+    console.log('sessionDtoModel: ', sessionDtoModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(sessionDtoModel);
 
-    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatements.insertIntoTableValues, sessionTableName);
+    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, sessionTableName, connectionPool);
+
+    return Object.freeze({
+        statementResult : statementResult,
+        sessionDtoModel : sessionDtoModel
+    });
+}
+
+let insertSessionActivityIntoTrableTransacionAsync = async function(connectionPool,  sessionActivityDomainModel , sessionLoginDate){
+    console.log('sessionActivityDomainModel', sessionActivityDomainModel);
+    let sessionActivityDtoModel = getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel);
+    sessionActivityDtoModel.UTCLoginDate.value = sessionLoginDate;
+    sessionActivityDtoModel.UTCLogoutDate.value = null;
+    let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(sessionActivityDtoModel);
+
+    let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, sessionActivityTableName, connectionPool);
 
     return statementResult;
 }
+
 //Test:DONE
 let getSessionFromDatabaseAsync = async function(sessionDomainModel){
     console.log('context', context);
@@ -26,7 +46,7 @@ let getSessionFromDatabaseAsync = async function(sessionDomainModel){
     let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);
     let propertiesArray = [sessionDtoModel.SessionToken];
 
-    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatements.selectWhereEqualsAnd, sessionTableName);
+    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatement.selectWherePropertyEqualsAnd, sessionTableName);
 
     if (statementResult instanceof Error) {
         return statementResult;
@@ -40,12 +60,12 @@ let deleteSessionFromDatabaseAsync = async function(sessionDomainModel){
     let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);
     let propertiesArray = [sessionDtoModel.SessionToken];
 
-    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatements.deleteFromTableWhere, sessionTableName);
+    let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatement.deleteFromTableWhere, sessionTableName);
 
     return statementResult;
 }
 //Test:DONE
-let updateTableSetColumnValuesWhereAsync = async function(sessionDomainModel){
+let updateSessionTableSetColumnValuesWhereAsync = async function(sessionDomainModel){
 
     let sessionDtoModel = getSessionDtoModelMappedFromDomain(sessionDomainModel);
     let propertiesArray = [sessionDtoModel.SessionToken];
@@ -54,11 +74,43 @@ let updateTableSetColumnValuesWhereAsync = async function(sessionDomainModel){
 
     return statementResult;
 }
+
+let getSessionActivitiesFromDatabaseAsync = async function(sessionActivityDomainModel , utcDateCreatedDbFormatted){
+    console.log('context', context);
+    console.log('sessionActivityTableName', sessionActivityTableName);
+    let sessionActivityDtoModel = getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel);
+    sessionActivityDtoModel.UTCLoginDate.value = utcDateCreatedDbFormatted
+    sessionActivityDtoModel.UTCLogoutDate.value = null;
+
+    let propertiesArray = [sessionActivityDtoModel.UserId , sessionActivityDtoModel.UserAgent, sessionActivityDtoModel.UTCLoginDate, sessionActivityDtoModel.UTCLogoutDate];
+    let statementResult = await repositoryHelper.resolveWherePropertyEqualsAndIsNullStatementAsync (propertiesArray, sessionActivityTableName);
+
+    if (statementResult instanceof Error) {
+        return statementResult;
+    }
+    let sessionActivitiesDtoResultArray = getSessionActitiviesDtoModelMappedFromDatabase(statementResult[0]);
+
+    return sessionActivitiesDtoResultArray;
+}
+
+let updateSessionActivitiesTableSetColumnValuesWhereAsync = async function(sessionActivityDomainModel){
+
+    let sessionActivityDtoModel = getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel);
+    let propertiesArray = [sessionActivityDtoModel.UTCLogoutDate];
+    let conditionalPropertiesArray = [ sessionActivityDtoModel.SessionActivityId ];
+    let statementResult = await repositoryHelper.resolveConditionalWhereEqualsStatementAsync (propertiesArray, conditionalPropertiesArray, sessionActivityTableName);
+
+    return statementResult;
+}
+
 onInit();
 const service = {
-    insertSessionIntoTableAsync : insertSessionIntoTableAsync,
+    insertSessionIntoTableTransactionAsync : insertSessionIntoTableTransactionAsync,
+    insertSessionActivityIntoTrableTransacionAsync : insertSessionActivityIntoTrableTransacionAsync,
     getSessionFromDatabaseAsync : getSessionFromDatabaseAsync,
-    updateTableSetColumnValuesWhereAsync : updateTableSetColumnValuesWhereAsync,
+    getSessionActivitiesFromDatabaseAsync : getSessionActivitiesFromDatabaseAsync,
+    updateSessionTableSetColumnValuesWhereAsync : updateSessionTableSetColumnValuesWhereAsync,
+    updateSessionActivitiesTableSetColumnValuesWhereAsync : updateSessionActivitiesTableSetColumnValuesWhereAsync,
     deleteSessionFromDatabaseAsync : deleteSessionFromDatabaseAsync
 }
 
@@ -69,6 +121,7 @@ module.exports = service;
 function onInit(){
     context = dbContext.getSequelizeContext();
     sessionTableName = dbContext.getActiveDatabaseName() + '.' + context.sessionDtoModel.tableName;
+    sessionActivityTableName = dbContext.getActiveDatabaseName() + '.' + context.sessionActivityDtoModel.tableName;
 }
 
 
@@ -134,6 +187,66 @@ function getSessionsDtoModelMappedFromDatabase(databaseResultArray) {
 
     return allSessionsDtoModels;
 }
+
+
+function getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel){
+    let dateNow = new Date();
+    let utcDateNow = helpers.getDateUTCFormatForDatabase(dateNow);
+
+    let _sessionActivityDto = new context.sessionActivityDtoModel();
+    _sessionActivityDto.rawAttributes.SessionActivityId.value = sessionActivityDomainModel.getSessionActivityId();
+    _sessionActivityDto.rawAttributes.SessionActivityId.type.key = _sessionActivityDto.rawAttributes.SessionActivityId.type.key.toString();
+
+    _sessionActivityDto.rawAttributes.UserId.value = sessionActivityDomainModel.getUserId();
+    _sessionActivityDto.rawAttributes.UserId.type.key = _sessionActivityDto.rawAttributes.UserId.type.key.toString();
+
+
+    _sessionActivityDto.rawAttributes.GeoLocation.value = sessionActivityDomainModel.getGeolocation();
+    _sessionActivityDto.rawAttributes.GeoLocation.type.key = _sessionActivityDto.rawAttributes.GeoLocation.type.key;
+
+    _sessionActivityDto.rawAttributes.Device.value = sessionActivityDomainModel.getDevice();
+    _sessionActivityDto.rawAttributes.Device.type.key = _sessionActivityDto.rawAttributes.Device.type.key;
+
+    _sessionActivityDto.rawAttributes.UserAgent.value = sessionActivityDomainModel.getUserAgent();
+    _sessionActivityDto.rawAttributes.UserAgent.type.key = _sessionActivityDto.rawAttributes.UserAgent.type.key;
+
+    _sessionActivityDto.rawAttributes.UTCLoginDate.value = utcDateNow;
+    _sessionActivityDto.rawAttributes.UTCLoginDate.type.key =  _sessionActivityDto.rawAttributes.UTCLoginDate.type.key.toString();
+
+    _sessionActivityDto.rawAttributes.UTCLogoutDate.value = utcDateNow;
+    _sessionActivityDto.rawAttributes.UTCLogoutDate.type.key =  _sessionActivityDto.rawAttributes.UTCLogoutDate.type.key.toString();
+
+    let clonedAttributes = JSON.parse(JSON.stringify(_sessionActivityDto.rawAttributes));
+    return clonedAttributes;
+}
+
+//=======
+function getSessionActitiviesDtoModelMappedFromDatabase(databaseResultArray) {
+    let allSessionActivitiesDtoModels = [];
+    for (let a = 0; a < databaseResultArray.length; a++) {
+        let sessionActivityDatabase = databaseResultArray[a];
+        console.log('sessionActivityDatabase', sessionActivityDatabase);
+        let _sessionActivityDtoModel = new context.sessionActivityDtoModel();
+        console.log('_sessionActivityDtoModel', _sessionActivityDtoModel);
+
+        _sessionActivityDtoModel.rawAttributes.SessionActivityId.value = sessionActivityDatabase.SessionActivityId;
+        _sessionActivityDtoModel.rawAttributes.UserId.value = sessionActivityDatabase.UserId;
+        _sessionActivityDtoModel.rawAttributes.GeoLocation.value = sessionActivityDatabase.GeoLocation;
+        _sessionActivityDtoModel.rawAttributes.Device.value = sessionActivityDatabase.Device;
+        _sessionActivityDtoModel.rawAttributes.UserAgent.value = sessionActivityDatabase.UserAgent;
+        _sessionActivityDtoModel.rawAttributes.UTCLoginDate.value = sessionActivityDatabase.UTCLoginDate;
+        _sessionActivityDtoModel.rawAttributes.UTCLogoutDate.value = sessionActivityDatabase.UTCLogoutDate;
+
+        let clonedAttributes = JSON.parse(JSON.stringify(_sessionActivityDtoModel.rawAttributes));
+
+        allSessionActivitiesDtoModels.push(clonedAttributes);
+    }
+
+    return allSessionActivitiesDtoModels;
+}
+
+
+//=======
 
 
 //#ENDREGION Private Functions

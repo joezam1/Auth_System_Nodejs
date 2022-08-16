@@ -1,9 +1,11 @@
 'use strict'
-const DataTypes = require('../../library/stringLiterals/dataTypes.js');
+
+
+const jsDataType = require('../../library/stringLiterals/jsDataType.js');
 
 //Test:DONE
 var isValidJson = function(input){
-    if(typeof input !== DataTypes.STRING)
+    if(typeof input !== jsDataType.STRING)
     {
         return false;
     }

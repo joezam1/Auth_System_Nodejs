@@ -42,7 +42,7 @@ let getSequelizeContext = function(){
         let registerDtoModel = Register(sequelize, allDataTypes);
         let authRoleSectionDtoModel = AuthRoleSection(sequelize, allDataTypes);
         let sessionDtoModel = Session(sequelize, allDataTypes);
-        let sessionActivity = SessionActivity(sequelize, allDataTypes);
+        let sessionActivityDtoModel = SessionActivity(sequelize, allDataTypes);
 
         allSequelizeModels = {
             userDtoModel : userDtoModel,
@@ -51,7 +51,7 @@ let getSequelizeContext = function(){
             registerDtoModel :  registerDtoModel,
             authRoleSectionDtoModel : authRoleSectionDtoModel,
             sessionDtoModel : sessionDtoModel,
-            sessionActivity : sessionActivity
+            sessionActivityDtoModel : sessionActivityDtoModel
         }
         return allSequelizeModels;
     }

@@ -1,5 +1,5 @@
 
-let cookie = function(){
+const cookie = function(){
     let _name = '';
     let _value = '';
     let _properties = {
@@ -43,7 +43,7 @@ let cookie = function(){
     }
 }
 
-    let service = {
+    return Object.freeze({
         setName : setName,
         setValue : setValue,
         setProperties : setProperties,
@@ -51,8 +51,9 @@ let cookie = function(){
         getValue : getValue,
         getProperties : getProperties,
         getCookieObject : getCookieObject
-    }
-    return service;
+    });
+
+
 }
 
 module.exports = cookie;

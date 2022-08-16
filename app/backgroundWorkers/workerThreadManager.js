@@ -12,7 +12,7 @@ const workerThreadManager = (function(){
         if(inputCommonInspector.objectIsValid(activeWorker)){
             activeWorker.on('message', function(event){
                 console.log(`Manager-For=Worker.${workerFileName}-onmessage:MESSAGE RECEIVED: `,event);
-                if(inputCommonInspector.objectIsValid(inspectorCallbackFunction)){
+                if(inspectorCallbackFunction !== null && !inputCommonInspector.valueIsUndefined(inspectorCallbackFunction)){
                     inspectorCallbackFunction(event);
                 }
             });

@@ -1,7 +1,7 @@
-const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
-const inputTypeInspector = require('../services/validation/inputTypeInspector.js');
+const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
+const inputTypeInspector = require('../../services/validation/inputTypeInspector.js');
 
-var userInfo = function () {
+const user = function () {
     let _userId = '';
     let _firstName = '';
     let _middleName = '';
@@ -112,7 +112,7 @@ var userInfo = function () {
             isActive: getUserStatusIsActive()
         }
     }
-    let service = {
+    return Object.freeze({
         setUserDetails : setUserDetails,
         getUserDetails : getUserDetails,
         setUserId : setUserId,
@@ -131,8 +131,7 @@ var userInfo = function () {
         getEmail : getEmail,
         getPassword : getPassword,
         getUserStatusIsActive : getUserStatusIsActive
-    }
-    return service
+    });
 }
 
-module.exports = userInfo;
+module.exports = user;

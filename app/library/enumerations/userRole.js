@@ -1,4 +1,4 @@
-const UserRoles = Object.freeze({
+const UserRole = Object.freeze({
     Admin : 1,
     Customer : 2,
     AnonymousUser : 3,
@@ -7,4 +7,4 @@ const UserRoles = Object.freeze({
     3 : 'AnonymousUser'
     });
 
-    module.exports = UserRoles;
+    module.exports = UserRole;

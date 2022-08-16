@@ -1,5 +1,5 @@
 
-var sessionDomainModel = function () {
+const session = function () {
     let _sessionId = '';
     let _userId = '';
     let _sessionToken = '';
@@ -66,7 +66,7 @@ var sessionDomainModel = function () {
             isActive : getSessionStatusIsActive()
         }
     }
-    let service = {
+    return Object.freeze({
         setSessionId : setSessionId,
         setUserId : setUserId,
         setSessionToken : setSessionToken,
@@ -82,8 +82,8 @@ var sessionDomainModel = function () {
         getSessionStatusIsActive : getSessionStatusIsActive,
         getSessionDetails : getSessionDetails
 
-    }
-    return service
+    });
+
 }
 
-module.exports = sessionDomainModel;
+module.exports = session;

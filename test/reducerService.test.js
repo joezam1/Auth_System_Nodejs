@@ -1,6 +1,6 @@
 const reducerService = require('../app/services/inMemoryStorage/reducerService.js');
 const inMemoryDataStore = require('../app/services/inMemoryStorage/inMemoryDataStore.js');
-const reducerServiceActions = require('../app/library/enumerations/reducerServiceActions.js');
+const reducerServiceAction = require('../app/library/enumerations/reducerServiceAction.js');
 
 jest.mock('../app/services/inMemoryStorage/inMemoryDataStore.js');
 
@@ -17,7 +17,7 @@ describe('File: reducerService.js', function(){
             inMemoryDataStore.getDataStore = jest.fn().mockReturnValueOnce(mockDataStore);
             inMemoryDataStore.updateDataStore = jest.fn().mockReturnValueOnce(mockUpdatedDataStore);
             let payloadObj = {sessionInspector:true};
-            let action={type: reducerServiceActions.startSessionInspector};
+            let action={type: reducerServiceAction.startSessionInspector};
             //Act
             let result = reducerService.dispatch(payloadObj, action);
             //Assert

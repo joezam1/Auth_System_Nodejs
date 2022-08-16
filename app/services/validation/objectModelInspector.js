@@ -4,7 +4,8 @@ const InputTypeInspector = require('./inputTypeInspector.js');
 const InputValueInspector = require('./inputValueInspector');
 const ValidationConfig = require('../../../configuration/validation/validationConfig.js');
 const FormFieldStatus = require('../../library/enumerations/formFieldStatus.js');
-const DataTypes = require('../../library/stringLiterals/dataTypes.js');
+const jsDataType = require('../../library/stringLiterals/jsDataType.js');
+const InputValidationSuffix = require('../../library/stringLiterals/inputValidationSuffix.js');
 
 //Test: DONE
 const inspectInputLength = function(objViewModel){
@@ -18,7 +19,7 @@ const inspectInputLength = function(objViewModel){
 
         if(fieldStatus === FormFieldStatus.Required && InputCommonInspector.stringIsNullOrEmpty(value)){
             let allCapitalLettersKey = Helpers.formatStringFirstLetterCapital(key);
-            inputLengthReport[`${key}Required`] = `${allCapitalLettersKey} is empty. ${allCapitalLettersKey} is Required`;
+            inputLengthReport[`${key + InputValidationSuffix.REQUIRED}`] = `${allCapitalLettersKey} is empty. ${allCapitalLettersKey} is Required`;
         }
     }
     return inputLengthReport;
@@ -31,33 +32,33 @@ let inspectInputType = function(objViewModel){
         if(objViewModel.hasOwnProperty(key)){
             let selectedDataType = objViewModel[key].fieldDataType;
             switch(selectedDataType){
-                case DataTypes.STRING:
+                case jsDataType.STRING:
                 if(!InputTypeInspector.isTypeString(objViewModel[key].fieldValue)){
-                    reportTypeErrors[`${key}Type`] = getReportErrorInputType(objViewModel, key);
+                    reportTypeErrors[`${key + InputValidationSuffix.DATATYPE}`] = getReportErrorInputType(objViewModel, key);
                 }
                 break;
 
-                case DataTypes.DATE:
+                case jsDataType.DATE:
                 if(!InputTypeInspector.isDate(objViewModel[key].fieldValue)){
-                    reportTypeErrors[`${key}Type`] = getReportErrorInputType(objViewModel, key);
+                    reportTypeErrors[`${key + InputValidationSuffix.DATATYPE}`] = getReportErrorInputType(objViewModel, key);
                 }
                 break;
 
-                case DataTypes.NUMBER:
+                case jsDataType.NUMBER:
                 if(!InputTypeInspector.isTypeNumber(objViewModel[key].fieldValue)){
-                    reportTypeErrors[`${key}Type`] = getReportErrorInputType(objViewModel, key);
+                    reportTypeErrors[`${key + InputValidationSuffix.DATATYPE}`] = getReportErrorInputType(objViewModel, key);
                 }
                 break;
 
-                case DataTypes.BOOLEAN:
+                case jsDataType.BOOLEAN:
                 if(!InputTypeInspector.isTypeBoolean(objViewModel[key].fieldValue)){
-                    reportTypeErrors[`${key}Type`] = getReportErrorInputType(objViewModel, key);
+                    reportTypeErrors[`${key + InputValidationSuffix.DATATYPE}`] = getReportErrorInputType(objViewModel, key);
                 }
                 break;
 
-                case DataTypes.OBJECT:
+                case jsDataType.OBJECT:
                 if(!InputTypeInspector.isTypeObject(objViewModel[key].fieldValue)){
-                    reportTypeErrors[`${key}Type`] = getReportErrorInputType(objViewModel, key);
+                    reportTypeErrors[`${key + InputValidationSuffix.DATATYPE}`] = getReportErrorInputType(objViewModel, key);
                 }
                 break;
             }
@@ -77,7 +78,7 @@ function inspectInputValue(objViewModel){
                 let value = objViewModel[key].fieldValue;
                 if(!InputValueInspector.usernameIsValid(value)){
                     let allCapitalLettersKey = Helpers.formatStringFirstLetterCapital(key);
-                    dataReportErrors[`${key}Invalid`] = `${allCapitalLettersKey} is Invalid`;
+                    dataReportErrors[`${key + InputValidationSuffix.INVALID}`] = `${allCapitalLettersKey} is Invalid`;
                 }
             }
 
@@ -85,7 +86,7 @@ function inspectInputValue(objViewModel){
                 let value = objViewModel[key].fieldValue;
                 if(!InputValueInspector.nameIsValid(value)){
                     let allCapitalLettersKey = Helpers.formatStringFirstLetterCapital(key);
-                    dataReportErrors[`${key}Invalid`] = `${allCapitalLettersKey} is Invalid`;
+                    dataReportErrors[`${key + InputValidationSuffix.INVALID}`] = `${allCapitalLettersKey} is Invalid`;
                 }
             }
 
@@ -94,7 +95,7 @@ function inspectInputValue(objViewModel){
                 let value = objViewModel[key].fieldValue;
                 if(!InputValueInspector.emailIsValid(value)){
                     let allCapitalLettersKey = Helpers.formatStringFirstLetterCapital(key);
-                    dataReportErrors[`${key}Invalid`] = `${allCapitalLettersKey} is Invalid`;
+                    dataReportErrors[`${key + InputValidationSuffix.INVALID}`] = `${allCapitalLettersKey} is Invalid`;
                 }
             }
 
@@ -102,7 +103,7 @@ function inspectInputValue(objViewModel){
                 selectedPassword = objViewModel[key].fieldValue;
                 if(!InputValueInspector.passwordMinCharactersIsValid(selectedPassword, ValidationConfig.passwordMinCharacters)){
                     let allCapitalLettersKey = Helpers.formatStringFirstLetterCapital(key);
-                    dataReportErrors[`${key}Invalid`] = `${allCapitalLettersKey} must have ${ValidationConfig.passwordMinCharacters} minimum characters`;
+                    dataReportErrors[`${key + InputValidationSuffix.INVALID}`] = `${allCapitalLettersKey} must have ${ValidationConfig.passwordMinCharacters} minimum characters`;
                 }
             }
 

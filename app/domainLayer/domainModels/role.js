@@ -1,5 +1,5 @@
 
-var role = function () {
+const role = function () {
     let _roleId = '';
     let _name = '';
     let _description = '';
@@ -47,7 +47,7 @@ var role = function () {
             isActive : getRoleStatusIsActive()
         }
     }
-    let service = {
+    return Object.freeze({
         setRoleId : setRoleId,
         setName : setName,
         setDescription : setDescription,
@@ -57,8 +57,8 @@ var role = function () {
         getDescription : getDescription,
         getRoleStatusIsActive : getRoleStatusIsActive,
         getRoleDetails : getRoleDetails
-    }
-    return service
+    });
+
 }
 
 module.exports = role;

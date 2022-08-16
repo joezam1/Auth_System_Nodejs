@@ -1,17 +1,17 @@
 const inMemoryDataStore = require('./inMemoryDataStore.js');
 const inputCommonInspector = require('../validation/inputCommonInspector.js');
 const inputTypeInspector = require('../validation/inputTypeInspector.js');
-const reducerServiceActions = require('../../library/enumerations/reducerServiceActions.js');
+const reducerServiceAction = require('../../library/enumerations/reducerServiceAction.js');
 
 function reducerService(payloadObj, action){
     let originalDataStore = inMemoryDataStore.getDataStore();
     let newDataStore ={};
     switch(action.type){
-        case reducerServiceActions.startSessionInspector:
-        case reducerServiceActions.stopSessionInspector:
+        case reducerServiceAction.startSessionInspector:
+        case reducerServiceAction.stopSessionInspector:
             newDataStore = getUpdatedDataStore(payloadObj, originalDataStore);
 
-        case reducerServiceActions.updateCleanupIntervalId:
+        case reducerServiceAction.updateCleanupIntervalId:
             if(inputCommonInspector.objectIsValid(payloadObj._expiredSessionCleanupIntervalId)){
                 newDataStore = getUpdatedDataStore(payloadObj , originalDataStore);
             }

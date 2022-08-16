@@ -1,8 +1,8 @@
-const genericQueryStatements = require('../../../library/enumerations/genericQueryStatements.js');
+const genericQueryStatement = require('../../../library/enumerations/genericQueryStatement.js');
 
 
 //Test: DONE
-let selectWhereEqualsAnd = function(tableName, sequelizePropertiesArray){
+let selectWherePropertyEqualsAnd = function(tableName, sequelizePropertiesArray){
 
     let allProperties = '';
     let totalArrayElements = sequelizePropertiesArray.length;
@@ -18,6 +18,37 @@ let selectWhereEqualsAnd = function(tableName, sequelizePropertiesArray){
 
     return statement;
 }
+
+//========
+let selectWherePropertyEqualsAndIsNull = function(tableName, sequelizePropertiesArray, isNullOrderOfAppearenceInPropertiesArray){
+
+    let allProperties = '';
+    let totalArrayElements = sequelizePropertiesArray.length;
+    for(let a = 0; a < totalArrayElements; a++){
+        let valueFound = isNullOrderOfAppearenceInPropertiesArray.find((value)=>{
+            console.log('value', value);
+            return value === a;});
+        if(valueFound){
+            allProperties += sequelizePropertiesArray[a].field +' IS NULL '
+        }
+        else if(a <= (totalArrayElements - 1)){
+            allProperties += sequelizePropertiesArray[a].field +' = ?'
+        }
+        if(a <= (totalArrayElements - 2)){
+            allProperties += ' AND '
+        }
+    }
+    let statement = `SELECT * FROM ${tableName} WHERE ${allProperties}`;
+
+    return statement;
+}
+
+
+//========
+
+
+
+
 //Test: DONE
 let selectAllFromTable = function(tableName){
     let statement = `SELECT * FROM ${tableName}`;
@@ -97,19 +128,19 @@ let createSimpleQueryStatement = function( genericQueryStatementsEnum, tableName
     let selectedStatement = '';
     switch(genericQueryStatementsEnum){
 
-        case genericQueryStatements.selectWhereEqualsAnd:
-            selectedStatement = selectWhereEqualsAnd(tableName, sequelizePropertiesArray);
+        case genericQueryStatement.selectWherePropertyEqualsAnd:
+            selectedStatement = selectWherePropertyEqualsAnd(tableName, sequelizePropertiesArray);
             break;
 
-        case genericQueryStatements.selectAllFromTable:
+        case genericQueryStatement.selectAllFromTable:
             selectedStatement = selectAllFromTable(tableName);
             break;
 
-        case genericQueryStatements.insertIntoTableValues:
+        case genericQueryStatement.insertIntoTableValues:
             selectedStatement = insertIntoTableValues(tableName, sequelizePropertiesArray);
             break;
 
-        case genericQueryStatements.deleteFromTableWhere:
+        case genericQueryStatement.deleteFromTableWhere:
             selectedStatement = deleteFromTableWhere(tableName, sequelizePropertiesArray);
             break;
 
@@ -121,11 +152,12 @@ let createSimpleQueryStatement = function( genericQueryStatementsEnum, tableName
 let service = {
 
     createSimpleQueryStatement : createSimpleQueryStatement,
-    selectWhereEqualsAnd : selectWhereEqualsAnd,
+    selectWherePropertyEqualsAnd : selectWherePropertyEqualsAnd,
     selectAllFromTable : selectAllFromTable,
     insertIntoTableValues : insertIntoTableValues,
     deleteFromTableWhere : deleteFromTableWhere,
-    updateTableSetColumnValuesWhere : updateTableSetColumnValuesWhere
+    updateTableSetColumnValuesWhere : updateTableSetColumnValuesWhere,
+    selectWherePropertyEqualsAndIsNull : selectWherePropertyEqualsAndIsNull
 }
 
 module.exports = service;

@@ -1,4 +1,4 @@
-const userDomainManager = require('../../domainLayer/userDomainManager.js');
+const userDomainManager = require('../../domainLayer/domainManagers/userDomainManager.js');
 const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
 
 var userController = function(app){
