@@ -4,12 +4,12 @@ let dataStore = {
 }
 
 
-
-function updateDataStore(_newInMemoryDataStore){
+//Test:DONE
+const updateDataStore = function(_newInMemoryDataStore){
     dataStore = _newInMemoryDataStore
 }
-
-function getDataStore(){
+//Test:DONE
+const getDataStore = function(){
     return dataStore;
 }
 

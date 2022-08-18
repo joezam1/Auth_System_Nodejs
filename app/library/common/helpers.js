@@ -1,9 +1,11 @@
 const jsDataType = require('../stringLiterals/jsDataType.js');
 const inputTypeInspector = require('../../services/validation/inputTypeInspector.js');
-const InputValidationSuffix = require('../stringLiterals/inputValidationSuffix.js');
+const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
+const { stringIsNullOrEmpty } = require('../../services/validation/inputCommonInspector.js');
+
 
 //Test: DONE
-let removeLeadingAndTrailingSpaces = function(input){
+const removeLeadingAndTrailingSpaces = function(input){
     let inputNoSpaces = input;
     if(typeof input === jsDataType.STRING){
         inputNoSpaces = input.trim();
@@ -11,22 +13,34 @@ let removeLeadingAndTrailingSpaces = function(input){
     return inputNoSpaces;
 }
 //Test: DONE
-let getDateUTCFormatForDatabase = function(selectedLocaleDate){
-    let dateUTC = selectedLocaleDate.toISOString();
+const convertLocaleDateToUTCFormatForDatabase = function(selectedLocaleDateAsDate){
+    let dateUTC = selectedLocaleDateAsDate.toISOString();
     let dateUTCDateTimeFormat = dateUTC.replace('T', ' ').substring(0,19);
 
     return dateUTCDateTimeFormat;
 }
+//Test: DONE
+const composeUTCDateToUTCFormatForDatabase = function(selectedUtcDateAsDate){
 
-let composeUTCDateToFormatForDatabase = function(selectedUtcDateAsDate){
-    let timeStringArray = (selectedUtcDateAsDate.toTimeString()).split(' ');
-    let utcDateCreatedArray = (selectedUtcDateAsDate.toISOString()).split('T');
-    let composedUTCDateDbFormat =  utcDateCreatedArray[0] + ' ' + timeStringArray[0];
+    let selectedUTCYear = selectedUtcDateAsDate.getFullYear();
+    let selectedUTCMonth = selectedUtcDateAsDate.getMonth();
+    let selectedUTCDate = selectedUtcDateAsDate.getDate();
+    let utcTimeStringArray = (selectedUtcDateAsDate.toTimeString()).split(' ');
+    let adjustedUTCMonth = (selectedUTCMonth + 1);
+    let formattedUTCMonth = ( adjustedUTCMonth < 10) ? '0'+adjustedUTCMonth : adjustedUTCMonth;
+    let composedUTCDateDbFormat = selectedUTCYear + '-' + formattedUTCMonth + '-' + selectedUTCDate + ' ' + utcTimeStringArray[0];
 
      return composedUTCDateDbFormat;
 }
 //Test: DONE
-let createPropertiesArrayFromObjectProperties = function(obj){
+const convertLocaleDateToUTCDate = function(localeDAteAsDate ){
+    //To convert to UTC datetime by subtracting the current Timezone offset
+    let utcDate =  new Date(localeDAteAsDate.getTime() + (localeDAteAsDate.getTimezoneOffset()*60000));
+    return utcDate;
+}
+
+//Test: DONE
+const createPropertiesArrayFromObjectProperties = function(obj){
     let properties = [];
     for(const key in obj){
         let newObj =  obj[key];
@@ -35,7 +49,7 @@ let createPropertiesArrayFromObjectProperties = function(obj){
     return properties;
 }
 //Test: DONE
-let formatStringFirstLetterCapital = function(input){
+const formatStringFirstLetterCapital = function(input){
 
     let newInput = input;
     let allInputsArray = [];
@@ -54,31 +68,44 @@ let formatStringFirstLetterCapital = function(input){
     return newInput;
 
 }
-let convertToStringOrStringifyForDataStorage = function(input){
-    let result = '';
+
+//Test: DONE
+const convertToStringOrStringifyForDataStorage = function(input){
+
     if(inputTypeInspector.isTypeString(input) ){
         return input;
     }
-    else if(inputTypeInspector.isDate(input) || inputTypeInspector.isTypeBoolean(input) || inputTypeInspector.isTypeDecimal(input) || inputTypeInspector.isTypeInteger(input) || inputTypeInspector.isTypeNumber(input) || inputTypeInspector.isTypeNull(input) ){
-        result = input.toString();
+
+    else if(inputTypeInspector.isDate(input) ||
+            inputTypeInspector.isTypeBoolean(input) ||
+            inputTypeInspector.isTypeDecimal(input) ||
+            inputTypeInspector.isTypeInteger(input) ||
+            inputTypeInspector.isTypeNumber(input)){
+        return input.toString();
     }
-    else if(inputTypeInspector.isTypeFunction(input)){
-        let func = { inputFunc : input }
-        result = JSON.stringify(func);
+
+    else if(Array.isArray(input) || inputTypeInspector.isTypeFunction(input)){
+        return input.toString();
     }
+
+    else if(inputTypeInspector.isTypeNull(input) || inputCommonInspector.valueIsUndefined(input) ){
+        return '';
+    }
+
     else if(inputTypeInspector.isTypeObject(input)){
-        result = JSON.stringify(input);
+        return JSON.stringify(input);
     }
-    return result;
+    return '';
 }
 
-let service={
+const service= Object.freeze({
     removeLeadingAndTrailingSpaces : removeLeadingAndTrailingSpaces,
-    getDateUTCFormatForDatabase : getDateUTCFormatForDatabase,
+    convertLocaleDateToUTCFormatForDatabase : convertLocaleDateToUTCFormatForDatabase,
     createPropertiesArrayFromObjectProperties : createPropertiesArrayFromObjectProperties,
     formatStringFirstLetterCapital : formatStringFirstLetterCapital,
     convertToStringOrStringifyForDataStorage : convertToStringOrStringifyForDataStorage,
-    composeUTCDateToFormatForDatabase : composeUTCDateToFormatForDatabase
-}
+    composeUTCDateToUTCFormatForDatabase : composeUTCDateToUTCFormatForDatabase,
+    convertLocaleDateToUTCDate :convertLocaleDateToUTCDate
+});
 
 module.exports = service;

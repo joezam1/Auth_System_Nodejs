@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.66% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>56/75</span>
+                <span class='fraction'>57/76</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.66% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>56/75</span>
+                <span class='fraction'>57/76</span>
             </div>
         
             
@@ -200,7 +200,9 @@
 <a name='L135'></a><a href='#L135'>135</a>
 <a name='L136'></a><a href='#L136'>136</a>
 <a name='L137'></a><a href='#L137'>137</a>
-<a name='L138'></a><a href='#L138'>138</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -343,7 +345,8 @@ const InputTypeInspector = require('./inputTypeInspector.js');
 const InputValueInspector = require('./inputValueInspector');
 const ValidationConfig = require('../../../configuration/validation/validationConfig.js');
 const FormFieldStatus = require('../../library/enumerations/formFieldStatus.js');
-const DataTypes = require('../../library/stringLiterals/dataTypes.js');
+const jsDataType = require('../../library/stringLiterals/jsDataType.js');
+const InputValidationSuffix = require('../../library/stringLiterals/inputValidationSuffix.js');
 &nbsp;
 //Test: DONE
 const inspectInputLength = function(objViewModel){
@@ -357,7 +360,7 @@ const inspectInputLength = function(objViewModel){
 &nbsp;
         if(fieldStatus === FormFieldStatus.Required &amp;&amp; InputCommonInspector.stringIsNullOrEmpty(value)){
             let allCapitalLettersKey = Helpers.formatStringFirstLetterCapital(key);
-            inputLengthReport[`${key}Required`] = `${allCapitalLettersKey} is empty. ${allCapitalLettersKey} is Required`;
+            inputLengthReport[`${key + InputValidationSuffix.REQUIRED}`] = `${allCapitalLettersKey} is empty. ${allCapitalLettersKey} is Required`;
         }
     }
     return inputLengthReport;
@@ -370,33 +373,33 @@ let inspectInputType = function(objViewModel){
         <span class="missing-if-branch" title="else path not taken" >E</span>if(objViewModel.hasOwnProperty(key)){
             let selectedDataType = objViewModel[key].fieldDataType;
             switch(selectedDataType){
-                case DataTypes.STRING:
+                case jsDataType.STRING:
                 if(!InputTypeInspector.isTypeString(objViewModel[key].fieldValue)){
-                    reportTypeErrors[`${key}Type`] = getReportErrorInputType(objViewModel, key);
+                    reportTypeErrors[`${key + InputValidationSuffix.DATATYPE}`] = getReportErrorInputType(objViewModel, key);
                 }
                 break;
 &nbsp;
-<span class="branch-1 cbranch-no" title="branch not covered" >                case DataTypes.DATE:</span>
+<span class="branch-1 cbranch-no" title="branch not covered" >                case jsDataType.DATE:</span>
 <span class="cstat-no" title="statement not covered" >                if(!InputTypeInspector.isDate(objViewModel[key].fieldValue)){</span>
-<span class="cstat-no" title="statement not covered" >                    reportTypeErrors[`${key}Type`] = getReportErrorInputType(objViewModel, key);</span>
+<span class="cstat-no" title="statement not covered" >                    reportTypeErrors[`${key + InputValidationSuffix.DATATYPE}`] = getReportErrorInputType(objViewModel, key);</span>
                 }
 <span class="cstat-no" title="statement not covered" >                break;</span>
 &nbsp;
-<span class="branch-2 cbranch-no" title="branch not covered" >                case DataTypes.NUMBER:</span>
+<span class="branch-2 cbranch-no" title="branch not covered" >                case jsDataType.NUMBER:</span>
 <span class="cstat-no" title="statement not covered" >                if(!InputTypeInspector.isTypeNumber(objViewModel[key].fieldValue)){</span>
-<span class="cstat-no" title="statement not covered" >                    reportTypeErrors[`${key}Type`] = getReportErrorInputType(objViewModel, key);</span>
+<span class="cstat-no" title="statement not covered" >                    reportTypeErrors[`${key + InputValidationSuffix.DATATYPE}`] = getReportErrorInputType(objViewModel, key);</span>
                 }
 <span class="cstat-no" title="statement not covered" >                break;</span>
 &nbsp;
-<span class="branch-3 cbranch-no" title="branch not covered" >                case DataTypes.BOOLEAN:</span>
+<span class="branch-3 cbranch-no" title="branch not covered" >                case jsDataType.BOOLEAN:</span>
 <span class="cstat-no" title="statement not covered" >                if(!InputTypeInspector.isTypeBoolean(objViewModel[key].fieldValue)){</span>
-<span class="cstat-no" title="statement not covered" >                    reportTypeErrors[`${key}Type`] = getReportErrorInputType(objViewModel, key);</span>
+<span class="cstat-no" title="statement not covered" >                    reportTypeErrors[`${key + InputValidationSuffix.DATATYPE}`] = getReportErrorInputType(objViewModel, key);</span>
                 }
 <span class="cstat-no" title="statement not covered" >                break;</span>
 &nbsp;
-<span class="branch-4 cbranch-no" title="branch not covered" >                case DataTypes.OBJECT:</span>
+<span class="branch-4 cbranch-no" title="branch not covered" >                case jsDataType.OBJECT:</span>
 <span class="cstat-no" title="statement not covered" >                if(!InputTypeInspector.isTypeObject(objViewModel[key].fieldValue)){</span>
-<span class="cstat-no" title="statement not covered" >                    reportTypeErrors[`${key}Type`] = getReportErrorInputType(objViewModel, key);</span>
+<span class="cstat-no" title="statement not covered" >                    reportTypeErrors[`${key + InputValidationSuffix.DATATYPE}`] = getReportErrorInputType(objViewModel, key);</span>
                 }
 <span class="cstat-no" title="statement not covered" >                break;</span>
             }
@@ -416,7 +419,7 @@ function inspectInputValue(objViewModel){
                 let value = objViewModel[key].fieldValue;
                 <span class="missing-if-branch" title="if path not taken" >I</span>if(!InputValueInspector.usernameIsValid(value)){
                     let allCapitalLettersKey = <span class="cstat-no" title="statement not covered" >Helpers.formatStringFirstLetterCapital(key);</span>
-<span class="cstat-no" title="statement not covered" >                    dataReportErrors[`${key}Invalid`] = `${allCapitalLettersKey} is Invalid`;</span>
+<span class="cstat-no" title="statement not covered" >                    dataReportErrors[`${key + InputValidationSuffix.INVALID}`] = `${allCapitalLettersKey} is Invalid`;</span>
                 }
             }
 &nbsp;
@@ -424,7 +427,7 @@ function inspectInputValue(objViewModel){
                 let value = objViewModel[key].fieldValue;
                 if(!InputValueInspector.nameIsValid(value)){
                     let allCapitalLettersKey = Helpers.formatStringFirstLetterCapital(key);
-                    dataReportErrors[`${key}Invalid`] = `${allCapitalLettersKey} is Invalid`;
+                    dataReportErrors[`${key + InputValidationSuffix.INVALID}`] = `${allCapitalLettersKey} is Invalid`;
                 }
             }
 &nbsp;
@@ -433,7 +436,7 @@ function inspectInputValue(objViewModel){
                 let value = objViewModel[key].fieldValue;
                 <span class="missing-if-branch" title="if path not taken" >I</span>if(!InputValueInspector.emailIsValid(value)){
                     let allCapitalLettersKey = <span class="cstat-no" title="statement not covered" >Helpers.formatStringFirstLetterCapital(key);</span>
-<span class="cstat-no" title="statement not covered" >                    dataReportErrors[`${key}Invalid`] = `${allCapitalLettersKey} is Invalid`;</span>
+<span class="cstat-no" title="statement not covered" >                    dataReportErrors[`${key + InputValidationSuffix.INVALID}`] = `${allCapitalLettersKey} is Invalid`;</span>
                 }
             }
 &nbsp;
@@ -441,7 +444,7 @@ function inspectInputValue(objViewModel){
                 selectedPassword = objViewModel[key].fieldValue;
                 <span class="missing-if-branch" title="if path not taken" >I</span>if(!InputValueInspector.passwordMinCharactersIsValid(selectedPassword, ValidationConfig.passwordMinCharacters)){
                     let allCapitalLettersKey = <span class="cstat-no" title="statement not covered" >Helpers.formatStringFirstLetterCapital(key);</span>
-<span class="cstat-no" title="statement not covered" >                    dataReportErrors[`${key}Invalid`] = `${allCapitalLettersKey} must have ${ValidationConfig.passwordMinCharacters} minimum characters`;</span>
+<span class="cstat-no" title="statement not covered" >                    dataReportErrors[`${key + InputValidationSuffix.INVALID}`] = `${allCapitalLettersKey} must have ${ValidationConfig.passwordMinCharacters} minimum characters`;</span>
                 }
             }
 &nbsp;
@@ -481,7 +484,7 @@ function getReportErrorInputType(userViewModel,key){
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Thu Aug 11 2022 21:37:59 GMT-0500 (Central Daylight Time)
+                at Wed Aug 17 2022 23:20:26 GMT-0500 (Central Daylight Time)
             </div>
         <script src="../../../prettify.js"></script>
         <script>

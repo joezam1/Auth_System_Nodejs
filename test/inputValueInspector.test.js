@@ -1,7 +1,7 @@
 const inputValueInspector = require('../app/services/validation/inputValueInspector.js');
 
 describe('File: InputValueInspector',()=>{
-    //test('True is True', ()=>{ expect(true).toBe(true); });
+
     describe('Function: nameIsValid', function(){
 
         test('Single Name letters only returns TRUE', function(){

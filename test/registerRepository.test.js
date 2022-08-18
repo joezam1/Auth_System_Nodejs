@@ -1,4 +1,4 @@
-const registerDomainModel = require('../app/domainLayer/register.js');
+const registerDomainModel = require('../app/domainLayer/domainModels/register.js');
 const registerRepository = require('../app/dataAccessLayer/repositories/registerRepository.js');
 const dbAction = require('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');
 
@@ -9,7 +9,6 @@ describe('File: registerRepository,js',function(){
         jest.resetAllMocks();
     });
     describe('function: insertRegisterIntoTableTransactionAsync',function(){
-
         test('Database function is called Once and Inserts the user Register OK',async function(){
             //Arrange
             let register = new registerDomainModel();
@@ -31,7 +30,5 @@ describe('File: registerRepository,js',function(){
             expect(registerCount).toEqual(1);
             expect(dbAction.executeSingleConnectionStatementAsync).toBeCalledTimes(1);
         });
-    })
-
-
+    });
 });

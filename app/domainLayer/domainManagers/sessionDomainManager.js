@@ -12,52 +12,13 @@ const dbAction = require('../../dataAccessLayer/mysqlDataStore/context/dbAction.
 
 let resolveSessionUpdateAsync = async function (request) {
 
-    let tempUserId = null;
-    let currentSessionToken = request.body.session;
-    let tempCookieJson = null;
-    let tempSessionModel = domainManagerHelper.createSessionModel(tempUserId, currentSessionToken, tempCookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
-
-    let sesionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(tempSessionModel);
-    console.log('sesionsDtoModelResultArray', sesionsDtoModelResultArray);
-    if (sesionsDtoModelResultArray instanceof Error) {
-        return httpResponseService.getResponseResultStatus(sesionsDtoModelResultArray, httpResponseStatus._400badRequest);
+    let _currentSessionToken = request.body.session;
+    let sessionInfo = await processSessionUpdateGetSessionFromDatabaseAsync(_currentSessionToken);
+    if(sessionInfo.status === httpResponseStatus._200ok){
+        let sessionDtoModel = sessionInfo.result;
+        return await processSessionUpdateSaveNewTokenToDatabaseAsync(sessionDtoModel);
     }
-    else if (sesionsDtoModelResultArray.length === 0) {
-        return httpResponseService.getResponseResultStatus(notificationService.sessionNoLongerActive, httpResponseStatus._401unauthorized);
-    }
-    let currentSessionDtoModel = sesionsDtoModelResultArray[0];
-
-    if(sessionService.sessionIsExpired(currentSessionDtoModel.UTCDateExpired.value)){
-        userDomainManager.resolveUserLogoutSessionAsync(request);
-    }
-
-    let newSessionToken = await sessionService.generateSessionTokenAsync();
-    let cookieObj = domainManagerHelper.createCookieObj(newSessionToken);
-
-    let cookieJson = JSON.stringify(cookieObj);
-
-    let updatedSessionModel = domainManagerHelper.createSessionModel(currentSessionDtoModel.UserId.value, newSessionToken, cookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
-    updatedSessionModel.setSessionId(currentSessionDtoModel.SessionId.value);
-
-    let sessionsResultArray = await sessionRepository.updateSessionTableSetColumnValuesWhereAsync(updatedSessionModel);
-    if (sessionsResultArray instanceof Error) {
-        return httpResponseService.getResponseResultStatus(sessionsResultArray, httpResponseStatus._400badRequest);
-    }
-    else if(sessionsResultArray.length>0 && sessionsResultArray[0].affectedRows ===1){
-
-        let newSessionViewModel = new sessionViewModel();
-        newSessionViewModel.sessionToken.fieldValue = newSessionToken;
-        newSessionViewModel.expires.fieldValue = currentSessionDtoModel.Expires.value;
-        newSessionViewModel.data.fieldValue = cookieObj;
-        newSessionViewModel.isActive.fieldValue = currentSessionDtoModel.IsActive.value;
-        newSessionViewModel.utcDateCreated.fieldValue = currentSessionDtoModel.UTCDateCreated.value.toString();
-        newSessionViewModel.utcDateExpired.fieldValue = currentSessionDtoModel.UTCDateExpired.value.toString();
-
-        return httpResponseService.getResponseResultStatus(newSessionViewModel, httpResponseStatus._200ok);
-    }
-
-    return httpResponseService.getResponseResultStatus(notificationService.errorProcessingNewSession, httpResponseStatus._422unprocessableEntity);
-
+    return sessionInfo;
 }
 
 let resolveGetSessionAsync = async function(request){
@@ -66,7 +27,6 @@ let resolveGetSessionAsync = async function(request){
     let currentSessionToken = request.headers.x_session_id;
     let tempCookieJson = null;
     let tempSessionModel = domainManagerHelper.createSessionModel(tempUserId, currentSessionToken, tempCookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
-
     let sessionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(tempSessionModel);
     console.log('sesionsDtoModelResultArray', sessionsDtoModelResultArray);
     if (sessionsDtoModelResultArray instanceof Error) {
@@ -88,6 +48,7 @@ let resolveGetSessionAsync = async function(request){
     currentSessionViewModel.isActive.fieldValue = currentSessionDtoModel.IsActive.value;
     currentSessionViewModel.utcDateCreated.fieldValue = currentSessionDtoModel.UTCDateCreated.value.toString();
     currentSessionViewModel.utcDateExpired.fieldValue = currentSessionDtoModel.UTCDateExpired.value.toString();
+
     return httpResponseService.getResponseResultStatus(currentSessionViewModel, httpResponseStatus._200ok);
 }
 
@@ -104,14 +65,13 @@ let insertSessionAndSessionActivityTransactionAsync = async function(sessionMode
             return httpResponseService.getResponseResultStatus(insertedSessionResult, httpResponseStatus._400badRequest );
         }
         let sessionLoginDate = insertedSessionResult.sessionDtoModel.UTCDateCreated.value;
-        let insertedSessionActivityResult = await sessionRepository.insertSessionActivityIntoTrableTransacionAsync( singleConnection , sessionActivityModel, sessionLoginDate);
+        let insertedSessionActivityResult = await sessionRepository.insertSessionActivityIntoTableTransacionAsync( singleConnection , sessionActivityModel, sessionLoginDate);
         if(insertedSessionActivityResult instanceof Error){
             dbAction.rollbackTransactionSingleConnection(singleConnection);
             return httpResponseService.getResponseResultStatus(insertedSessionActivityResult, httpResponseStatus._400badRequest );
         }
 
         dbAction.commitTransactionSingleConnection(singleConnection);
-
         return httpResponseService.getResponseResultStatus(insertedSessionResult, httpResponseStatus._201created );
     }
     catch(error){
@@ -131,5 +91,50 @@ var service = Object.freeze({
 module.exports = service;
 
 //#REGION Private Functions
+async function processSessionUpdateGetSessionFromDatabaseAsync(currentSessionToken){
+    let tempUserId = null;
+    let tempCookieJson = null;
+    let tempSessionModel = domainManagerHelper.createSessionModel(tempUserId, currentSessionToken, tempCookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
+    let sesionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(tempSessionModel);
+    console.log('sesionsDtoModelResultArray', sesionsDtoModelResultArray);
+    if (sesionsDtoModelResultArray instanceof Error) {
+        return httpResponseService.getResponseResultStatus(sesionsDtoModelResultArray, httpResponseStatus._400badRequest);
+    }
+    else if (sesionsDtoModelResultArray.length === 0) {
+        return httpResponseService.getResponseResultStatus(notificationService.sessionNoLongerActive, httpResponseStatus._401unauthorized);
+    }
+    let currentSessionDtoModel = sesionsDtoModelResultArray[0];
+    return httpResponseService.getResponseResultStatus(currentSessionDtoModel, httpResponseStatus._200ok);
+}
 
+async function processSessionUpdateSaveNewTokenToDatabaseAsync(currentSessionDtoModel){
+
+    if(sessionService.sessionIsExpired(currentSessionDtoModel.UTCDateExpired.value)){
+        return userDomainManager.resolveUserLogoutSessionAsync(request);
+    }
+
+    let newSessionToken = await sessionService.generateSessionTokenAsync();
+    let cookieObj = domainManagerHelper.createCookieObj(newSessionToken);
+    let cookieJson = JSON.stringify(cookieObj);
+    let updatedSessionModel = domainManagerHelper.createSessionModel(currentSessionDtoModel.UserId.value, newSessionToken, cookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
+    updatedSessionModel.setSessionId(currentSessionDtoModel.SessionId.value);
+
+    let sessionsResultArray = await sessionRepository.updateSessionTableSetColumnValuesWhereAsync(updatedSessionModel);
+    if (sessionsResultArray instanceof Error) {
+        return httpResponseService.getResponseResultStatus(sessionsResultArray, httpResponseStatus._400badRequest);
+    }
+    else if(sessionsResultArray.length>0 && sessionsResultArray[0].affectedRows ===1){
+        let newSessionViewModel = new sessionViewModel();
+        newSessionViewModel.sessionToken.fieldValue = newSessionToken;
+        newSessionViewModel.expires.fieldValue = currentSessionDtoModel.Expires.value;
+        newSessionViewModel.data.fieldValue = cookieObj;
+        newSessionViewModel.isActive.fieldValue = currentSessionDtoModel.IsActive.value;
+        newSessionViewModel.utcDateCreated.fieldValue = currentSessionDtoModel.UTCDateCreated.value.toString();
+        newSessionViewModel.utcDateExpired.fieldValue = currentSessionDtoModel.UTCDateExpired.value.toString();
+        return httpResponseService.getResponseResultStatus(newSessionViewModel, httpResponseStatus._200ok);
+    }
+
+    return httpResponseService.getResponseResultStatus(notificationService.errorProcessingNewSession, httpResponseStatus._422unprocessableEntity);
+
+}
 //#ENDREGION Private Functions

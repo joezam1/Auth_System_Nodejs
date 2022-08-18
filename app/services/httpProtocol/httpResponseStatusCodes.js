@@ -1,6 +1,6 @@
 const httpResponseStatus = require('../../library/enumerations/httpResponseStatus.js');
 
-var statuses = {
+const statuses = Object.freeze({
     ok200:{
         code:httpResponseStatus._200ok,
         statusText:'ok'
@@ -80,8 +80,6 @@ var statuses = {
         code:httpResponseStatus._422unprocessableEntity,
         statusText:'unprocessable Entity'
     }
-
-
-}
+});
 
 module.exports = statuses;

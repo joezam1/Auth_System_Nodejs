@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         UTCLogoutDate: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             value: undefined
         }
     }, {

@@ -2,7 +2,6 @@ const inputCommonInspector = require('../app/services/validation/inputCommonInsp
 
 
 describe('File: inputCommonInspector.js', () => {
-    //test('True is True', ()=>{ expect(true).toBe(true); });
 
     describe('Function: stringIsNullOrEmpty', function () {
         test('Empty string returns TRUE', function () {

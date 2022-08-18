@@ -1,6 +1,6 @@
 const userRepository = require('../app/dataAccessLayer/repositories/userRepository.js');
-const userDomainModel = require('../app/domainLayer/user.js');
-const userRoleDomainModel = require('../app/domainLayer/userRole.js');
+const userDomainModel = require('../app/domainLayer/domainModels/user.js');
+const userRoleDomainModel = require('../app/domainLayer/domainModels/userRole.js');
 const dbAction = require('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');
 const userrole = require('../app/dataAccessLayer/mysqlDataStore/mappings/models/userrole.js');
 jest.mock('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');

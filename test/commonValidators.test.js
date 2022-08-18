@@ -3,9 +3,6 @@ const CommonValidators = require ('../app/services/validation/commonValidators.j
 
 describe('File: CommonValidators.js', function () {
 
-    //NOTE: Test that JEST is working correctly
-    //test('True is True', function () { expect(true).toBe(true); });
-
     describe('Function: isValidJson', function(){
         test('Input of type json Object returns TRUE', function(){
             //Arrange

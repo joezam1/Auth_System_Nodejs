@@ -4,7 +4,7 @@ const inputCommonInspector = require('../validation/inputCommonInspector.js');
 const httpResponseHelper = require('./httpResponseHelper.js');
 
 //Test: DONE
-let getResponseResultStatus = function(resultObj, statusCode){
+const getResponseResultStatus = function(resultObj, statusCode){
 
     let responseObj = getResponseStatusObject(statusCode);
     console.log('responseObj', responseObj);
@@ -16,7 +16,7 @@ let getResponseResultStatus = function(resultObj, statusCode){
     return obj;
 }
 //Test: DONE
-let sendHttpResponse = function(resultObj, response){
+const sendHttpResponse = function(resultObj, response){
 
     try{
             if(!inputCommonInspector.objectIsNullOrEmpty(resultObj) && !inputCommonInspector.objectIsNullOrEmpty(resultObj.status)){
@@ -33,10 +33,10 @@ let sendHttpResponse = function(resultObj, response){
 }
 
 
-let service = {
+let service = Object.freeze({
     getResponseResultStatus : getResponseResultStatus,
     sendHttpResponse : sendHttpResponse
-}
+});
 
 module.exports = service;
 

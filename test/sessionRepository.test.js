@@ -1,11 +1,11 @@
 const sessionRepository = require('../app/dataAccessLayer/repositories/sessionRepository.js');
 const sessionModel = require('../app/domainLayer/domainModels/session.js');
-const dbAction = require('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');
-const repositoryHelper = require('../app/dataAccessLayer/repositories/repositoryHelper.js');
-const domainManagerHelper = require('../app/domainLayer/domainManagerHelper.js');
+const sessionActivity = require('../app/domainLayer/domainModels/sessionActivity.js');
+const repositoryManager = require('../app/dataAccessLayer/repositories/repositoryManager.js');
+const domainManagerHelper = require('../app/domainLayer/domainManagers/domainManagerHelper.js');
+const helpers = require('../app/library/common/helpers.js');
 
-jest.mock('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');
-jest.mock('../app/dataAccessLayer/repositories/repositoryHelper.js');
+jest.mock('../app/dataAccessLayer/repositories/repositoryManager.js');
 
 
 
@@ -15,7 +15,7 @@ describe('File: sessionRepository.js',function(){
         jest.resetAllMocks();
     });
 
-    describe('Function: insertSessionIntoTableAsync',function(){
+    describe('Function: insertSessionIntoTableTransactionAsync',function(){
         test('When Session is created and saved to the database, the results returns OK', async function(){
             //Arrange
             let insertResult = {
@@ -23,8 +23,8 @@ describe('File: sessionRepository.js',function(){
                 saved:true
             }
             let resultDatabaseMock = [insertResult]
-            repositoryHelper.resolveStatementAsync = jest.fn().mockReturnValueOnce(resultDatabaseMock);
-
+            repositoryManager.resolveSingleConnectionStatementAsync = jest.fn().mockReturnValueOnce(resultDatabaseMock);
+            let mockConnectionPool = 'abcd';
             let sessionDomain = new sessionModel();
             sessionDomain.setSessionId('123456');
             sessionDomain.setUserId('abcdeiiojfa111');
@@ -34,12 +34,46 @@ describe('File: sessionRepository.js',function(){
             sessionDomain.setSessionStatusIsActive(true);
             //Act
 
-            let sessionResult = await sessionRepository.insertSessionIntoTableAsync(sessionDomain);
+            let sessionResult = await sessionRepository.insertSessionIntoTableTransactionAsync(mockConnectionPool, sessionDomain);
             console.log('sessionResult',sessionResult)
             //Assert
-            expect(sessionResult).toEqual(resultDatabaseMock);
-            expect(repositoryHelper.resolveStatementAsync).toBeCalledTimes(1);
+            expect(sessionResult.statementResult).toEqual(resultDatabaseMock);
+            expect(repositoryManager.resolveSingleConnectionStatementAsync).toBeCalledTimes(1);
         })
+    });
+
+    describe('Function: insertSessionActivityIntoTableTransacionAsync', function(){
+        test('When session Activity is saved to the database the results are returned OK', function(){
+            //arrange
+            let insertResult = {
+                affectedRows:1,
+                saved:true
+            }
+            let resultDatabaseMock = [insertResult]
+
+            let dataModel = {
+                activityId: '123456',
+                userId: 'adfadf',
+                geolocation: 'coords:{lat:123465, long:123456}',
+                device:'mobile phone',
+                userAgent:'mozilla firefox'
+            }
+            let sessionActivityDomainModel = new sessionActivity();
+            sessionActivityDomainModel.setSessionActivityId(dataModel.activityId);
+            sessionActivityDomainModel.setUserId(dataModel.userId);
+            sessionActivityDomainModel.setGeolocation(dataModel.geolocation);
+            sessionActivityDomainModel.setDevice(dataModel.device);
+            sessionActivityDomainModel.setUserAgent(dataModel.userAgent);
+
+            repositoryManager.resolveSingleConnectionStatementAsync = jest.fn().mockReturnValueOnce(resultDatabaseMock);
+            let mockConnectionPool = 'abcd';
+            let mockLoginDate = new Date();
+            let mockLoginDateUtc = helpers.convertLocaleDateToUTCFormatForDatabase(mockLoginDate);
+            //Act
+            let result = sessionRepository.insertSessionActivityIntoTableTransacionAsync(mockConnectionPool, sessionActivityDomainModel , mockLoginDateUtc);
+            //Assert
+            expect(repositoryManager.resolveSingleConnectionStatementAsync ).toHaveBeenCalledTimes(1);
+        });
     });
 
     describe('Function: getSessionFromDatabaseAsync', function(){
@@ -62,7 +96,7 @@ describe('File: sessionRepository.js',function(){
                 UTCDateExpired:''
             }
             let mockSessionObjectResult =[[sessionDTOModel],[]];
-            repositoryHelper.resolveStatementAsync = jest.fn().mockReturnValueOnce(mockSessionObjectResult);
+            repositoryManager.resolveStatementAsync = jest.fn().mockReturnValueOnce(mockSessionObjectResult);
 
             let sessionDomainModel = domainManagerHelper.createSessionModel(userId, sessionToken,data, expirationTimeMilliseconds);
             //Act
@@ -71,7 +105,7 @@ describe('File: sessionRepository.js',function(){
             //Assert
             expect(result).not.toBe(null);
             expect(tokenValue).toEqual(sessionToken);
-            expect(repositoryHelper.resolveStatementAsync).toBeCalledTimes(1);
+            expect(repositoryManager.resolveStatementAsync).toBeCalledTimes(1);
         });
     });
 
@@ -83,7 +117,7 @@ describe('File: sessionRepository.js',function(){
                 saved:true
             }
             let resultDatabaseMock = [deleteResult]
-            repositoryHelper.resolveStatementAsync = jest.fn().mockReturnValueOnce(resultDatabaseMock);
+            repositoryManager.resolveStatementAsync = jest.fn().mockReturnValueOnce(resultDatabaseMock);
 
             let sessionDomain = new sessionModel();
             sessionDomain.setSessionId('123456');
@@ -98,7 +132,7 @@ describe('File: sessionRepository.js',function(){
             console.log('sessionResult',sessionResult)
             //Assert
             expect(sessionResult).toEqual(resultDatabaseMock);
-            expect(repositoryHelper.resolveStatementAsync).toBeCalledTimes(1);
+            expect(repositoryManager.resolveStatementAsync).toBeCalledTimes(1);
         })
     });
 
@@ -110,7 +144,7 @@ describe('File: sessionRepository.js',function(){
                 saved:true
             }
             let resultDatabaseMock = [updatedResult]
-            repositoryHelper.resolveConditionalWhereEqualsStatementAsync = jest.fn().mockReturnValueOnce(resultDatabaseMock);
+            repositoryManager.resolveConditionalWhereEqualsStatementAsync = jest.fn().mockReturnValueOnce(resultDatabaseMock);
 
             let sessionDomain = new sessionModel();
             sessionDomain.setSessionId('123456');
@@ -125,7 +159,79 @@ describe('File: sessionRepository.js',function(){
             console.log('sessionResult',sessionResult)
             //Assert
             expect(sessionResult).toEqual(resultDatabaseMock);
-            expect(repositoryHelper.resolveConditionalWhereEqualsStatementAsync).toBeCalledTimes(1);
+            expect(repositoryManager.resolveConditionalWhereEqualsStatementAsync).toBeCalledTimes(1);
         })
     });
+
+    describe('Function: getSessionActivitiesFromDatabaseAsync', function(){
+        test('When function is called the SessionActivities object is retrieved', function(){
+            //Arrange
+            let sessionActivityDataModel = {
+                activityId: '123456',
+                userId: 'adfadf',
+                geolocation: 'coords:{lat:123465, long:123456}',
+                device:'mobile phone',
+                userAgent:'mozilla firefox'
+            }
+            let resultDb = [sessionActivityDataModel]
+            repositoryManager.resolveWherePropertyEqualsAndIsNullStatementAsync = jest.fn().mockReturnValueOnce(resultDb);
+
+            let mockLoginDate = new Date();
+            let mockLoginDateUtc = helpers.convertLocaleDateToUTCFormatForDatabase(mockLoginDate);
+
+            let dataModel = {
+                activityId: '123456',
+                userId: 'adfadf',
+                geolocation: 'coords:{lat:123465, long:123456}',
+                device:'mobile phone',
+                userAgent:'mozilla firefox'
+            }
+            let sessionActivityDomainModel = new sessionActivity();
+            sessionActivityDomainModel.setSessionActivityId(dataModel.activityId);
+            sessionActivityDomainModel.setUserId(dataModel.userId);
+            sessionActivityDomainModel.setGeolocation(dataModel.geolocation);
+            sessionActivityDomainModel.setDevice(dataModel.device);
+            sessionActivityDomainModel.setUserAgent(dataModel.userAgent);
+            //Act
+            let result = sessionRepository.getSessionActivitiesFromDatabaseAsync(sessionActivityDomainModel, mockLoginDateUtc);
+            //Assert
+            expect(repositoryManager.resolveWherePropertyEqualsAndIsNullStatementAsync).toBeCalledTimes(1);
+
+
+        });
+    });
+
+    describe('Function: updateSessionActivitiesTableSetColumnValuesWhereAsync', function(){
+        test('When function is called the correct Session Activity is retrieved', function(){
+
+            //Arrange
+            let sessionActivityDataModel = {
+                activityId: '123456',
+                userId: 'adfadf',
+                geolocation: 'coords:{lat:123465, long:123456}',
+                device:'mobile phone',
+                userAgent:'mozilla firefox'
+            }
+            let resultDb = [sessionActivityDataModel]
+            repositoryManager.resolveConditionalWhereEqualsStatementAsync = jest.fn().mockReturnValueOnce();
+
+            let dataModel = {
+                activityId: '123456',
+                userId: 'adfadf',
+                geolocation: 'coords:{lat:123465, long:123456}',
+                device:'mobile phone',
+                userAgent:'mozilla firefox'
+            }
+            let sessionActivityDomainModel = new sessionActivity();
+            sessionActivityDomainModel.setSessionActivityId(dataModel.activityId);
+            sessionActivityDomainModel.setUserId(dataModel.userId);
+            sessionActivityDomainModel.setGeolocation(dataModel.geolocation);
+            sessionActivityDomainModel.setDevice(dataModel.device);
+            sessionActivityDomainModel.setUserAgent(dataModel.userAgent);
+            //Act
+            let result = sessionRepository.updateSessionActivitiesTableSetColumnValuesWhereAsync(sessionActivityDomainModel);
+            //Assert
+            expect(repositoryManager.resolveConditionalWhereEqualsStatementAsync).toBeCalledTimes(1);
+        })
+    })
 })

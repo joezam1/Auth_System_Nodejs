@@ -78,7 +78,6 @@ function updateExpiredSessionRemovalIdDataStore(intervalId){
     let result = reducerServices.dispatch(payload, action);
     console.log('reducerService-dispatch-result', result);
     return result;
-
 }
 
 function updateInspectorStateDataStore(status){
@@ -104,10 +103,6 @@ function updateSessionActivityWhere(userId, utcLoginDate){
 
 function removeSingleRowWhereQuery(sessionId){
     return `DELETE FROM ${_sessionTableName} WHERE ${_columnNameSessionId} = '${sessionId}' `;
-}
-
-function removeAllRowsWhereQuery(){
-    return `DELETE FROM ${_sessionTableName} WHERE ${_columNameUTCDateExpired} < UTC_TIMESTAMP() `;
 }
 
 function queryWorkerCallback(event){
@@ -188,11 +183,9 @@ function updateSessionActivitiesAndRemoveSessions(allExpiredSessionsArray){
 }
 
 function executeUpdateSessionActivities(itemsArray){
-
     for(let a=0; a<itemsArray.length; a++){
         let userId = itemsArray[a].UserId;
-        let utcLoginDate = helpers.getDateUTCFormatForDatabase(itemsArray[a].UTCDateCreated);
-        let utcLoginDateDbFormat = helpers.composeUTCDateToFormatForDatabase(itemsArray[a].UTCDateCreated);
+        let utcLoginDateDbFormat = helpers.composeUTCDateToUTCFormatForDatabase(itemsArray[a].UTCDateCreated);
         let updateSessionActivity = updateSessionActivityWhere(userId ,utcLoginDateDbFormat )
         let reply = {
             message : 'query',
@@ -204,7 +197,6 @@ function executeUpdateSessionActivities(itemsArray){
 }
 
 function executeRemoveExpiredSessions(itemsArray){
-
     for(let a=0; a<itemsArray.length; a++){
         let sessionId = itemsArray[a].SessionId;
         let removeSession = removeSingleRowWhereQuery(sessionId);
@@ -215,16 +207,6 @@ function executeRemoveExpiredSessions(itemsArray){
         }
         workerThreadManager.sendMessageToWorker(reply);
     }
-}
-
-//from each expired session get userId
-function executeRemoveExpiredRows(){
-    let reply = {
-        message : 'query',
-        statement : removeAllRowsWhereQuery(),
-        valuesArray : null
-    }
-    workerThreadManager.sendMessageToWorker(reply);
 }
 
 function stopSessionExpiredInspector(){

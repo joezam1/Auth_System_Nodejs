@@ -9,8 +9,8 @@ const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
 const user = require('../domainModels/user.js');
 const role = require('../domainModels/role.js');
-
 const session = require('../domainModels/session.js');
+
 const domainManagerHelper = require('./domainManagerHelper.js');
 const dbAction = require('../../dataAccessLayer/mysqlDataStore/context/dbAction.js');
 
@@ -27,52 +27,106 @@ const sessionDomainManager = require('../domainManagers/sessionDomainManager.js'
 const helpers = require('../../library/common/helpers.js');
 const sortOrder = require('../../library/enumerations/sortOrder.js');
 
+
+
 let resolveUserRegistrationAsync =async function(request){
-    let _user = new userRegisterViewModel(request.body);
-    let errorsReport = validationService.resolveUserModelValidation(_user);
+    let _userViewModel = new userRegisterViewModel(request.body);
+
+    let resultInspection = await processUserRegistrationValidationAsync(_userViewModel );
+    if( resultInspection.status === httpResponseStatus._200ok ){
+        let _currentUserRoleEnum = request.body.userRole;
+        let _userDomainModel = resultInspection.result;
+        return await processUserRegistrationStorageToDatabaseAsync(_currentUserRoleEnum , _userDomainModel );
+    }
+    return resultInspection;
+}
+
+let resolveUserLoginSessionAsync = async function(request){
+    console.log('resolveUserLoginSessionAsync-request', request);
+    let _user = new userLoginViewModel(request.body);
+    let resultInspection = await processUserLoginValidationAsync(_user);
+    if(resultInspection.status === httpResponseStatus._200ok){
+
+        let _userDtoModel = resultInspection.result;
+        return await processUserLoginStorageToDatabaseAsync( _userDtoModel );
+    }
+    return resultInspection;
+}
+
+let resolveUserLogoutSessionAsync = async function(request){
+    let _sessionToken = request.body.session;
+    let _sessionModel = new session();
+    _sessionModel.setSessionToken(_sessionToken);
+
+    let sessionInfo = await processUserLogoutCreateSessionActivityDomainModelAsync(_sessionModel);
+    if(sessionInfo.status === httpResponseStatus._200ok){
+        let sessionActivityModel = sessionInfo.result.tempSessionActivityModel;
+        let sessionUtcDateCreatedDbFormatted = sessionInfo.result.sessionUtcDateCreatedDbFormatted;
+
+        return await processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync( sessionActivityModel , sessionUtcDateCreatedDbFormatted );
+    }
+
+    return sessionInfo;
+}
+
+var service = Object.freeze({
+    resolveUserRegistrationAsync : resolveUserRegistrationAsync,
+    resolveUserLoginSessionAsync : resolveUserLoginSessionAsync,
+    resolveUserLogoutSessionAsync : resolveUserLogoutSessionAsync
+});
+
+
+module.exports = service;
+
+//#REGION Private Methods
+
+async function processUserRegistrationValidationAsync(userViewModel){
+    let errorsReport = validationService.resolveUserModelValidation(userViewModel);
     if(!inputCommonInspector.objectIsNullOrEmpty(errorsReport)){
         return httpResponseService.getResponseResultStatus(errorsReport,httpResponseStatus._401unauthorized );
     }
 
-    let userInfo = new user();
-    userInfo.setUserDetails(_user);
-    var userResult = await userRepository.getUserByUsernameAndEmailDataAsync(userInfo);
+    let _userDomainModel = new user();
+    _userDomainModel.setUserDetails(userViewModel);
+    var userResult = await userRepository.getUserByUsernameAndEmailDataAsync(_userDomainModel);
     if(userResult instanceof Error){
         return httpResponseService.getResponseResultStatus(userResult,httpResponseStatus._400badRequest );
     }
-
     else if( userResult.length > 0 ){
         return httpResponseService.getResponseResultStatus(notificationService.usernameOrEmailTaken, httpResponseStatus._401unauthorized);
     }
 
-    let _currentUserRoleEnum = request.body.userRole;
-    let selectedRoleDescription = userRoleEnum[_currentUserRoleEnum];
+    return httpResponseService.getResponseResultStatus(_userDomainModel, httpResponseStatus._200ok);
+}
+
+async function processUserRegistrationStorageToDatabaseAsync(currentUserRoleEnumeration, userDomainModel ){
+    let selectedRoleDescription = userRoleEnum[currentUserRoleEnumeration];
     let selectedRoleObj = await getSelectedRoleAsync(selectedRoleDescription);
+
     if(selectedRoleObj instanceof Error){
         return httpResponseService.getResponseResultStatus(selectedRoleObj ,httpResponseStatus._400badRequest );
     }
 
     else if(selectedRoleObj != null){
-        let userPassword = userInfo.getPassword();
+        let userPassword = userDomainModel.getPassword();
         let encryptedPassword = await encryptionService.encryptStringInputAsync(userPassword);
-        userInfo.setPassword(encryptedPassword);
-        let resultTransaction = await createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj);
+        userDomainModel.setPassword(encryptedPassword);
+        let resultTransaction = await createAndRegisterUserTransactionAsync(userDomainModel, selectedRoleObj);
         return resultTransaction;
     }
 
     return httpResponseService.getResponseResultStatus(notificationService.registrationNotCompleted , httpResponseStatus._400badRequest );
 }
 
-let resolveUserLoginSessionAsync = async function(request){
-    console.log('resolveUserLoginSessionAsync-request', request);
-    let _user = new userLoginViewModel(request.body);
-    let errorsReport = validationService.resolveUserModelValidation(_user);
+async function processUserLoginValidationAsync(userViewModel){
+
+    let errorsReport = validationService.resolveUserModelValidation(userViewModel);
     if(!inputCommonInspector.objectIsNullOrEmpty(errorsReport)){
         return httpResponseService.getResponseResultStatus(errorsReport,httpResponseStatus._401unauthorized );
     }
 
     let userInfo = new user();
-    userInfo.setUserDetails(_user);
+    userInfo.setUserDetails(userViewModel);
     var UsersDtoModelArray = await userRepository.getUserByUsernameAndEmailDataAsync(userInfo);
     if(UsersDtoModelArray instanceof Error){
         return httpResponseService.getResponseResultStatus(UsersDtoModelArray,httpResponseStatus._400badRequest );
@@ -82,53 +136,64 @@ let resolveUserLoginSessionAsync = async function(request){
     }
 
     let pwdPlainText = userInfo.getPassword();
-    let UsersDtoModel = UsersDtoModelArray[0];
-    let pwdDatabase = UsersDtoModel.Password.value;
+    let userDtoModel = UsersDtoModelArray[0];
+    let pwdDatabase = userDtoModel.Password.value;
     let passwordsAreTheSame = await encryptionService.validateEncryptedPasswordAsync( pwdPlainText, pwdDatabase);
     if(!passwordsAreTheSame){
         return httpResponseService.getResponseResultStatus(notificationService.usernameOrPasswordNotMatching, httpResponseStatus._401unauthorized);
     }
 
+    return httpResponseService.getResponseResultStatus( userDtoModel , httpResponseStatus._200ok);
+}
+
+async function processUserLoginStorageToDatabaseAsync( userDtoModel ){
+
     let sessionToken =await sessionService.generateSessionTokenAsync();
     let cookieObj = domainManagerHelper.createCookieObj(sessionToken);
     let cookieJson = JSON.stringify(cookieObj);
-    let sessionModel = domainManagerHelper.createSessionModel(UsersDtoModel.UserId.value, sessionToken, cookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
+    let sessionModel = domainManagerHelper.createSessionModel(userDtoModel.UserId.value, sessionToken, cookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
 
-    let sessionActivityModel = domainManagerHelper.createSessionActivityModel(UsersDtoModel.UserId.value, request.body.geoLocation, request.body.deviceAndBrowser, request.body.userAgent)
-
+    let sessionActivityModel = domainManagerHelper.createSessionActivityModel(userDtoModel.UserId.value, request.body.geoLocation, request.body.deviceAndBrowser, request.body.userAgent);
     let sessionResult = await sessionDomainManager.insertSessionAndSessionActivityTransactionAsync(sessionModel, sessionActivityModel);
 
     if(sessionResult instanceof Error || sessionResult.result instanceof Error){
        return httpResponseService.getResponseResultStatus(sessionResultArray ,httpResponseStatus._500internalServerError );
     }
     let isResultArrayOk = (sessionResult.length > 0  && sessionResult[0].affectedRows === 1 )
-    let isResultObjectOk = (inputCommonInspector.objectIsValid(sessionResult) && sessionResult.result && sessionResult.status === 201);
+    let isResultObjectOk = (inputCommonInspector.objectIsValid(sessionResult) && sessionResult.result && sessionResult.status === httpResponseStatus._201created);
     if(isResultArrayOk || isResultObjectOk ){
+
         sessionExpiredInspector.resolveRemoveExpiredSessions();
-        return httpResponseService.getResponseResultStatus(cookieObj,httpResponseStatus._200ok );
+        return httpResponseService.getResponseResultStatus( cookieObj, httpResponseStatus._200ok );
     }
 
     return httpResponseService.getResponseResultStatus(notificationService.errorProcessingUserLogin, httpResponseStatus._422unprocessableEntity );
 }
 
-let resolveUserLogoutSessionAsync = async function(request){
-    let sessionValue = request.body.session;
-    let tempSessionModel = new session();
-    tempSessionModel.setSessionToken(sessionValue);
-    let sessionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(tempSessionModel);
+async function processUserLogoutCreateSessionActivityDomainModelAsync(sessionDomainModel){
+
+    let sessionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(sessionDomainModel);
     console.log('sesionsDtoModelResultArray', sessionsDtoModelResultArray);
     if (sessionsDtoModelResultArray instanceof Error) {
         return httpResponseService.getResponseResultStatus(sessionsDtoModelResultArray, httpResponseStatus._400badRequest);
     }
     let userId = (sessionsDtoModelResultArray.length> 0) ? sessionsDtoModelResultArray[0].UserId.value : null;
     let utcDateCreatedAsDate = (sessionsDtoModelResultArray.length> 0) ? sessionsDtoModelResultArray[0].UTCDateCreated.value : null;
-    let utcDateCreatedDbFormatted = (utcDateCreatedAsDate !== null) ? helpers.composeUTCDateToFormatForDatabase(utcDateCreatedAsDate) : null;
+    let sessionUtcDateCreatedDbFormatted = (utcDateCreatedAsDate !== null) ? helpers.composeUTCDateToUTCFormatForDatabase(utcDateCreatedAsDate) : null;
     let userAgent = request.body.userAgent;
     let tempGeoLocation = {};
     let tempDevice = {};
-    let tempSessionActivityModel = domainManagerHelper.createSessionActivityModel(userId, tempGeoLocation,tempDevice,userAgent);
+    let tempSessionActivityModel = domainManagerHelper.createSessionActivityModel( userId, tempGeoLocation,tempDevice,userAgent );
 
-    let sessionActivitiesResultArray =await sessionRepository.getSessionActivitiesFromDatabaseAsync(tempSessionActivityModel , utcDateCreatedDbFormatted);
+    let sessionInfo = {
+        tempSessionActivityModel : tempSessionActivityModel,
+        sessionUtcDateCreatedDbFormatted : sessionUtcDateCreatedDbFormatted
+    }
+    return httpResponseService.getResponseResultStatus(sessionInfo, httpResponseStatus._200ok);
+}
+
+async function processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync( sessionActivityModel , sessionUtcDateCreatedDbFormatted){
+    let sessionActivitiesResultArray =await sessionRepository.getSessionActivitiesFromDatabaseAsync(sessionActivityModel , sessionUtcDateCreatedDbFormatted);
     if (sessionActivitiesResultArray instanceof Error) {
         return httpResponseService.getResponseResultStatus(sessionActivitiesResultArray, httpResponseStatus._400badRequest);
     }
@@ -158,16 +223,7 @@ let resolveUserLogoutSessionAsync = async function(request){
     return httpResponseService.getResponseResultStatus(notificationService.sessionNoLongerActive, httpResponseStatus._401unauthorized);
 }
 
-var service = Object.freeze({
-    resolveUserRegistrationAsync : resolveUserRegistrationAsync,
-    resolveUserLoginSessionAsync : resolveUserLoginSessionAsync,
-    resolveUserLogoutSessionAsync : resolveUserLogoutSessionAsync
-});
 
-
-module.exports = service;
-
-//#REGION Private Methods
 
 async function getSelectedRoleAsync(roleName){
 

@@ -1,6 +1,7 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
 const dbAction = require('../mysqlDataStore/context/dbAction.js');
 const queryFactory = require('../mysqlDataStore/preparedStatements/queryFactory.js');
+const roleRepositoryHelper = require('../repositories/roleRepositoryHelper.js');
 
 let context = '';
 let roleTableName = '';
@@ -12,7 +13,8 @@ let getAllRolesAsync = async function(){
     if(statementResult instanceof Error){
         return statementResult;
     }
-    let rolesDtoResult = getRolesDtoModelMappedFromDatabase(statementResult[0]);
+
+    let rolesDtoResult = roleRepositoryHelper.getRolesDtoModelMappedFromDatabase(statementResult[0]);
 
     return rolesDtoResult;
 }
@@ -31,26 +33,6 @@ function onInit(){
     context = dbContext.getSequelizeContext();
     let roleDto = context.roleDtoModel;
     roleTableName = dbContext.getActiveDatabaseName() + '.' + roleDto.tableName;
-}
-
-function getRolesDtoModelMappedFromDatabase(databaseResultArray){
-    let allRoles = [];
-    for(let a = 0; a< databaseResultArray.length; a++){
-        let roleDatabase = databaseResultArray[a];
-        let _roleDtoModel = new context.roleDtoModel();
-        _roleDtoModel.rawAttributes.RoleId.value = roleDatabase.RoleId;
-        _roleDtoModel.rawAttributes.RoleIndex.value = roleDatabase.RoleIndex;
-        _roleDtoModel.rawAttributes.Name.value = roleDatabase.Name;
-        _roleDtoModel.rawAttributes.Description.value = roleDatabase.Description;
-        _roleDtoModel.rawAttributes.IsActive.value = (roleDatabase.IsActive !== 0);
-        _roleDtoModel.rawAttributes.UTCDateCreated.value = roleDatabase.UTCDateCreated;
-        _roleDtoModel.rawAttributes.UTCDateUpdated.value = roleDatabase.UTCDateUpdated;
-
-        let clonedAttributes = JSON.parse(JSON.stringify(_roleDtoModel.rawAttributes));
-        allRoles.push(clonedAttributes);
-    }
-
-    return allRoles;
 }
 
 //#ENDREGION Private Functions

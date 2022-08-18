@@ -2,7 +2,7 @@ const formFieldStatus = require('../../library/enumerations/formFieldStatus.js')
 const jsDataType = require('../../library/stringLiterals/jsDataType.js');
 const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
 
-var sessionViewModel = function(model){
+const sessionViewModel = function(model){
 
     let sessionToken = {
         fieldValue: inputCommonInspector.objectIsValid(model) ? (model.sessionToken || ''): '',
@@ -15,25 +15,25 @@ var sessionViewModel = function(model){
         fieldDataType: jsDataType.NUMBER
     }
 
-    var data = {
+    let data = {
         fieldValue: inputCommonInspector.objectIsValid(model) ? (model.data || {}): {},
         fieldStatus: formFieldStatus.Required,
         fieldDataType: jsDataType.OBJECT
     };
 
-    var isActive = {
+    let isActive = {
         fieldValue: inputCommonInspector.objectIsValid(model) ? (model.isActive || ''): '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: jsDataType.BOOLEAN
     };
 
-    var utcDateCreated = {
+    let utcDateCreated = {
         fieldValue: inputCommonInspector.objectIsValid(model) ? (model.utcDateCreated || ''): '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: jsDataType.DATE
     };
 
-    var utcDateExpired = {
+    let utcDateExpired = {
         fieldValue: inputCommonInspector.objectIsValid(model) ? (model.utcDateExpired || ''): '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: jsDataType.DATE

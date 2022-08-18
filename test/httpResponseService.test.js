@@ -8,7 +8,7 @@ describe('File: httpResponseService.js', function(){
     afterAll(function(){
         jest.resetAllMocks();
     })
-    describe('Function : getResponseStatusObject', function(){
+    describe('Function : getResponseResultStatus', function(){
 
         test('When Status code IS NOT EXISTING, response is 422 Unprocessable Entity', function(){
             //Arrange

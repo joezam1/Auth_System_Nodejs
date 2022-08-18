@@ -1,6 +1,5 @@
 const inMemoryDataStore = require('./inMemoryDataStore.js');
 const inputCommonInspector = require('../validation/inputCommonInspector.js');
-const inputTypeInspector = require('../validation/inputTypeInspector.js');
 const reducerServiceAction = require('../../library/enumerations/reducerServiceAction.js');
 
 function reducerService(payloadObj, action){
@@ -46,20 +45,23 @@ function getUpdatedDataStore(temporaryStateObj, originalDataStoreObj){
     return newDataStore;
 }
 
-let dispatch = function(payload, action){
+//test: DONE
+const dispatch = function(payload, action){
     let newInMemoryDataStore = reducerService(payload, action);
     return newInMemoryDataStore;
 }
 
-let getCurrentStateByProperty = function(property){
+//test: DONE
+const getCurrentStateByProperty = function(property){
     let currentDataStore = inMemoryDataStore.getDataStore();
     let propertyValue =  currentDataStore[property];
     return propertyValue;
 }
 
-const service = {
+const service = Object.freeze({
     dispatch : dispatch,
     getCurrentStateByProperty : getCurrentStateByProperty
 
-}
+});
+
 module.exports = service;

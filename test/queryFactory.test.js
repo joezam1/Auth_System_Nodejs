@@ -51,6 +51,22 @@ describe('File: queryFactory.js', function(){
         });
     });
 
+    describe('Function: selectWherePropertyEqualsAndIsNull', function(){
+        test('Selected attributes are added OK', function(){
+            //Arrange
+            let tableName = 'TestingTable';
+            let userAttributes = getUserAttributes();
+            let attributesArray = [ userAttributes.FirstName, userAttributes.MiddleName, userAttributes.LastName]
+            let nullOrderArray = [1];
+            //Act
+            let result = queryFactory.selectWherePropertyEqualsAndIsNull(tableName, attributesArray , nullOrderArray);
+            //Assert
+
+            expect(result).toContain('FirstName');
+            expect(result).toContain('IS NULL');
+        });
+    });
+
     describe('Function: selectAllFromTable', function(){
         test('Table name is included in statement', function(){
             //Arrange
@@ -91,7 +107,6 @@ describe('File: queryFactory.js', function(){
             expect(result).toContain('FirstName');
         });
     });
-
 
     describe('Function: updateTableSetColumnValuesWhere', function(){
         test('Statement contains USERID in Where Condition', function(){

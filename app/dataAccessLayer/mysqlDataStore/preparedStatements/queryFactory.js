@@ -19,7 +19,7 @@ let selectWherePropertyEqualsAnd = function(tableName, sequelizePropertiesArray)
     return statement;
 }
 
-//========
+//Test: DONE
 let selectWherePropertyEqualsAndIsNull = function(tableName, sequelizePropertiesArray, isNullOrderOfAppearenceInPropertiesArray){
 
     let allProperties = '';
@@ -42,12 +42,6 @@ let selectWherePropertyEqualsAndIsNull = function(tableName, sequelizeProperties
 
     return statement;
 }
-
-
-//========
-
-
-
 
 //Test: DONE
 let selectAllFromTable = function(tableName){

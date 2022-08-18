@@ -2,7 +2,7 @@ const inputTypeInspector = require('../app/services/validation/inputTypeInspecto
 
 
 describe('File: inputTypeInspector.js',()=>{
-    //test('True is True', ()=>{ expect(true).toBe(true); });
+
     describe('Function: isTypeString', function(){
         test('Input string with value returns TRUE', function(){
             //Arrange

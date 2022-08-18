@@ -8,7 +8,7 @@ const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
 const helpers = require('../../library/common/helpers.js');
 
-
+//Test: DONE
 const createUserRoleModel = function(userId, roleId){
     let _userRoleInfo = new userRole();
     let userRoleUuid = uuid();
@@ -18,7 +18,7 @@ const createUserRoleModel = function(userId, roleId){
 
     return _userRoleInfo;
 }
-
+//Test: DONE
 const createRegisterModel = function(userId){
     let _registerInfo = new register();
     let registerUuid = uuid();
@@ -30,9 +30,7 @@ const createRegisterModel = function(userId){
 
     return _registerInfo
 }
-
-
-
+//Test: DONE
 const createSessionModel = function(userId, sessionToken, data, expirationTimeMilliseconds){
     let sessionUuid = uuid();
     let _sessionModel  = new session();
@@ -46,7 +44,7 @@ const createSessionModel = function(userId, sessionToken, data, expirationTimeMi
     return _sessionModel;
 }
 
-
+//Test: DONE
 const createSessionActivityModel = function(userId, geoLocationInfo, deviceInfo, userAgentInfo ){
     let sessionActivityUuid = uuid();
     let geoLocation = helpers.convertToStringOrStringifyForDataStorage(geoLocationInfo);
@@ -62,7 +60,7 @@ const createSessionActivityModel = function(userId, geoLocationInfo, deviceInfo,
     return sessionActivityDomainModel;
 }
 
-
+//Test:DONE
 const createCookieObj = function(sessionToken){
     let defaultPath = '/';
     let _cookieModel = new cookie();

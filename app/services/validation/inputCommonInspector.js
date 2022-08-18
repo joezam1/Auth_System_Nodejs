@@ -2,7 +2,7 @@ const jsDataType = require('../../library/stringLiterals/jsDataType.js');
 
 
 //Test:DONE
-let stringIsNullOrEmpty = function(input){
+const stringIsNullOrEmpty = function(input){
     if(valueIsUndefined(input)) {
         return false;
     }
@@ -15,7 +15,7 @@ let stringIsNullOrEmpty = function(input){
     return false;
 }
 //Test:DONE
-let objectIsNullOrEmpty = function(obj){
+const objectIsNullOrEmpty = function(obj){
     let isObjectType = (typeof obj == jsDataType.OBJECT)
     let isArrayType = Array.isArray(obj);
     let isNotUndefinedType = typeof obj !== 'undefined';
@@ -29,14 +29,14 @@ let objectIsNullOrEmpty = function(obj){
     return result;
 }
 //Test: DONE
-let valueIsUndefined = function(value){
+const valueIsUndefined = function(value){
     let objUndefinedType = typeof value === 'undefined';
     let valueIsUndefined = (value === undefined)
     let result = (objUndefinedType && valueIsUndefined);
     return result;
 }
 //Test:DONE
-let stringIsValid = function(inputStr){
+const stringIsValid = function(inputStr){
     let isValidType = (typeof inputStr === jsDataType.STRING);
     let isNullOrEmpty = stringIsNullOrEmpty(inputStr);
     let isUndefined = valueIsUndefined(inputStr);
@@ -47,7 +47,7 @@ let stringIsValid = function(inputStr){
 }
 
 //Test:DONE
-function objectIsValid(obj){
+const objectIsValid = function(obj){
     let isObjectType = (typeof obj == jsDataType.OBJECT)
     let isArrayType = Array.isArray(obj);
     let isNotUndefinedType = typeof obj !== 'undefined';
@@ -61,12 +61,12 @@ function objectIsValid(obj){
 }
 
 
-let inputCommonInspectorService = {
+const inputCommonInspectorService = Object.freeze({
     stringIsNullOrEmpty : stringIsNullOrEmpty,
     objectIsNullOrEmpty:objectIsNullOrEmpty,
     valueIsUndefined : valueIsUndefined,
     objectIsValid : objectIsValid,
     stringIsValid : stringIsValid
-}
+});
 
 module.exports = inputCommonInspectorService

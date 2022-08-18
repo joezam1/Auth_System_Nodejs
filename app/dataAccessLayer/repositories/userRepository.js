@@ -1,37 +1,39 @@
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
 const helpers = require('../../library/common/helpers.js');
-const repositoryHelper = require('../repositories/repositoryHelper.js');
+const repositoryHelper = require('./repositoryManager.js');
 const genericQueryStatement = require('../../library/enumerations/genericQueryStatement.js');
+const userRepositoryHelper = require('./userRepositoryHelper.js');
+
 
 let context = null;
 let userTableName = null;
 let userRoleTableName = null;
 //Test: DONE
-let getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
+const getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
     console.log('context', context);
     console.log('userTableName', userTableName);
-    let userDtoModel = getUserDtoModelMappedFromDomain(userDomainModel);
+    let userDtoModel = userRepositoryHelper.getUserDtoModelMappedFromDomain(userDomainModel);
     let propertiesArray = [userDtoModel.Username, userDtoModel.Email];
     let statementResult = await repositoryHelper.resolveStatementAsync(propertiesArray, genericQueryStatement.selectWherePropertyEqualsAnd, userTableName);
     if (statementResult instanceof Error) {
         return statementResult;
     }
-    let userDtoResult = getUsersDtoModelMappedFromDatabase(statementResult[0]);
+    let userDtoResult = userRepositoryHelper.getUsersDtoModelMappedFromDatabase(statementResult[0]);
 
     return userDtoResult;
 }
 //Test: DONE
-let insertUserIntoTableTransactionAsync = async function (connectionPool, userDomainModel) {
+const insertUserIntoTableTransactionAsync = async function (connectionPool, userDomainModel) {
     console.log('userDomainModel', userDomainModel);
-    let userDtoModel = getUserDtoModelMappedFromDomain(userDomainModel);
+    let userDtoModel = userRepositoryHelper.getUserDtoModelMappedFromDomain(userDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(userDtoModel);
     let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, userTableName, connectionPool);
 
     return statementResult;
 }
 //Test: DONE
-let insertUserRoleIntoTableTransactionAsync = async function (connectionPool, userRoleDomainModel) {
-    let userRoleDtoModel = getUserRoleDtoModelMappedFromDomain(userRoleDomainModel);
+const insertUserRoleIntoTableTransactionAsync = async function (connectionPool, userRoleDomainModel) {
+    let userRoleDtoModel = userRepositoryHelper.getUserRoleDtoModelMappedFromDomain(userRoleDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(userRoleDtoModel);
     let statementResult = await repositoryHelper.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, userRoleTableName, connectionPool);
 
@@ -40,7 +42,7 @@ let insertUserRoleIntoTableTransactionAsync = async function (connectionPool, us
 
 onInit();
 
-let service = {
+const service = {
     getUserByUsernameAndEmailDataAsync: getUserByUsernameAndEmailDataAsync,
     insertUserIntoTableTransactionAsync: insertUserIntoTableTransactionAsync,
     insertUserRoleIntoTableTransactionAsync: insertUserRoleIntoTableTransactionAsync
@@ -55,86 +57,5 @@ function onInit() {
     userTableName = dbContext.getActiveDatabaseName() + '.' + context.userDtoModel.tableName;
     userRoleTableName = dbContext.getActiveDatabaseName() + '.' + context.userRoleDtoModel.tableName;
 }
-
-function getUserDtoModelMappedFromDomain(userDomainModel) {
-    console.log('userDomainModel', userDomainModel);
-
-    let dateNow = new Date();
-    let resolvedUserStatus = (userDomainModel.getUserStatusIsActive() === true)
-        ? userDomainModel.getUserStatusIsActive()
-        : userDomainModel.setUserIsActive(true); userDomainModel.getUserStatusIsActive();
-
-    let _userDtoModel = new context.userDtoModel();
-    console.log('_userDtoModel', _userDtoModel);
-    _userDtoModel.rawAttributes.UserId.value = userDomainModel.getUserId();
-    _userDtoModel.rawAttributes.UserId.type.key =  _userDtoModel.rawAttributes.UserId.type.key.toString();
-    _userDtoModel.rawAttributes.FirstName.value = userDomainModel.getFirstName();
-    _userDtoModel.rawAttributes.FirstName.type.key =  _userDtoModel.rawAttributes.FirstName.type.key.toString();
-    _userDtoModel.rawAttributes.MiddleName.value = userDomainModel.getMiddleName();
-    _userDtoModel.rawAttributes.MiddleName.type.key =  _userDtoModel.rawAttributes.MiddleName.type.key.toString();
-    _userDtoModel.rawAttributes.LastName.value = userDomainModel.getLastName();
-    _userDtoModel.rawAttributes.LastName.type.key =  _userDtoModel.rawAttributes.LastName.type.key.toString();
-    _userDtoModel.rawAttributes.Username.value = userDomainModel.getUsername();
-    _userDtoModel.rawAttributes.Username.type.key =  _userDtoModel.rawAttributes.Username.type.key.toString();
-    _userDtoModel.rawAttributes.Email.value = userDomainModel.getEmail();
-    _userDtoModel.rawAttributes.Email.type.key =  _userDtoModel.rawAttributes.Email.type.key.toString();
-    _userDtoModel.rawAttributes.Password.value = userDomainModel.getPassword();
-    _userDtoModel.rawAttributes.Password.type.key =  _userDtoModel.rawAttributes.Password.type.key.toString();
-    _userDtoModel.rawAttributes.IsActive.value = resolvedUserStatus;
-    _userDtoModel.rawAttributes.IsActive.type.key =  _userDtoModel.rawAttributes.IsActive.type.key.toString();
-    _userDtoModel.rawAttributes.UTCDateCreated.value = helpers.getDateUTCFormatForDatabase(dateNow);
-    _userDtoModel.rawAttributes.UTCDateCreated.type.key =  _userDtoModel.rawAttributes.UTCDateCreated.type.key.toString();
-    _userDtoModel.rawAttributes.UTCDateUpdated.value = helpers.getDateUTCFormatForDatabase(dateNow);
-    _userDtoModel.rawAttributes.UTCDateUpdated.type.key =  _userDtoModel.rawAttributes.UTCDateUpdated.type.key.toString();
-
-    let clonedAttributes = JSON.parse(JSON.stringify(_userDtoModel.rawAttributes));
-    return clonedAttributes;
-}
-
-function getUsersDtoModelMappedFromDatabase(databaseResultArray) {
-    let allUsersDtoModels = [];
-    for (let a = 0; a < databaseResultArray.length; a++) {
-        let userDatabase = databaseResultArray[a];
-        console.log('userDatabase', userDatabase);
-        let _userDtoModel =new context.userDtoModel();
-        console.log('_userDtoModel', _userDtoModel);
-        _userDtoModel.rawAttributes.UserId.value = userDatabase.UserId;
-        _userDtoModel.rawAttributes.FirstName.value = userDatabase.FirstName;
-        _userDtoModel.rawAttributes.MiddleName.value = userDatabase.MiddleName;
-        _userDtoModel.rawAttributes.LastName.value = userDatabase.LastName;
-        _userDtoModel.rawAttributes.Username.value = userDatabase.Username;
-        _userDtoModel.rawAttributes.Email.value = userDatabase.Email;
-        _userDtoModel.rawAttributes.Password.value = userDatabase.Password;
-        _userDtoModel.rawAttributes.IsActive.value = (userDatabase.IsActive !== 0);
-        _userDtoModel.rawAttributes.UTCDateCreated.value = userDatabase.UTCDateCreated;
-        _userDtoModel.rawAttributes.UTCDateUpdated.value = userDatabase.UTCDateUpdated;
-
-        let clonedAttributes = JSON.parse(JSON.stringify(_userDtoModel.rawAttributes));
-        allUsersDtoModels.push(clonedAttributes);
-    }
-
-    return allUsersDtoModels;
-}
-
-
-function getUserRoleDtoModelMappedFromDomain(userRoleDomainModel) {
-    console.log('userRoleDomainModel', userRoleDomainModel);
-    let dateNow = new Date();
-    let _userRoleDtoModel = new context.userRoleDtoModel();// userRoleDto();
-    _userRoleDtoModel.rawAttributes.UserRoleId.value = userRoleDomainModel.getUserRoleId();
-    _userRoleDtoModel.rawAttributes.UserRoleId.type.key =  _userRoleDtoModel.rawAttributes.UserRoleId.type.key.toString();
-    _userRoleDtoModel.rawAttributes.UserId.value = userRoleDomainModel.getUserId();
-    _userRoleDtoModel.rawAttributes.UserId.type.key =  _userRoleDtoModel.rawAttributes.UserId.type.key.toString();
-    _userRoleDtoModel.rawAttributes.RoleId.value = userRoleDomainModel.getRoleId();
-    _userRoleDtoModel.rawAttributes.RoleId.type.key =  _userRoleDtoModel.rawAttributes.RoleId.type.key.toString();
-    _userRoleDtoModel.rawAttributes.UTCDateCreated.value = helpers.getDateUTCFormatForDatabase(dateNow);
-    _userRoleDtoModel.rawAttributes.UTCDateCreated.type.key =  _userRoleDtoModel.rawAttributes.UTCDateCreated.type.key.toString();
-    _userRoleDtoModel.rawAttributes.UTCDateUpdated.value = helpers.getDateUTCFormatForDatabase(dateNow);
-    _userRoleDtoModel.rawAttributes.UTCDateUpdated.type.key =  _userRoleDtoModel.rawAttributes.UTCDateUpdated.type.key.toString();
-
-    let clonedAttributes = JSON.parse(JSON.stringify(_userRoleDtoModel.rawAttributes));
-    return clonedAttributes;
-}
-
 
 //#ENDREGION Private Functions

@@ -1,10 +1,8 @@
 'use strict'
-
-
 const jsDataType = require('../../library/stringLiterals/jsDataType.js');
 
 //Test:DONE
-var isValidJson = function(input){
+const isValidJson = function(input){
     if(typeof input !== jsDataType.STRING)
     {
         return false;
@@ -21,8 +19,8 @@ var isValidJson = function(input){
 
 
 
-var service = {
+const service = Object.freeze({
     isValidJson:isValidJson
-}
+});
 
 module.exports = service;

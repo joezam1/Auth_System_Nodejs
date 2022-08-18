@@ -2,7 +2,7 @@ const queryFactory = require('../mysqlDataStore/preparedStatements/queryFactory.
 const valueSanitizer = require('../mysqlDataStore/preparedStatements/valueSanitizer.js');
 const dbAction = require('../mysqlDataStore/context/dbAction.js');
 
-
+//Test: DONE
 const resolveStatementAsync = async function(propertiesArray , genericQueryStatementsEnum , tableName){
     let truthyPropertiesArray = valueSanitizer.getTruthySequelizeAttributesValues(propertiesArray);
     let queryStatement = queryFactory.createSimpleQueryStatement(genericQueryStatementsEnum, tableName, truthyPropertiesArray);
@@ -12,7 +12,7 @@ const resolveStatementAsync = async function(propertiesArray , genericQueryState
 
     return statementResult;
 }
-
+//Test: DONE
 const resolveSingleConnectionStatementAsync = async function(propertiesArray, genericQueryStatementsEnum, tableName, connectionPool){
     let truthyPropertiesArray = valueSanitizer.getTruthySequelizeAttributesValues(propertiesArray);
     let queryStatement = queryFactory.createSimpleQueryStatement(genericQueryStatementsEnum, tableName, truthyPropertiesArray);
@@ -22,7 +22,7 @@ const resolveSingleConnectionStatementAsync = async function(propertiesArray, ge
 
     return statementResult;
 }
-
+//Test: DONE
 const resolveConditionalWhereEqualsStatementAsync = async function(propertiesArray, whereConditionsPropertiesArray, tableName){
     try{
         let truthyPropertiesArray = valueSanitizer.getTruthySequelizeAttributesValues(propertiesArray);
@@ -41,7 +41,7 @@ const resolveConditionalWhereEqualsStatementAsync = async function(propertiesArr
         return new Error(error);
     }
 }
-
+//Test: DONE
 const resolveWherePropertyEqualsAndIsNullStatementAsync = async function(propertiesIncludingNullValueArray, tableName){
 
     let nullPositionsArray = getNullValuesIndexPositions(propertiesIncludingNullValueArray);

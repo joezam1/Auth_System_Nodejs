@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>41/41</span>
+                <span class='fraction'>42/42</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>41/41</span>
+                <span class='fraction'>42/42</span>
             </div>
         
             
@@ -134,11 +134,11 @@
 <a name='L69'></a><a href='#L69'>69</a>
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
-<a name='L72'></a><a href='#L72'>72</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">13x</span>
+<a name='L72'></a><a href='#L72'>72</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -151,7 +151,7 @@
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">80x</span>
 <span class="cline-any cline-yes">80x</span>
 <span class="cline-any cline-yes">80x</span>
@@ -165,14 +165,14 @@
 <span class="cline-any cline-yes">80x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">103x</span>
-<span class="cline-any cline-yes">103x</span>
-<span class="cline-any cline-yes">103x</span>
-<span class="cline-any cline-yes">103x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">105x</span>
+<span class="cline-any cline-yes">105x</span>
+<span class="cline-any cline-yes">105x</span>
+<span class="cline-any cline-yes">105x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -183,7 +183,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">65x</span>
 <span class="cline-any cline-yes">65x</span>
 <span class="cline-any cline-yes">65x</span>
@@ -197,7 +197,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -205,15 +205,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span></td><td class="text"><pre class="prettyprint lang-js">const DataTypes = require('../../library/stringLiterals/dataTypes.js');
+<span class="cline-any cline-yes">24x</span></td><td class="text"><pre class="prettyprint lang-js">const jsDataType = require('../../library/stringLiterals/jsDataType.js');
 &nbsp;
 &nbsp;
 //Test:DONE
-let stringIsNullOrEmpty = function(input){
+const stringIsNullOrEmpty = function(input){
     if(valueIsUndefined(input)) {
         return false;
     }
-    let isValidType = (typeof input === DataTypes.STRING || typeof input === DataTypes.OBJECT);
+    let isValidType = (typeof input === jsDataType.STRING || typeof input === jsDataType.OBJECT);
     let isValidValue = (input === null || (input !==null &amp;&amp; input !== undefined &amp;&amp; input.length === 0));
 &nbsp;
     if( (isValidType &amp;&amp; isValidValue)){
@@ -222,8 +222,8 @@ let stringIsNullOrEmpty = function(input){
     return false;
 }
 //Test:DONE
-let objectIsNullOrEmpty = function(obj){
-    let isObjectType = (typeof obj == DataTypes.OBJECT)
+const objectIsNullOrEmpty = function(obj){
+    let isObjectType = (typeof obj == jsDataType.OBJECT)
     let isArrayType = Array.isArray(obj);
     let isNotUndefinedType = typeof obj !== 'undefined';
 &nbsp;
@@ -236,15 +236,15 @@ let objectIsNullOrEmpty = function(obj){
     return result;
 }
 //Test: DONE
-let valueIsUndefined = function(value){
+const valueIsUndefined = function(value){
     let objUndefinedType = typeof value === 'undefined';
     let valueIsUndefined = (value === undefined)
     let result = (objUndefinedType &amp;&amp; valueIsUndefined);
     return result;
 }
 //Test:DONE
-let stringIsValid = function(inputStr){
-    let isValidType = (typeof inputStr === DataTypes.STRING);
+const stringIsValid = function(inputStr){
+    let isValidType = (typeof inputStr === jsDataType.STRING);
     let isNullOrEmpty = stringIsNullOrEmpty(inputStr);
     let isUndefined = valueIsUndefined(inputStr);
     if(isValidType &amp;&amp; !isNullOrEmpty &amp;&amp; !isUndefined) {
@@ -254,8 +254,8 @@ let stringIsValid = function(inputStr){
 }
 &nbsp;
 //Test:DONE
-function objectIsValid(obj){
-    let isObjectType = (typeof obj == DataTypes.OBJECT)
+const objectIsValid = function(obj){
+    let isObjectType = (typeof obj == jsDataType.OBJECT)
     let isArrayType = Array.isArray(obj);
     let isNotUndefinedType = typeof obj !== 'undefined';
     let isValidType = (isObjectType &amp;&amp; !isArrayType &amp;&amp; isNotUndefinedType);
@@ -268,13 +268,13 @@ function objectIsValid(obj){
 }
 &nbsp;
 &nbsp;
-let inputCommonInspectorService = {
+const inputCommonInspectorService = Object.freeze({
     stringIsNullOrEmpty : stringIsNullOrEmpty,
     objectIsNullOrEmpty:objectIsNullOrEmpty,
     valueIsUndefined : valueIsUndefined,
     objectIsValid : objectIsValid,
     stringIsValid : stringIsValid
-}
+});
 &nbsp;
 module.exports = inputCommonInspectorService</pre></td></tr></table></pre>
 
@@ -283,7 +283,7 @@ module.exports = inputCommonInspectorService</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Thu Aug 11 2022 21:37:59 GMT-0500 (Central Daylight Time)
+                at Wed Aug 17 2022 23:20:26 GMT-0500 (Central Daylight Time)
             </div>
         <script src="../../../prettify.js"></script>
         <script>

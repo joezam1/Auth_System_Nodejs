@@ -36,7 +36,7 @@ module.exports = {
                 type: Sequelize.DATE
             },
             UTCLogoutDate: {
-                allowNull: false,
+                allowNull: true,
                 type: Sequelize.DATE
             }
         });
