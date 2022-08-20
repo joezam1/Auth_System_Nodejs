@@ -60,13 +60,22 @@ const objectIsValid = function(obj){
     return false;
 }
 
+//Test: DONE
+const inputExist = function(input){
+    if(input !== null && !valueIsUndefined(input)){
+            return true;
+    }
+    return false;
+}
+
 
 const inputCommonInspectorService = Object.freeze({
     stringIsNullOrEmpty : stringIsNullOrEmpty,
     objectIsNullOrEmpty:objectIsNullOrEmpty,
     valueIsUndefined : valueIsUndefined,
     objectIsValid : objectIsValid,
-    stringIsValid : stringIsValid
+    stringIsValid : stringIsValid,
+    inputExist : inputExist
 });
 
 module.exports = inputCommonInspectorService

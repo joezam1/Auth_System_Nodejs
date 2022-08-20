@@ -26,7 +26,7 @@ const sessionExpiredInspector = require('../../middleware/sessionExpiredInspecto
 const sessionDomainManager = require('../domainManagers/sessionDomainManager.js');
 const helpers = require('../../library/common/helpers.js');
 const sortOrder = require('../../library/enumerations/sortOrder.js');
-
+const sessionActivityViewModel = require('../../presentationLayer/viewModels/sessionActivityViewModel.js');
 
 
 let resolveUserRegistrationAsync =async function(request){
@@ -48,22 +48,28 @@ let resolveUserLoginSessionAsync = async function(request){
     if(resultInspection.status === httpResponseStatus._200ok){
 
         let _userDtoModel = resultInspection.result;
-        return await processUserLoginStorageToDatabaseAsync( _userDtoModel );
+        let _sessionActivityViewModel = new sessionActivityViewModel();
+        _sessionActivityViewModel.userId.fieldValue = _userDtoModel.UserId.value;
+        _sessionActivityViewModel.geoLocation.fieldValue = request.body.geoLocation;
+        _sessionActivityViewModel.deviceAndBrowser.fieldValue = request.body.deviceAndBrowser;
+        _sessionActivityViewModel.userAgent.fieldValue = request.body.userAgent;
+        return await processUserLoginStorageToDatabaseAsync( _userDtoModel , _sessionActivityViewModel);
     }
     return resultInspection;
 }
 
 let resolveUserLogoutSessionAsync = async function(request){
+    let _userAgent = request.body.userAgent;
     let _sessionToken = request.body.session;
     let _sessionModel = new session();
     _sessionModel.setSessionToken(_sessionToken);
 
-    let sessionInfo = await processUserLogoutCreateSessionActivityDomainModelAsync(_sessionModel);
+    let sessionInfo = await processUserLogoutCreateSessionActivityDomainModelAsync(_sessionModel , _userAgent);
     if(sessionInfo.status === httpResponseStatus._200ok){
         let sessionActivityModel = sessionInfo.result.tempSessionActivityModel;
         let sessionUtcDateCreatedDbFormatted = sessionInfo.result.sessionUtcDateCreatedDbFormatted;
 
-        return await processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync( sessionActivityModel , sessionUtcDateCreatedDbFormatted );
+        return await processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync(_sessionModel, sessionActivityModel , sessionUtcDateCreatedDbFormatted );
     }
 
     return sessionInfo;
@@ -146,14 +152,17 @@ async function processUserLoginValidationAsync(userViewModel){
     return httpResponseService.getResponseResultStatus( userDtoModel , httpResponseStatus._200ok);
 }
 
-async function processUserLoginStorageToDatabaseAsync( userDtoModel ){
+async function processUserLoginStorageToDatabaseAsync( userDtoModel ,sessionActivityViewModel){
 
     let sessionToken =await sessionService.generateSessionTokenAsync();
     let cookieObj = domainManagerHelper.createCookieObj(sessionToken);
     let cookieJson = JSON.stringify(cookieObj);
     let sessionModel = domainManagerHelper.createSessionModel(userDtoModel.UserId.value, sessionToken, cookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
 
-    let sessionActivityModel = domainManagerHelper.createSessionActivityModel(userDtoModel.UserId.value, request.body.geoLocation, request.body.deviceAndBrowser, request.body.userAgent);
+    let currentGeoLocation = sessionActivityViewModel.geoLocation.fieldValue;
+    let currentDeviceAndBrowser = sessionActivityViewModel.deviceAndBrowser.fieldValue;
+    let currentUserAgent = sessionActivityViewModel.userAgent.fieldValue;
+    let sessionActivityModel = domainManagerHelper.createSessionActivityModel(userDtoModel.UserId.value, currentGeoLocation, currentDeviceAndBrowser, currentUserAgent);
     let sessionResult = await sessionDomainManager.insertSessionAndSessionActivityTransactionAsync(sessionModel, sessionActivityModel);
 
     if(sessionResult instanceof Error || sessionResult.result instanceof Error){
@@ -170,7 +179,7 @@ async function processUserLoginStorageToDatabaseAsync( userDtoModel ){
     return httpResponseService.getResponseResultStatus(notificationService.errorProcessingUserLogin, httpResponseStatus._422unprocessableEntity );
 }
 
-async function processUserLogoutCreateSessionActivityDomainModelAsync(sessionDomainModel){
+async function processUserLogoutCreateSessionActivityDomainModelAsync(sessionDomainModel ,userAgent){
 
     let sessionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(sessionDomainModel);
     console.log('sesionsDtoModelResultArray', sessionsDtoModelResultArray);
@@ -180,10 +189,10 @@ async function processUserLogoutCreateSessionActivityDomainModelAsync(sessionDom
     let userId = (sessionsDtoModelResultArray.length> 0) ? sessionsDtoModelResultArray[0].UserId.value : null;
     let utcDateCreatedAsDate = (sessionsDtoModelResultArray.length> 0) ? sessionsDtoModelResultArray[0].UTCDateCreated.value : null;
     let sessionUtcDateCreatedDbFormatted = (utcDateCreatedAsDate !== null) ? helpers.composeUTCDateToUTCFormatForDatabase(utcDateCreatedAsDate) : null;
-    let userAgent = request.body.userAgent;
+
     let tempGeoLocation = {};
     let tempDevice = {};
-    let tempSessionActivityModel = domainManagerHelper.createSessionActivityModel( userId, tempGeoLocation,tempDevice,userAgent );
+    let tempSessionActivityModel = domainManagerHelper.createSessionActivityModel( userId, tempGeoLocation, tempDevice, userAgent );
 
     let sessionInfo = {
         tempSessionActivityModel : tempSessionActivityModel,
@@ -192,7 +201,7 @@ async function processUserLogoutCreateSessionActivityDomainModelAsync(sessionDom
     return httpResponseService.getResponseResultStatus(sessionInfo, httpResponseStatus._200ok);
 }
 
-async function processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync( sessionActivityModel , sessionUtcDateCreatedDbFormatted){
+async function processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync(sessionModel, sessionActivityModel , sessionUtcDateCreatedDbFormatted){
     let sessionActivitiesResultArray =await sessionRepository.getSessionActivitiesFromDatabaseAsync(sessionActivityModel , sessionUtcDateCreatedDbFormatted);
     if (sessionActivitiesResultArray instanceof Error) {
         return httpResponseService.getResponseResultStatus(sessionActivitiesResultArray, httpResponseStatus._400badRequest);
@@ -209,7 +218,7 @@ async function processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseA
             return httpResponseService.getResponseResultStatus(updateSessionActivityResult, httpResponseStatus._400badRequest);
         }
     }
-    let sessionResultArray = await sessionRepository.deleteSessionFromDatabaseAsync(tempSessionModel);
+    let sessionResultArray = await sessionRepository.deleteSessionFromDatabaseAsync(sessionModel);
     if(sessionResultArray instanceof Error){
         return httpResponseService.getResponseResultStatus(sessionResultArray, httpResponseStatus._400badRequest );
     }

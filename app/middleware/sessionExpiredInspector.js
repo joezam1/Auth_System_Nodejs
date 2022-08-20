@@ -107,7 +107,7 @@ function removeSingleRowWhereQuery(sessionId){
 
 function queryWorkerCallback(event){
     console.log('INSPECTOR-queryWorkerCallback-event', event);
-    if(event.data !==null && !inputCommonInspector.valueIsUndefined(event.data) && Array.isArray(event.data)){
+    if(inputCommonInspector.inputExist(event.data) && Array.isArray(event.data)){
         let resultEventArray = event.data[0];
         let firstItem = {};
         if(resultEventArray.length>0){
