@@ -11,14 +11,14 @@ const encryptStringInputAsync = async function(input){
     return encrypted;
 }
 //Test:DONE
-const validateEncryptedPasswordAsync = async function(passwordRequest, passwordDb) {
-    const comparison = await bcrypt.compare(passwordRequest, passwordDb);
+const validateEncryptedStringInputAsync = async function(plainTextInput, encryptedInput) {
+    const comparison = await bcrypt.compare(plainTextInput, encryptedInput);
     return comparison;
 }
 
 const service = Object.freeze({
     encryptStringInputAsync : encryptStringInputAsync,
-    validateEncryptedPasswordAsync : validateEncryptedPasswordAsync
+    validateEncryptedStringInputAsync : validateEncryptedStringInputAsync
 });
 
 module.exports = service;

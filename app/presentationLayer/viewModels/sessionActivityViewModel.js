@@ -2,7 +2,7 @@ const formFieldStatus = require('../../library/enumerations/formFieldStatus.js')
 const jsDataType = require('../../library/stringLiterals/jsDataType.js');
 const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
 
-const userRegisterViewModel = function(model){
+const sessionActivityViewModel = function(model){
 
     let userId = {
         fieldValue: inputCommonInspector.objectIsValid(model) ? (model.userId || ''): '',
@@ -36,4 +36,4 @@ const userRegisterViewModel = function(model){
     }
 }
 
-module.exports = userRegisterViewModel;
+module.exports = sessionActivityViewModel;

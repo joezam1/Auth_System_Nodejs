@@ -34,14 +34,14 @@ describe('File: encryptionService.js', function(){
         });
     });
 
-    describe('Function validateEncryptedPasswordAsync', function(){
+    describe('Function validateEncryptedStringInputAsync', function(){
         test('When plain Text password is the same as encrypted Password Comparisson is SUCCESSFUL',async function(){
 
             //Arrange
             let plainTextInput = 'this is a string'
             //Act
             let hashResult = await encryptionService.encryptStringInputAsync(plainTextInput);
-            var result = await encryptionService.validateEncryptedPasswordAsync (plainTextInput,hashResult);
+            var result = await encryptionService.validateEncryptedStringInputAsync (plainTextInput,hashResult);
             //Assert
             let resultType = (typeof hashResult === 'string');
             expect(hashResult).not.toEqual(plainTextInput);
@@ -56,7 +56,7 @@ describe('File: encryptionService.js', function(){
             let differentInput = 'this is a wrong input';
             //Act
             let hashResult = await encryptionService.encryptStringInputAsync(plainTextInput);
-            var result = await encryptionService.validateEncryptedPasswordAsync (differentInput,hashResult);
+            var result = await encryptionService.validateEncryptedStringInputAsync (differentInput,hashResult);
             //Assert
             expect(hashResult).not.toEqual(plainTextInput);
             expect(result).toBe(false);

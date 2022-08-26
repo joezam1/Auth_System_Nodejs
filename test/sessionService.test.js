@@ -39,13 +39,13 @@ describe('File: sessionService.js', function(){
         });
     });
 
-    describe('Function: calculatSessionDateExpiry', function(){
+    describe('Function: calculateSessionDateExpiry', function(){
         test('Once defined the locale date created the Date expired will be always in the future', function(){
             //Arrange
             let dateCreated = new Date();
             let expiry5MinutesInMilliseconds = 1000 * 60 * 5;
             //Act
-            let dateExpiry = sessionService.calculatSessionDateExpiry(dateCreated, expiry5MinutesInMilliseconds);
+            let dateExpiry = sessionService.calculateSessionDateExpiry(dateCreated, expiry5MinutesInMilliseconds);
             //Assert
             let expiryIsInTheFuture = (dateExpiry.getTime() > dateCreated.getTime());
             expect(expiryIsInTheFuture).toBe(true);

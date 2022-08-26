@@ -3,8 +3,34 @@ const httpResponseStatus = require('../../library/enumerations/httpResponseStatu
 const inputCommonInspector = require('../validation/inputCommonInspector.js');
 const httpResponseHelper = require('./httpResponseHelper.js');
 
+
+
+let _httpResponse = null;
+
+
+const setHttpResponseProperty = function(httpResponse){
+
+    _httpResponse = httpResponse;
+}
+
+const setServerResponseCookies = function(cookiesArray){
+    for(let a = 0; a < cookiesArray.length; a++){
+        let cookieObj = cookiesArray[a];
+        httpResponseHelper.setCookie(_httpResponse, cookieObj);
+    }
+}
+
+const setServerResponseHeaders = function(headersArray){
+
+    for(let a = 0; a < headersArray.length; a++){
+        let headerObj = headersArray[a];
+        _httpResponse.set(headerObj.key, headerObj.value);
+    }
+}
+
 //Test: DONE
 const getResponseResultStatus = function(resultObj, statusCode){
+    console.log('_httpResponse', _httpResponse);
 
     let responseObj = getResponseStatusObject(statusCode);
     console.log('responseObj', responseObj);
@@ -16,24 +42,27 @@ const getResponseResultStatus = function(resultObj, statusCode){
     return obj;
 }
 //Test: DONE
-const sendHttpResponse = function(resultObj, response){
-
+const sendHttpResponse = function(resultObj){
+    console.log('_httpResponse', _httpResponse);
     try{
             if(!inputCommonInspector.objectIsNullOrEmpty(resultObj) && !inputCommonInspector.objectIsNullOrEmpty(resultObj.status)){
-            httpResponseHelper.executeSend(response, resultObj.status, resultObj);
+            httpResponseHelper.executeSend(_httpResponse, resultObj.status, resultObj);
         }else{
-            httpResponseHelper.executeSend(response, httpResponseStatus._404notFound, resultObj);
+            httpResponseHelper.executeSend(_httpResponse, httpResponseStatus._404notFound, resultObj);
         }
     }
     catch(error){
         let message = 'error sending HTTP Response: ' + error;
         let err = new Error(message);
-        httpResponseHelper.executeSend(response, httpResponseStatus._500internalServerError , err)
+        httpResponseHelper.executeSend(_httpResponse, httpResponseStatus._500internalServerError , err)
     }
 }
 
 
 let service = Object.freeze({
+    setHttpResponseProperty : setHttpResponseProperty,
+    setServerResponseHeaders : setServerResponseHeaders,
+    setServerResponseCookies : setServerResponseCookies,
     getResponseResultStatus : getResponseResultStatus,
     sendHttpResponse : sendHttpResponse
 });

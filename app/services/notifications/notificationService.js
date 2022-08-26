@@ -7,7 +7,10 @@ const notificationService = Object.freeze({
     sessionRemoved: 'Session has been removed.',
     sessionNoLongerActive: 'Session has been cleared and is no longer Active.',
     errorProcessingNewSession: 'There is an error Processing the new Session.',
-    errorProcessingUserLogin: 'There is an error with the Login Process.'
+    errorProcessingUserLogin: 'There is an error with the Login Process.',
+    tokenRemoved: 'Token has been removed.',
+    TokenNoLongerActive: 'Token has been cleared and is no longer Active.',
+    errorProcessingNewToken: 'There is an error Processing the new Token.',
 });
 
 module.exports = notificationService;

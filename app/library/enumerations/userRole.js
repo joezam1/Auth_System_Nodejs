@@ -1,10 +1,30 @@
 const UserRole = Object.freeze({
-    Admin : 1,
-    Customer : 2,
-    AnonymousUser : 3,
-    1 : 'Admin',
-    2 : 'Customer',
-    3 : 'AnonymousUser'
+    Owner : 1,
+    SuperAdmin : 2,
+    Admin : 3,
+    Editor : 4,
+    Moderator : 5,
+    Advertiser : 6,
+    TechnicalAnalyst : 7,
+    CommercialAnalyst : 8,
+    BaseCustomer : 9,
+    SilverCustomer : 10,
+    GoldCustomer : 11,
+    PremiumCustomer : 12,
+    AnonymousUser : 13,
+    1:'Owner',
+    2:'SuperAdmin',
+    3:'Admin',
+    4:'Editor',
+    5:'Moderator',
+    6:'Advertiser',
+    7:'TechnicalAnalyst',
+    8:'CommercialAnalyst',
+    9:'BaseCustomer',
+    10:'SilverCustomer',
+    11:'GoldCustomer',
+    12:'PremiumCustomer',
+    13:'AnonymousUser'
     });
 
     module.exports = UserRole;

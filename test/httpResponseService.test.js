@@ -7,7 +7,7 @@ describe('File: httpResponseService.js', function(){
 
     afterAll(function(){
         jest.resetAllMocks();
-    })
+    });
     describe('Function : getResponseResultStatus', function(){
 
         test('When Status code IS NOT EXISTING, response is 422 Unprocessable Entity', function(){
@@ -41,10 +41,10 @@ describe('File: httpResponseService.js', function(){
             //Arrange
             let mockResponseObject = {status:200, statusText:'ok',result:'inserted value'}
             httpResponseHelper.executeSend = jest.fn().mockReturnValueOnce(mockResponseObject);
-            let mockExpressResponse = {};
+            //let mockExpressResponse = {};
             let resultObj = {status:200, statusCode:'ok'};
             //Act
-            let result = httpResponseService.sendHttpResponse(resultObj, mockExpressResponse);
+            let result = httpResponseService.sendHttpResponse(resultObj);
             //Assert
 
             expect(httpResponseHelper.executeSend).toBeCalledTimes(1);
@@ -67,7 +67,7 @@ describe('File: httpResponseService.js', function(){
             let resultObj = 'this is a string {status:200, statusCode:"ok"}';
             //Act
             httpResponseHelper.executeSend(mockExpressResponse, 200, resultObj);
-            let result = httpResponseService.sendHttpResponse(resultObj, mockExpressResponse);
+            let result = httpResponseService.sendHttpResponse(resultObj);
             //Assert
             //Called the Mock 1 time and called the original 1 time
             expect(httpResponseHelper.executeSend).toBeCalledTimes(2);

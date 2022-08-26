@@ -1,8 +1,11 @@
 const envConfig = require('./configuration/environment/envConfig.js');
 const serverConfig = require('./configuration/server/serverConfig.js');
 const sessionConfig = require('./configuration/authentication/sessionConfig.js');
+
+const propertyInitializer = require('./app/middleware/propertyInitializer.js');
 const userController = require('./app/presentationLayer/controllers/user.controller.js');
 const sessionController = require('./app/presentationLayer/controllers/session.controller.js');
+const jsonWebTokenController = require('./app/presentationLayer/controllers/jsonWebToken.controller.js');
 console.log(`server-NODE_ENV=${envConfig.NODE_ENV}`);
 
 const session = require('express-session');
@@ -20,10 +23,13 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(cors(serverConfig.configuration.corsOptions));
 app.use(cookieParser());
+app.use(propertyInitializer);
 //#ENDREGION Middleware
 
 userController(app);
 sessionController(app);
+jsonWebTokenController(app);
+
 
 const httpServer = http.createServer(app);
 httpServer.listen(httpPort, function(){

@@ -5,6 +5,19 @@ const dbContext = require('../mysqlDataStore/context/dbContext.js');
 let context = null;
 
 
+
+function getRoleModelMappedFromRoleDtoModel(roleDtoModel) {
+    let _roleInfo = new role();
+    _roleInfo.setRoleId(roleDtoModel.RoleId.value);
+    _roleInfo.setName(roleDtoModel.Name.value);
+    _roleInfo.setDescription(roleDtoModel.Description.value);
+    _roleInfo.setRpleIsActive(roleDtoModel.IsActive.value);
+
+    return _roleInfo;
+}
+
+
+
 //Test: DONE
 const getRolesDtoModelMappedFromDatabase = function(databaseResultArray){
     let allRoles = [];
@@ -28,6 +41,7 @@ const getRolesDtoModelMappedFromDatabase = function(databaseResultArray){
 
 onInit();
 const service = {
+    getRoleModelMappedFromRoleDtoModel : getRoleModelMappedFromRoleDtoModel,
     getRolesDtoModelMappedFromDatabase : getRolesDtoModelMappedFromDatabase
 }
 

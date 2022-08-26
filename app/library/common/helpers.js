@@ -1,7 +1,7 @@
 const jsDataType = require('../stringLiterals/jsDataType.js');
 const inputTypeInspector = require('../../services/validation/inputTypeInspector.js');
 const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
-const { stringIsNullOrEmpty } = require('../../services/validation/inputCommonInspector.js');
+const encryptionService = require('../../services/encryption/encryptionService.js');
 
 
 //Test: DONE
@@ -15,7 +15,13 @@ const removeLeadingAndTrailingSpaces = function(input){
 //Test: DONE
 const convertLocaleDateToUTCFormatForDatabase = function(selectedLocaleDateAsDate){
     let dateUTC = selectedLocaleDateAsDate.toISOString();
-    let dateUTCDateTimeFormat = dateUTC.replace('T', ' ').substring(0,19);
+    let dateUTCDateTimeFormat = convertISOStringDateToUTCFormatForDatabase(dateUTC);//.replace('T', ' ').substring(0,19);
+
+    return dateUTCDateTimeFormat;
+}
+
+const convertISOStringDateToUTCFormatForDatabase = function(ISOStringDate){
+    let dateUTCDateTimeFormat = ISOStringDate.replace('T', ' ').substring(0,19);
 
     return dateUTCDateTimeFormat;
 }
@@ -101,11 +107,12 @@ const convertToStringOrStringifyForDataStorage = function(input){
 const service= Object.freeze({
     removeLeadingAndTrailingSpaces : removeLeadingAndTrailingSpaces,
     convertLocaleDateToUTCFormatForDatabase : convertLocaleDateToUTCFormatForDatabase,
+    convertISOStringDateToUTCFormatForDatabase : convertISOStringDateToUTCFormatForDatabase,
     createPropertiesArrayFromObjectProperties : createPropertiesArrayFromObjectProperties,
     formatStringFirstLetterCapital : formatStringFirstLetterCapital,
     convertToStringOrStringifyForDataStorage : convertToStringOrStringifyForDataStorage,
     composeUTCDateToUTCFormatForDatabase : composeUTCDateToUTCFormatForDatabase,
-    convertLocaleDateToUTCDate :convertLocaleDateToUTCDate
+    convertLocaleDateToUTCDate : convertLocaleDateToUTCDate
 });
 
 module.exports = service;

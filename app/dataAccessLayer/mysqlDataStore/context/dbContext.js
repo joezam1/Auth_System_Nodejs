@@ -7,6 +7,7 @@ const Register = require('../mappings/models/register.js');
 const AuthRoleSection = require('../mappings/models/authrolesection.js');
 const Session = require('../mappings/models/session.js');
 const SessionActivity = require('../mappings/models/sessionactivity.js');
+const Token = require('../mappings/models/token.js');
 
 
 let sequelizeConnection = null;
@@ -43,6 +44,7 @@ let getSequelizeContext = function(){
         let authRoleSectionDtoModel = AuthRoleSection(sequelize, allDataTypes);
         let sessionDtoModel = Session(sequelize, allDataTypes);
         let sessionActivityDtoModel = SessionActivity(sequelize, allDataTypes);
+        let tokenDtoModel = Token(sequelize, allDataTypes);
 
         allSequelizeModels = {
             userDtoModel : userDtoModel,
@@ -51,7 +53,8 @@ let getSequelizeContext = function(){
             registerDtoModel :  registerDtoModel,
             authRoleSectionDtoModel : authRoleSectionDtoModel,
             sessionDtoModel : sessionDtoModel,
-            sessionActivityDtoModel : sessionActivityDtoModel
+            sessionActivityDtoModel : sessionActivityDtoModel,
+            tokenDtoModel : tokenDtoModel
         }
         return allSequelizeModels;
     }

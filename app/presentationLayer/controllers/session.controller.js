@@ -1,7 +1,7 @@
 const sessionDomainManager = require('../../domainLayer/domainManagers/sessionDomainManager.js');
 const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
 
-var sessionController = function(app){
+let sessionController = function(app){
 
     //METHOD
     //CREATE
@@ -10,7 +10,7 @@ var sessionController = function(app){
         console.log('api/sessions/sessiontoken', request);
         var sessionResult = await sessionDomainManager.resolveGetSessionAsync(request);
         console.log('sessionResult', sessionResult);
-        httpResponseService.sendHttpResponse(sessionResult,response);
+        httpResponseService.sendHttpResponse(sessionResult);
         return;
     });
 
@@ -19,7 +19,7 @@ var sessionController = function(app){
         console.log('session-update-request.body', request.body);
         var sessionResult = await sessionDomainManager.resolveSessionUpdateAsync(request);
         console.log('sessionResult', sessionResult);
-        httpResponseService.sendHttpResponse(sessionResult,response);
+        httpResponseService.sendHttpResponse(sessionResult);
         return;
     });
     //DELETE

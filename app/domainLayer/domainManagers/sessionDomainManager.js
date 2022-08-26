@@ -8,9 +8,12 @@ const notificationService = require('../../services/notifications/notificationSe
 const userDomainManager = require('./userDomainManager.js');
 const sessionViewModel = require('../../presentationLayer/viewModels/sessionViewModel.js');
 const dbAction = require('../../dataAccessLayer/mysqlDataStore/context/dbAction.js');
+const tokenRepository = require('../../dataAccessLayer/repositories/tokenRepository.js');
+const helpers = require('../../library/common/helpers.js');
+const encryptDecryptService = require('../../services/encryption/encryptDecryptService.js');
 
 
-let resolveSessionUpdateAsync = async function (request) {
+const resolveSessionUpdateAsync = async function (request) {
 
     let _currentSessionToken = request.body.session;
     let sessionInfo = await processSessionUpdateGetSessionFromDatabaseAsync(_currentSessionToken);
@@ -21,7 +24,7 @@ let resolveSessionUpdateAsync = async function (request) {
     return sessionInfo;
 }
 
-let resolveGetSessionAsync = async function(request){
+const resolveGetSessionAsync = async function(request){
 
     let tempUserId = null;
     let currentSessionToken = request.headers.x_session_id;
@@ -52,7 +55,8 @@ let resolveGetSessionAsync = async function(request){
     return httpResponseService.getResponseResultStatus(currentSessionViewModel, httpResponseStatus._200ok);
 }
 
-let insertSessionAndSessionActivityTransactionAsync = async function(sessionModel, sessionActivityModel){
+
+const insertSessionSessionActivityAndTokenTransactionAsync = async function(sessionModel, sessionActivityModel, tokenModel){
 
     let singleConnection = await dbAction.getSingleConnectionFromPoolPromiseAsync();
     try{
@@ -64,11 +68,22 @@ let insertSessionAndSessionActivityTransactionAsync = async function(sessionMode
             dbAction.rollbackTransactionSingleConnection(singleConnection);
             return httpResponseService.getResponseResultStatus(insertedSessionResult, httpResponseStatus._400badRequest );
         }
+
         let sessionLoginDate = insertedSessionResult.sessionDtoModel.UTCDateCreated.value;
         let insertedSessionActivityResult = await sessionRepository.insertSessionActivityIntoTableTransacionAsync( singleConnection , sessionActivityModel, sessionLoginDate);
         if(insertedSessionActivityResult instanceof Error){
             dbAction.rollbackTransactionSingleConnection(singleConnection);
             return httpResponseService.getResponseResultStatus(insertedSessionActivityResult, httpResponseStatus._400badRequest );
+        }
+
+        let encryptedPayload = tokenModel.getPayload();
+        let decryptedPayloadString = encryptDecryptService.decryptWithAES(encryptedPayload);
+        let tokenModelPayload = JSON.parse(decryptedPayloadString);
+        let utcDateExpiredDbFormat = helpers.convertISOStringDateToUTCFormatForDatabase( tokenModelPayload.tokenUTCDateExpiry);
+        let insertedTokenResult = await tokenRepository.insertTokenIntoTableTransactionAsync(singleConnection,tokenModel, utcDateExpiredDbFormat );
+        if(insertedTokenResult instanceof Error){
+            dbAction.rollbackTransactionSingleConnection(singleConnection);
+            return httpResponseService.getResponseResultStatus(insertedTokenResult, httpResponseStatus._400badRequest );
         }
 
         dbAction.commitTransactionSingleConnection(singleConnection);
@@ -82,10 +97,11 @@ let insertSessionAndSessionActivityTransactionAsync = async function(sessionMode
 }
 
 
-var service = Object.freeze({
+
+const service = Object.freeze({
     resolveSessionUpdateAsync: resolveSessionUpdateAsync,
     resolveGetSessionAsync : resolveGetSessionAsync,
-    insertSessionAndSessionActivityTransactionAsync : insertSessionAndSessionActivityTransactionAsync
+    insertSessionSessionActivityAndTokenTransactionAsync : insertSessionSessionActivityAndTokenTransactionAsync
 });
 
 module.exports = service;

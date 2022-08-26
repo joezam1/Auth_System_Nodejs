@@ -10,7 +10,7 @@ const getSessionDtoModelMappedFromDomain = function(sessionDomainModel){
     let dateNow = new Date();
     let utcDateCreated = helpers.convertLocaleDateToUTCFormatForDatabase(dateNow);
     let expiryInMilliseconds = sessionDomainModel.getExpiryInMilliseconds();
-    let dateExpiredCalculation = sessionService.calculatSessionDateExpiry(dateNow,expiryInMilliseconds );
+    let dateExpiredCalculation = sessionService.calculateSessionDateExpiry(dateNow,expiryInMilliseconds );
 
     let utcDateExpiredFormatted = helpers.convertLocaleDateToUTCFormatForDatabase(dateExpiredCalculation);
     let sessionStatus = (sessionDomainModel.getSessionStatusIsActive());
@@ -60,7 +60,7 @@ const getSessionsDtoModelMappedFromDatabase = function(databaseResultArray) {
         _sessionDtoModel.rawAttributes.UTCDateExpired.value = sessionDatabase.UTCDateExpired;
 
         let clonedAttributes = JSON.parse(JSON.stringify(_sessionDtoModel.rawAttributes));
-        //NOTE: JSON Parse, converts Date values to Locale, We re-insert the original UTD Dates
+        //NOTE: JSON Parse, converts Date values to Locale, We re-insert the original UTC Dates
         clonedAttributes.UTCDateCreated.value = sessionDatabase.UTCDateCreated;
         clonedAttributes.UTCDateExpired.value = sessionDatabase.UTCDateExpired;
         allSessionsDtoModels.push(clonedAttributes);

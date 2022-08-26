@@ -24,7 +24,7 @@ const sessionIsExpired = function(dateExpiredUTCAsDate ){
 }
 
 //test:DONE
-const calculatSessionDateExpiry = function(localeDateCreated, expiresInMilliseconds){
+const calculateSessionDateExpiry = function(localeDateCreated, expiresInMilliseconds){
     let sessionDate = new Date(localeDateCreated);
     let sessionExpiryInMinutes = expiresInMilliseconds/ sessionConfig.ONE_MINUTE_IN_MILLISECONDS;
     let expirationDateInMinutes = sessionDate.setMinutes( sessionDate.getMinutes() + sessionExpiryInMinutes );
@@ -35,6 +35,6 @@ const calculatSessionDateExpiry = function(localeDateCreated, expiresInMilliseco
 const service = Object.freeze({
     generateSessionTokenAsync : generateSessionTokenAsync,
     sessionIsExpired : sessionIsExpired,
-    calculatSessionDateExpiry : calculatSessionDateExpiry
+    calculateSessionDateExpiry : calculateSessionDateExpiry
 });
 module.exports = service;

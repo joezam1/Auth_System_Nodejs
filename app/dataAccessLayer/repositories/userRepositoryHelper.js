@@ -83,11 +83,35 @@ const getUserRoleDtoModelMappedFromDomain = function(userRoleDomainModel) {
     return clonedAttributes;
 }
 
+const getUserRolesDtoModelMappedFromDatabase = function(databaseResultArray) {
+    let allUserRolesDtoModels = [];
+    for (let a = 0; a < databaseResultArray.length; a++) {
+        let userRoleDatabase = databaseResultArray[a];
+        console.log('userRoleDatabase', userRoleDatabase);
+        let _userRoleDtoModel =new context.userRoleDtoModel();
+        console.log('_userRoleDtoModel', _userRoleDtoModel);
+        _userRoleDtoModel.rawAttributes.UserRoleId.value = userRoleDatabase.UserRoleId;
+        _userRoleDtoModel.rawAttributes.UserId.value = userRoleDatabase.UserId;
+        _userRoleDtoModel.rawAttributes.RoleId.value = userRoleDatabase.RoleId;
+
+        _userRoleDtoModel.rawAttributes.UTCDateCreated.value = userRoleDatabase.UTCDateCreated;
+        _userRoleDtoModel.rawAttributes.UTCDateUpdated.value = userRoleDatabase.UTCDateUpdated;
+
+        let clonedAttributes = JSON.parse(JSON.stringify(_userRoleDtoModel.rawAttributes));
+        allUserRolesDtoModels.push(clonedAttributes);
+    }
+
+    return allUserRolesDtoModels;
+}
+
+
+
 onInit();
 const service = Object.freeze({
     getUserDtoModelMappedFromDomain : getUserDtoModelMappedFromDomain,
     getUsersDtoModelMappedFromDatabase : getUsersDtoModelMappedFromDatabase,
-    getUserRoleDtoModelMappedFromDomain : getUserRoleDtoModelMappedFromDomain
+    getUserRoleDtoModelMappedFromDomain : getUserRoleDtoModelMappedFromDomain,
+    getUserRolesDtoModelMappedFromDatabase : getUserRolesDtoModelMappedFromDatabase
 });
 
 module.exports = service;

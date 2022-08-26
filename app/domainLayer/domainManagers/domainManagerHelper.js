@@ -3,6 +3,7 @@ const cookie = require('../domainModels/cookie.js');
 const userRole = require('../domainModels/userRole.js');
 const register = require('../domainModels/register.js');
 const sessionActivity = require('../domainModels/sessionActivity.js');
+const tokenModel = require('../domainModels/token.js');
 const sessionConfig = require('../../../configuration/authentication/sessionConfig.js');
 const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
@@ -71,14 +72,25 @@ const createCookieObj = function(sessionToken){
     return cookieObject;
 }
 
-
+const createTokenModel = function(userId, token, type, payload){
+    let tokenUuid = uuid();
+    let _tokenModel = new tokenModel();
+    _tokenModel.setTokenId(tokenUuid);
+    _tokenModel.setUserId(userId);
+    _tokenModel.setToken(token);
+    _tokenModel.setType(type);
+    _tokenModel.setPayload(payload);
+    _tokenModel.setTokenStatusIsActive(true);
+    return _tokenModel;
+}
 
 const service = Object.freeze({
     createUserRoleModel : createUserRoleModel,
     createRegisterModel : createRegisterModel,
     createSessionModel : createSessionModel,
     createSessionActivityModel : createSessionActivityModel,
-    createCookieObj : createCookieObj
+    createCookieObj : createCookieObj,
+    createTokenModel : createTokenModel
 });
 
 module.exports = service;
