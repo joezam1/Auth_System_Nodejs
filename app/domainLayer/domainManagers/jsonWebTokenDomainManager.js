@@ -5,12 +5,13 @@ const httpResponseService = require('../../services/httpProtocol/httpResponseSer
 const httpResponseStatus = require('../../library/enumerations/httpResponseStatus.js');
 const notificationService = require('../../services/notifications/notificationService.js');
 const jwtTokenService = require('../../services/authorization/jwtTokenService.js');
-const encryptDecryptService = require('../../services/encryption/encryptDecryptService.js');
 const helpers = require('../../library/common/helpers.js');
 const authViewModel = require('../../presentationLayer/viewModels/authViewModel.js');
 const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
 
+
+//Test: DONE
 const resolveJsonWebTokenUpdateAsync = async function (request) {
 
     let authorizationToken = request.headers.authorization;
@@ -54,57 +55,37 @@ async function processJWTUpdateGetTokenFromDatabaseAsync(currentRefreshToken){
     return httpResponseService.getResponseResultStatus(foundTokenDtoModel, httpResponseStatus._200ok);
 }
 
-async function processJWTUpdateSaveNewTokenToDatabaseAsync(accessTokenFromApi, tokenDtoModel){
+async function processJWTUpdateSaveNewTokenToDatabaseAsync(accessTokenFromApi, refreshTokenDtoModel){
 
     let localeDateNow = new Date();
     let utcDateNow = helpers.convertLocaleDateToUTCDate(localeDateNow);
     let accessToken = accessTokenFromApi;
-    let tokenUTCDateExpiredTime = tokenDtoModel.UTCDateExpired.value.getTime();
+    let tokenUTCDateExpiredTime = refreshTokenDtoModel.UTCDateExpired.value.getTime();
     let utcDateNowTime = utcDateNow.getTime();
-    if(tokenUTCDateExpiredTime < utcDateNowTime && tokenDtoModel.Type.value === tokenType.jwtRefreshToken)
+    if(tokenUTCDateExpiredTime < utcDateNowTime && refreshTokenDtoModel.Type.value === tokenType.jwtRefreshToken)
     {
-        //Remove the token from the database;
-        /*
-        let currentTokenDomainModel = domainManagerHelper.createTokenModel(tokenDtoModel.UserId.value, tokenDtoModel.Token.value. tokenDtoModel.type.value, tokenDtoModel.payload.value);
-        currentTokenDomainModel.setTokenId(tokenDtoModel.TokenId.value);
-
-        let tokenResultArray = tokenRepository.deleteTokenFromDatabaseAsync(currentTokenDomainModel);
-        if (tokenResultArray instanceof Error) {
-            return httpResponseService.getResponseResultStatus(tokenResultArray, httpResponseStatus._400badRequest);
-        }
-
-        //NO TOKEN IS RETURNED Authorization is EXPIRED
-        return httpResponseService.getResponseResultStatus(notificationService.tokenRemoved, httpResponseStatus._403forbidden);
-        */
-        let resultTokenRemovedFromDb = await resolveRemoveTokenFromDatabaseAsync(tokenDtoModel);
+        let resultTokenRemovedFromDb = await resolveRemoveTokenFromDatabaseAsync(refreshTokenDtoModel);
         return resultTokenRemovedFromDb;
     }
 
-    //Decrypt accessTokenFromApi
-    //let encryptedAccessTokenPayload = jwtTokenService.getDecodedJWTPayloadPromiseAsync(accessTokenFromApi);
-    //let decryptedAccessTokenPayload = encryptDecryptService.decryptWithAES(encryptedAccessTokenPayload);
-    //let accessTokenPayload = JSON.parse(decryptedAccessTokenPayload);
     let accessTokenPayload = await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync (accessTokenFromApi);
     let accessTokenLocaleDate = new Date(accessTokenPayload.tokenUTCDateExpiry);
     let accessTokenUtcDate = helpers.convertLocaleDateToUTCDate(accessTokenLocaleDate);
     let accessTokenUtcDateTime = accessTokenUtcDate.getTime();
     if( accessTokenUtcDateTime < utcDateNowTime){
-        //update the dates
-        accessTokenPayload.tokenUTCDateCreated = utcDateNow;
-        accessTokenPayload.tokenUTCDateExpiry = jwtTokenService.getCalculatedJwtAccessTokenUTCExpiryDate(localeDateNow);
+        accessTokenPayload.tokenUTCDateCreated = localeDateNow.toISOString();
+        let localeDateExpiry = jwtTokenService.getCalculatedJwtAccessTokenLocaleExpiryDate(localeDateNow);
+        accessTokenPayload.tokenUTCDateExpiry = localeDateExpiry.toISOString();
         accessToken = await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(accessTokenPayload);
     }
-    //Decrypt refreshTokenFromDb
-    //let encryptedRefreshTokenPayload = jwtTokenService.getDecodedJWTPayloadPromiseAsync(refreshTokenFromDb);
-    //let decryptedRefreshTokenPayload = encryptDecryptService.decryptWithAES(encryptedRefreshTokenPayload);
-    //let jwtRefreshTokenPayload = JSON.parse(decryptedRefreshTokenPayload);
-    let jwtRefreshTokenPayload = await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync (tokenDtoModel.Token.value);
+
+    let jwtRefreshTokenPayload = await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync (refreshTokenDtoModel.Token.value);
     let fingerprint = uuid();
     jwtRefreshTokenPayload.encryptedSessionFingerprint = fingerprint;
     let refreshToken = await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(jwtRefreshTokenPayload);
-    if(tokenDtoModel.Token.value != refreshToken){
-        //update token in database
-        let updatedTokenDomainModel = convertTokenDtoModelToTokenDomainModel(tokenDtoModel);
+    if(refreshTokenDtoModel.Token.value != refreshToken){
+
+        let updatedTokenDomainModel =domainManagerHelper.getTokenDomainModelMappedFromTokenDtoModel(refreshTokenDtoModel);
         updatedTokenDomainModel.setToken(refreshToken);
         updatedTokenDomainModel.setType(tokenType.jwtRefreshToken );
         let result = await tokenRepository.updateTokenTableSetColumnValuesWhereAsync(updatedTokenDomainModel);
@@ -120,45 +101,18 @@ async function processJWTUpdateSaveNewTokenToDatabaseAsync(accessTokenFromApi, t
     let _authViewModel = new authViewModel(authModel);
 
     return httpResponseService.getResponseResultStatus(_authViewModel, httpResponseStatus._200ok);
-
 }
 
-function convertTokenDtoModelToTokenDomainModel(tokenDtoModel){
-    console.log('convertTokenDtoModelToTokenDomainModel--tokenDtoModel',tokenDtoModel);
-    let userId = tokenDtoModel.UserId.value;
-    let token = tokenDtoModel.Token.value;
-    let type = tokenDtoModel.Type.value;
-    let payload = tokenDtoModel.Payload.value;
-    let currentTokenDomainModel = domainManagerHelper.createTokenModel(userId ,token ,type ,payload );
-    currentTokenDomainModel.setTokenId(tokenDtoModel.TokenId.value);
-    return currentTokenDomainModel;
-}
 
 async function resolveRemoveTokenFromDatabaseAsync(tokenDtoModel){
-     //Remove the token from the database;
-     let currentTokenDomainModel = convertTokenDtoModelToTokenDomainModel(tokenDtoModel);
+
+     let currentTokenDomainModel = domainManagerHelper.getTokenDomainModelMappedFromTokenDtoModel(tokenDtoModel);
      let tokenResultArray = await tokenRepository.deleteTokenFromDatabaseAsync(currentTokenDomainModel);
      if (tokenResultArray instanceof Error) {
          return httpResponseService.getResponseResultStatus(tokenResultArray, httpResponseStatus._400badRequest);
      }
 
-     //NO TOKEN IS RETURNED Authorization is EXPIRED
      return httpResponseService.getResponseResultStatus(notificationService.tokenRemoved, httpResponseStatus._403forbidden);
 }
 
-/*function getDecryptedPayloadFromDecodedJsonWedToken(selectedJsonWebtoken){
-
-    let encryptedTokenPayload = jwtTokenService.getDecodedJWTPayloadPromiseAsync(selectedJsonWebtoken);
-    let decryptedTokenPayload = encryptDecryptService.decryptWithAES(encryptedTokenPayload);
-    let tokenPayload = JSON.parse(decryptedTokenPayload);
-    return tokenPayload;
-}*/
-
-/*async function resolveCreateJsonWebTokenAsync(originalTokenPayload){
-    let jwtTokenPayloadString = helpers.convertToStringOrStringifyForDataStorage(originalTokenPayload);
-
-    let encryptedJwtTokenPayload = encryptDecryptService.encryptWithAES(jwtTokenPayloadString);
-    let jwtToken = await jwtTokenService.createJsonWebTokenPromiseAsync (encryptedJwtTokenPayload);
-    return jwtToken;
-}*/
 //#ENDREGION Private Functions

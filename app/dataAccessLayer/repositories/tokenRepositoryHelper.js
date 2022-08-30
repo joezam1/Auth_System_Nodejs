@@ -3,8 +3,7 @@ const helpers = require('../../library/common/helpers.js');
 
 let context = null;
 
-
-
+//Test: DONE
 const getTokenDtoModelMappedFromDomain = function(tokenDomainModel) {
     console.log('tokenDomainModel', tokenDomainModel);
 
@@ -38,10 +37,7 @@ const getTokenDtoModelMappedFromDomain = function(tokenDomainModel) {
     let clonedAttributes = JSON.parse(JSON.stringify(_tokenDtoModel.rawAttributes));
     return clonedAttributes;
 }
-
-
-
-
+//Test: DONE
 const getTokensDtoModelMappedFromDatabase = function(databaseResultArray) {
     let allTokensDtoModels = [];
     for (let a = 0; a < databaseResultArray.length; a++) {

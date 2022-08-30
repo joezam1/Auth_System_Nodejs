@@ -19,7 +19,7 @@ const convertLocaleDateToUTCFormatForDatabase = function(selectedLocaleDateAsDat
 
     return dateUTCDateTimeFormat;
 }
-
+//Test: DONE
 const convertISOStringDateToUTCFormatForDatabase = function(ISOStringDate){
     let dateUTCDateTimeFormat = ISOStringDate.replace('T', ' ').substring(0,19);
 

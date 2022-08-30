@@ -1,22 +1,20 @@
 
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
-
+const roleDomainModel = require('../../domainLayer/domainModels/role.js');
 
 let context = null;
 
 
-
-function getRoleModelMappedFromRoleDtoModel(roleDtoModel) {
-    let _roleInfo = new role();
+//Test: DONE
+const getRoleModelMappedFromRoleDtoModel = function(roleDtoModel) {
+    let _roleInfo = new roleDomainModel();
     _roleInfo.setRoleId(roleDtoModel.RoleId.value);
     _roleInfo.setName(roleDtoModel.Name.value);
     _roleInfo.setDescription(roleDtoModel.Description.value);
-    _roleInfo.setRpleIsActive(roleDtoModel.IsActive.value);
+    _roleInfo.setRoleStatusIsActive(roleDtoModel.IsActive.value);
 
     return _roleInfo;
 }
-
-
 
 //Test: DONE
 const getRolesDtoModelMappedFromDatabase = function(databaseResultArray){

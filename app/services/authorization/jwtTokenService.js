@@ -3,6 +3,7 @@ const jwtConfig = require('../../../configuration/authorization/jwtConfig.js');
 const helpers = require('../../library/common/helpers.js');
 const encryptDecryptService = require('../encryption/encryptDecryptService.js');
 const sessionService = require('../authentication/sessionService.js');
+const userRepository = require('../../dataAccessLayer/repositories/userRepository.js');
 
 
 //Test: DONE
@@ -61,36 +62,16 @@ let getDecodedJWTPayloadPromiseAsync = async function(selectedJwtToken){
     return result;
 }
 
-
+//Test: DONE
 const getCalculatedJwtAccessTokenLocaleExpiryDate = function(localeDateNowAsDate){
 
     let expiryInMilliseconds = jwtConfig.JWT_ACCESS_TOKEN_TOTAL_EXPIRATION_TIME_IN_MILLISECONDS;
     let localeDateExpiry = sessionService.calculateSessionDateExpiry(localeDateNowAsDate, expiryInMilliseconds);
 
-
     return localeDateExpiry;
 }
 
-const getCalculatedJwtAccessTokenUTCExpiryDate = function(localeDateNowAsDate){
-
-    let expiryInMilliseconds = jwtConfig.JWT_ACCESS_TOKEN_TOTAL_EXPIRATION_TIME_IN_MILLISECONDS;
-    let localeDateExpiry = sessionService.calculateSessionDateExpiry(localeDateNowAsDate, expiryInMilliseconds);
-    let utcDateExpiry = helpers.convertLocaleDateToUTCDate(localeDateExpiry);
-
-    return utcDateExpiry;
-}
-
-const getCalculatedJwtRefreshTokenUTCExpiryDate = function(localeDateNowAsDate){
-
-    let expiryInMilliseconds = jwtConfig.JWT_REFRESH_TOKEN_TOTAL_EXPIRATION_TIME_IN_MILLISECONDS;
-    let localeDateExpiry = sessionService.calculateSessionDateExpiry(localeDateNowAsDate, expiryInMilliseconds);
-    let utcDateExpiry = helpers.convertLocaleDateToUTCDate(localeDateExpiry);
-
-    return utcDateExpiry;
-}
-
-
-
+//Test: DONE
 async function CreateJsonWebTokenWithEncryptedPayloadAsync(originalTokenPayload){
     let jwtTokenPayloadString = helpers.convertToStringOrStringifyForDataStorage(originalTokenPayload);
 
@@ -99,7 +80,7 @@ async function CreateJsonWebTokenWithEncryptedPayloadAsync(originalTokenPayload)
     return jwtToken;
 }
 
-
+//Test: DONE
 async function getDecryptedPayloadFromDecodedJsonWedTokenAsync(selectedJsonWebtoken){
 
     let encryptedTokenPayload =await getDecodedJWTPayloadPromiseAsync(selectedJsonWebtoken);
@@ -109,16 +90,69 @@ async function getDecryptedPayloadFromDecodedJsonWedTokenAsync(selectedJsonWebto
 }
 
 
+//Test: DONE
+async function resolveJwtAccessTokenPayloadAsync(userDomainModel){
+
+    let allUserRolesDtoModelArray = await userRepository.getAllUserRolesByUserIdAsync(userDomainModel);
+    if (allUserRolesDtoModelArray instanceof Error) {
+        let objResponse = httpResponseService.getResponseResultStatus(allUserRolesDtoModelArray, httpResponseStatus._400badRequest);
+        return objResponse;
+    }
+    let userRolesEnumArray = await userRepository.convertAllUserRolesFromDatabaseToUserRoleEnumsAsync(allUserRolesDtoModelArray);
+    if (userRolesEnumArray instanceof Error) {
+        let objResponse = httpResponseService.getResponseResultStatus(userRolesEnumArray, httpResponseStatus._400badRequest);
+        return objResponse;
+    }
+
+    let localeDateNow = new Date();
+    let utcDateNow = localeDateNow.toISOString();
+    let localeDateExpiry = getCalculatedJwtAccessTokenLocaleExpiryDate(localeDateNow);
+    let utcDateExpiry = localeDateExpiry.toISOString();
+    let accessTokenPayload = createAccessTokenPayload(userDomainModel, userRolesEnumArray, utcDateExpiry, utcDateNow);
+
+    return accessTokenPayload;
+}
+//Test: DONE
+async function resolveJwtRefreshTokenPayloadAsync(fingerprint){
+
+    let localeDateNow = new Date();
+    let utcDateNow = localeDateNow.toISOString();
+
+    let localeDateExpiry = getCalculatedJwtRefreshTokenLocaleExpiryDate(localeDateNow);
+    let utcDateExpiry = localeDateExpiry.toISOString();
+    let refreshTokenPayload = createRefreshTokenPayload(fingerprint, utcDateExpiry, utcDateNow);
+
+    return refreshTokenPayload;
+}
+
+
 const service = Object.freeze({
     createAccessTokenPayload : createAccessTokenPayload,
     createRefreshTokenPayload : createRefreshTokenPayload,
+
+    getCalculatedJwtAccessTokenLocaleExpiryDate : getCalculatedJwtAccessTokenLocaleExpiryDate,
+
+    resolveJwtAccessTokenPayloadAsync : resolveJwtAccessTokenPayloadAsync,
+    resolveJwtRefreshTokenPayloadAsync : resolveJwtRefreshTokenPayloadAsync,
+
     createJsonWebTokenPromiseAsync : createJsonWebTokenPromiseAsync,
     getDecodedJWTPayloadPromiseAsync : getDecodedJWTPayloadPromiseAsync,
-    getCalculatedJwtAccessTokenLocaleExpiryDate : getCalculatedJwtAccessTokenLocaleExpiryDate,
-    getCalculatedJwtAccessTokenUTCExpiryDate : getCalculatedJwtAccessTokenUTCExpiryDate,
-    getCalculatedJwtRefreshTokenUTCExpiryDate : getCalculatedJwtRefreshTokenUTCExpiryDate,
     CreateJsonWebTokenWithEncryptedPayloadAsync : CreateJsonWebTokenWithEncryptedPayloadAsync,
     getDecryptedPayloadFromDecodedJsonWedTokenAsync : getDecryptedPayloadFromDecodedJsonWedTokenAsync
 });
 
 module.exports = service;
+
+
+//#REGION Private Functions
+
+
+function getCalculatedJwtRefreshTokenLocaleExpiryDate(localeDateNowAsDate){
+
+    let expiryInMilliseconds = jwtConfig.JWT_REFRESH_TOKEN_TOTAL_EXPIRATION_TIME_IN_MILLISECONDS;
+    let localeDateExpiry = sessionService.calculateSessionDateExpiry(localeDateNowAsDate, expiryInMilliseconds);
+
+    return localeDateExpiry;
+}
+
+//#ENDREGION Private Functions

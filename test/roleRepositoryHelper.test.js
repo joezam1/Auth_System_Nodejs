@@ -3,6 +3,28 @@ const roleRepositoryHelper = require('../app/dataAccessLayer/repositories/roleRe
 
 
 describe('File: roleRepositoryHelper.js', function(){
+
+    describe('Function: getRoleModelMappedFromRoleDtoModel', function(){
+        test('CAN get RoleModel Mapped From Role DtoModel', function(){
+            //Arrange
+            let _roleDtoModel ={
+                RoleId:{value: 'adsfadkd'},
+                RoleIndex:{value: 1},
+                Name:{value: 'Admin'},
+                Description:{value:'total access'},
+                IsActive:{value:1},
+                UTCDateCreated:{value: new Date()},
+                UTCDateUpdated:{value: new Date()}
+            }
+            //Act
+            let result = roleRepositoryHelper.getRoleModelMappedFromRoleDtoModel(_roleDtoModel);
+            let resultRoleId = result.getRoleId();
+            //Assert
+            expect(resultRoleId).toEqual(_roleDtoModel.RoleId.value);
+
+        });
+    });
+
     describe('Function: getRolesDtoModelMappedFromDatabase', function(){
         test('Can Create RolesDtoModel Mapped From Database', function(){
             //Arrange

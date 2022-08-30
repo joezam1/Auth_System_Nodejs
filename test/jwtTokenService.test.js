@@ -8,6 +8,13 @@ const encryptionService = require('../app/services/encryption/encryptionService.
 const encryptDecryptService = require('../app/services/encryption/encryptDecryptService.js');
 const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
+const userRepository = require('../app/dataAccessLayer/repositories/userRepository.js');
+const httpResponseService = require('../app/services/httpProtocol/httpResponseService.js');
+
+
+jest.mock('../app/dataAccessLayer/repositories/userRepository.js');
+jest.mock('../app/services/httpProtocol/httpResponseService.js');
+
 
 
 describe('File: jwtTokenService.js', function () {
@@ -257,4 +264,81 @@ describe('File: jwtTokenService.js', function () {
         });
     });
 
+
+    describe('Function: getCalculatedJwtAccessTokenLocaleExpiryDate', function(){
+        test('CAN get Calculated Jwt AccessToken Locale Expiry Date ', function(){
+            //Arrange
+            let localeDateNow = new Date();
+            //Act
+            let expiryDate = jwtTokenService.getCalculatedJwtAccessTokenLocaleExpiryDate(localeDateNow);
+            let localeDateNowTime = localeDateNow.getTime();
+            let expiryDateTime = expiryDate.getTime();
+            //Assert
+            expect(expiryDateTime).toBeGreaterThan(localeDateNowTime)
+
+        });
+    });
+
+    describe('Function: CreateJsonWebTokenWithEncryptedPayloadAsync', function(){
+        test('CAN Create Json Web Token With Encrypted Payload OK', async function(){
+
+            //Arrange
+            let originalTokenPayload = {value: 'this is a payload'}
+            //Act
+            let encryptedJWT = await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(originalTokenPayload);
+            let decryptedTokenPayload = await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync(encryptedJWT);
+            //Assert
+            expect(decryptedTokenPayload).toEqual(originalTokenPayload);
+
+        })
+    });
+
+
+    describe('Function: getDecryptedPayloadFromDecodedJsonWedTokenAsync', function(){
+        test('CAN DECODE an Encrypted Json Web Token OK', async function(){
+
+            //Arrange
+            let originalTokenPayload = {value: 'this is a payload2'}
+            //Act
+            let encryptedJWT = await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(originalTokenPayload);
+            let decryptedTokenPayload = await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync(encryptedJWT);
+            //Assert
+            expect(decryptedTokenPayload).toEqual(originalTokenPayload);
+
+        })
+    })
+
+
+    describe('Function: resolveJwtAccessTokenPayloadAsync ', function(){
+        test('When the internal functions are called payload is created', async function(){
+            //Arrange
+            userRepository.getAllUserRolesByUserIdAsync = jest.fn();
+            userRepository.convertAllUserRolesFromDatabaseToUserRoleEnumsAsync = jest.fn();
+            httpResponseService.getResponseResultStatus = jest.fn();
+            let userDomainModel = new user();
+            userDomainModel.setUserId('abcd');
+            //Act
+            let result = await jwtTokenService.resolveJwtAccessTokenPayloadAsync(userDomainModel);
+
+            //Assert
+            expect(result).not.toEqual(null);
+            expect(userRepository.getAllUserRolesByUserIdAsync).toHaveBeenCalledTimes(1);
+            expect(userRepository.convertAllUserRolesFromDatabaseToUserRoleEnumsAsync).toHaveBeenCalledTimes(1);
+            expect(httpResponseService.getResponseResultStatus).toHaveBeenCalledTimes(0);
+        })
+    });
+
+
+    describe('Function: resolveJwtRefreshTokenPayloadAsync', function(){
+        test('When function is called the payload is created', async function(){
+            //Arrange
+            let fingerprint = 'abcd';
+            //Act
+            let resultRefreshTokenPayload = await jwtTokenService.resolveJwtRefreshTokenPayloadAsync(fingerprint);
+            let resultFingerprint = resultRefreshTokenPayload.encryptedSessionFingerprint;
+            //Assert
+            expect(resultRefreshTokenPayload).not.toEqual(null);
+            expect(resultFingerprint).toEqual(fingerprint);
+        })
+    });
 });

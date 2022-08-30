@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.28% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>18/28</span>
+                <span class='fraction'>28/28</span>
             </div>
         
             
@@ -116,50 +116,48 @@
 <a name='L51'></a><a href='#L51'>51</a>
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<a name='L54'></a><a href='#L54'>54</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -169,43 +167,45 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span></td><td class="text"><pre class="prettyprint lang-js">const formFieldStatus = require('../../library/enumerations/formFieldStatus.js');
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span></td><td class="text"><pre class="prettyprint lang-js">const formFieldStatus = require('../../library/enumerations/formFieldStatus.js');
 const jsDataType = require('../../library/stringLiterals/jsDataType.js');
 const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
 &nbsp;
 const userRegisterViewModel = function(model){
     let firstName ={
-        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.firstName || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span> : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.firstName || '') : '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: jsDataType.STRING
     };
     let middleName = {
-        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.middleName || '') : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.middleName || '') : '',
         fieldStatus:formFieldStatus.Optional,
         fieldDataType: jsDataType.STRING
     };
     let lastName = {
-        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.lastName || '') : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.lastName || '') : '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: jsDataType.STRING
     };
     let username = {
-        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.username || '') : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.username || '') : '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: jsDataType.STRING
     };
     let email = {
-        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.email || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span> : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.email || '') : '',
         fieldStatus:formFieldStatus.Required,
         fieldDataType: jsDataType.STRING
     };
     let password = {
-        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.password || ''): <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.password || ''): '',
         fieldStatus: formFieldStatus.Required,
         fieldDataType: jsDataType.STRING
     };
     let confirmPassword = {
-        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.confirmPassword || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span> : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
+        fieldValue: inputCommonInspector.objectIsValid(model) ? (model.confirmPassword || '') : '',
         fieldStatus:formFieldStatus.Required,
         fieldDataType: jsDataType.STRING
     };
@@ -229,7 +229,7 @@ module.exports = userRegisterViewModel;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Wed Aug 24 2022 17:34:31 GMT-0500 (Central Daylight Time)
+                at Tue Aug 30 2022 18:56:17 GMT-0500 (Central Daylight Time)
             </div>
         <script src="../../../prettify.js"></script>
         <script>

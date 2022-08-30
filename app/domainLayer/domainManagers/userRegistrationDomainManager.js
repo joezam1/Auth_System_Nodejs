@@ -15,10 +15,10 @@ const registerRepository = require('../../dataAccessLayer/repositories/registerR
 const roleRepositoryHelper = require('../../dataAccessLayer/repositories/roleRepositoryHelper.js');
 const encryptionService = require('../../services/encryption/encryptionService.js');
 const notificationService = require('../../services/notifications/notificationService.js');
+const userModel = require('../domainModels/user');
 
 
-
-
+//Test: DONE
 async function processUserRegistrationValidationAsync(userViewModel) {
     let errorsReport = validationService.resolveUserModelValidation(userViewModel);
     if (!inputCommonInspector.objectIsNullOrEmpty(errorsReport)) {
@@ -38,6 +38,7 @@ async function processUserRegistrationValidationAsync(userViewModel) {
     return httpResponseService.getResponseResultStatus(_userDomainModel, httpResponseStatus._200ok);
 }
 
+//Test: DONE
 async function processUserRegistrationStorageToDatabaseAsync(currentUserRoleEnumeration, userDomainModel) {
     let selectedRoleDescription = userRoleEnum[currentUserRoleEnumeration];
     let selectedRoleObj = await getSelectedRoleAsync(selectedRoleDescription);

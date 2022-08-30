@@ -3,7 +3,7 @@ const domainManagerHelper = require('../app/domainLayer/domainManagers/domainMan
 
 
 describe('File: domainManagerHelper', function(){
-    describe('function: createUserRoleModel', function(){
+    describe('Function: createUserRoleModel', function(){
         test('Can create a UserRoleModel', function(){
             //Arrange
             let userId = 'abcd';
@@ -16,7 +16,7 @@ describe('File: domainManagerHelper', function(){
         })
     });
 
-    describe('function: createRegisterModel', function(){
+    describe('Function: createRegisterModel', function(){
         test('Can create a RegisterModel', function(){
             //Arrange
             let userId = 'abcd';
@@ -29,7 +29,7 @@ describe('File: domainManagerHelper', function(){
     });
 
 
-    describe('function: createSessionModel', function(){
+    describe('Function: createSessionModel', function(){
         test('Can create a SessionModel', function(){
             //Arrange
             let userId = 'abcd';
@@ -45,7 +45,7 @@ describe('File: domainManagerHelper', function(){
     });
 
 
-    describe('function: createSessionActivityModel', function(){
+    describe('Function: createSessionActivityModel', function(){
         test('Can create a SessionActivityModel', function(){
             //Arrange
             let userId = 'abcd';
@@ -61,7 +61,7 @@ describe('File: domainManagerHelper', function(){
     });
 
 
-    describe('function: createCookieObj', function(){
+    describe('Function: createCookieObj', function(){
         test('Can create a CookieObject', function(){
             //Arrange
 
@@ -72,5 +72,76 @@ describe('File: domainManagerHelper', function(){
             //Assert
             expect(cookieValue).toEqual(sessionToken);
         })
+    });
+
+    describe('Function: createTokenModel', function(){
+        test('CAN create Token Model', function(){
+            //Arrange
+            let userId = 'abc';
+            //Act
+            let resultTest = domainManagerHelper.createTokenModel( userId,'xsdd',1,'ssss');
+            //Assert
+            let resultUserId = resultTest.getUserId();
+            expect(resultUserId).toEqual(userId);
+        });
+    });
+
+    describe('Function: getUserDomainModelMappedFromUserDtoModel', function(){
+        test('CAN get User Domain Model Mapped From User DtoModel', function(){
+            //Arrange
+            let userDtoModel ={
+                UserId:{value: 'dfadf'},
+                FirstName:{value:'Tom'},
+                LastName:{value:'Jones'},
+                Username:{value:'tom1'},
+                Email:{value:'tom1@jones.com'},
+                IsActive:{value:true}
+            }
+            //Act
+            let resultTest = domainManagerHelper.getUserDomainModelMappedFromUserDtoModel(userDtoModel);
+            resultUserId = resultTest.getUserId();
+            //Assert
+            expect(resultUserId).toEqual(userDtoModel.UserId.value);
+        });
+    });
+
+    describe('Function: getTokenDomainModelMappedFromTokenDtoModel', function(){
+        test('CAN get Token Domain Model Mapped From Token DtoModel', function(){
+
+            //Arrange
+            let tokenDtoModel = {
+                TokenId:{value:'13256'},
+                UserId:{value:'abc'},
+                Token:{value:'sssadfpoijf'},
+                Type:{value:2},
+                Payload:{value: 'adsadfad'}
+            }
+            //Act
+            let resultTest = domainManagerHelper.getTokenDomainModelMappedFromTokenDtoModel(tokenDtoModel);
+            let resultTokenId = resultTest.getTokenId();
+            //Assert
+            expect( resultTokenId ).toEqual(tokenDtoModel.TokenId.value);
+
+        });
+    });
+
+    describe('Function: getSessionViewModelMappedFromSessionDtoModel', function(){
+        test('CAN get Session ViewModel Mapped From Session DtoModel', function(){
+
+            //Arrange
+            let sessionDtoModel ={
+                SessionToken:{value:'132'},
+                Expires:{value: 60000},
+                Data:{value: 'abc'},
+                IsActive:{value:1},
+                UTCDateCreated:{value: new Date()},
+                UTCDateExpired:{value: new Date()}
+            }
+            //Act
+            let resultTest = domainManagerHelper.getSessionViewModelMappedFromSessionDtoModel(sessionDtoModel);
+            let resultSessionToken = resultTest.sessionToken.fieldValue;
+            //Assert
+            expect(resultSessionToken).toEqual(sessionDtoModel.SessionToken.value);
+        });
     });
 });

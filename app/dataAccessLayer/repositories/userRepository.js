@@ -3,16 +3,20 @@ const helpers = require('../../library/common/helpers.js');
 const repositoryManager = require('./repositoryManager.js');
 const genericQueryStatement = require('../../library/enumerations/genericQueryStatement.js');
 const userRepositoryHelper = require('./userRepositoryHelper.js');
+const roleRepository = require('../repositories/roleRepository.js');
+const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
+const userRoleEnum = require('../../library/enumerations/userRole.js');
 
 
 let context = null;
 let userTableName = null;
 let userRoleTableName = null;
+
 //Test: DONE
 const getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
     console.log('context', context);
     console.log('userTableName', userTableName);
-    let userDtoModel = userRepositoryHelper.getUserDtoModelMappedFromDomain(userDomainModel);
+    let userDtoModel = userRepositoryHelper.getUserDtoModelMappedFromDomain (userDomainModel);
     let propertiesArray = [userDtoModel.Username, userDtoModel.Email];
     let statementResult = await repositoryManager.resolveStatementAsync(propertiesArray, genericQueryStatement.selectWherePropertyEqualsAnd, userTableName);
     if (statementResult instanceof Error) {
@@ -23,7 +27,8 @@ const getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
     return userDtoResult;
 }
 
-const getAllUserRolesByUserIdAsync = async function(userDomainModel){
+//Test: DONE
+const getAllUserRolesByUserIdAsync = async function (userDomainModel) {
 
     console.log('context', context);
     console.log('userRoleTableName', userRoleTableName);
@@ -33,11 +38,38 @@ const getAllUserRolesByUserIdAsync = async function(userDomainModel){
     if (statementResult instanceof Error) {
         return statementResult;
     }
-    let userRolesDtoResult = userRepositoryHelper.getUserRolesDtoModelMappedFromDatabase (statementResult[0]);
+    let userRolesDtoResult = userRepositoryHelper.getUserRolesDtoModelMappedFromDatabase(statementResult[0]);
 
     return userRolesDtoResult;
 
 }
+
+//Test: DONE
+const convertAllUserRolesFromDatabaseToUserRoleEnumsAsync = async function (allUserRolesDtoModelArray) {
+
+    let allRolesResult = await roleRepository.getAllRolesAsync();
+    if (allRolesResult instanceof Error) {
+        let objResponse = httpResponseService.getResponseResultStatus(allRolesResult, httpResponseStatus._400badRequest);
+        return objResponse;
+    }
+
+    let userRolesEnumArray = [];
+    for (let a = 0; a < allUserRolesDtoModelArray.length; a++) {
+
+        let userRole = allUserRolesDtoModelArray[a];
+        let selectedRole = allRolesResult.find((roleObj) => {
+            return (roleObj.RoleId.value === userRole.RoleId.value);
+        });
+        if (inputCommonInspector.inputExist(selectedRole)) {
+            let roleEnumValue = userRoleEnum[selectedRole.Name.value];
+            userRolesEnumArray.push(roleEnumValue);
+        }
+
+    }
+    return userRolesEnumArray;
+
+}
+
 //Test: DONE
 const insertUserIntoTableTransactionAsync = async function (connectionPool, userDomainModel) {
     console.log('userDomainModel', userDomainModel);
@@ -47,6 +79,7 @@ const insertUserIntoTableTransactionAsync = async function (connectionPool, user
 
     return statementResult;
 }
+
 //Test: DONE
 const insertUserRoleIntoTableTransactionAsync = async function (connectionPool, userRoleDomainModel) {
     let userRoleDtoModel = userRepositoryHelper.getUserRoleDtoModelMappedFromDomain(userRoleDomainModel);
@@ -62,7 +95,8 @@ onInit();
 
 const service = {
     getUserByUsernameAndEmailDataAsync: getUserByUsernameAndEmailDataAsync,
-    getAllUserRolesByUserIdAsync : getAllUserRolesByUserIdAsync,
+    getAllUserRolesByUserIdAsync: getAllUserRolesByUserIdAsync,
+    convertAllUserRolesFromDatabaseToUserRoleEnumsAsync : convertAllUserRolesFromDatabaseToUserRoleEnumsAsync,
     insertUserIntoTableTransactionAsync: insertUserIntoTableTransactionAsync,
     insertUserRoleIntoTableTransactionAsync: insertUserRoleIntoTableTransactionAsync
 }

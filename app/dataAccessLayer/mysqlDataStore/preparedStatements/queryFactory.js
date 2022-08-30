@@ -116,7 +116,7 @@ let updateTableSetColumnValuesWhere = function(tableName, sequelizePropertiesArr
     return statement;
 }
 
-
+//Test: DONE
 let createSimpleQueryStatement = function( genericQueryStatementsEnum, tableName, sequelizePropertiesArray ){
 
     let selectedStatement = '';

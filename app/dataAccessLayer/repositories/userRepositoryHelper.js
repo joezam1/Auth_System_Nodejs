@@ -82,7 +82,7 @@ const getUserRoleDtoModelMappedFromDomain = function(userRoleDomainModel) {
     let clonedAttributes = JSON.parse(JSON.stringify(_userRoleDtoModel.rawAttributes));
     return clonedAttributes;
 }
-
+//Test: DONE
 const getUserRolesDtoModelMappedFromDatabase = function(databaseResultArray) {
     let allUserRolesDtoModels = [];
     for (let a = 0; a < databaseResultArray.length; a++) {

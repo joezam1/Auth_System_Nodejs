@@ -18,7 +18,7 @@ const role = function () {
         _description = description;
     }
 
-    let setRpleIsActive = function(status){
+    let setRoleStatusIsActive = function(status){
         _isActive = status;
     }
 
@@ -51,7 +51,7 @@ const role = function () {
         setRoleId : setRoleId,
         setName : setName,
         setDescription : setDescription,
-        setRpleIsActive : setRpleIsActive,
+        setRoleStatusIsActive : setRoleStatusIsActive,
         getRoleId : getRoleId,
         getName : getName,
         getDescription : getDescription,

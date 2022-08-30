@@ -73,4 +73,24 @@ describe('File: userRepositoryHelper.js', function(){
 
         });
     });
+
+    describe('Function: getUserRolesDtoModelMappedFromDatabase', function(){
+        test('CAN get User Roles DtoModel Mapped From Database', function(){
+
+            //Arrange
+            let userRoleDb = {
+                UserRoleId: 12,
+                UserId: '123215',
+                RoleId: 'kljnas',
+                UTCDateCreated: new Date(),
+                UTCDateUpdated: new Date()
+            }
+            let databaseResult = [userRoleDb];
+            //Act
+            let resultTestArray = userRepositoryHelper.getUserRolesDtoModelMappedFromDatabase(databaseResult);
+            let resultUserId = resultTestArray[0].UserId.value;
+            //Assert
+            expect(resultUserId).toEqual(userRoleDb.UserId);
+        });
+    });
 });

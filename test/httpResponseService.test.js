@@ -8,6 +8,56 @@ describe('File: httpResponseService.js', function(){
     afterAll(function(){
         jest.resetAllMocks();
     });
+
+
+
+    describe('Function: setHttpResponseProperty', function(){
+
+        test('System CAN set httpResponse object', function(){
+            //Arrange
+            let httpResponse = {value : true};
+            //Act
+            httpResponseService.setHttpResponseProperty(httpResponse);
+            let result = httpResponseService.getHttpResponseProperty();
+            //Assert
+            expect(result).toEqual(httpResponse);
+        });
+    });
+
+    describe('Function: setServerResponseCookies', function(){
+        test('When cookies are set the Service is triggered OK',function(){
+            //Arrange
+            httpResponseHelper.setCookie =  jest.fn();
+            let cookiesArray = [{value: 'cookie1'}, {value: 'cookie2'}]
+            //Act
+
+            httpResponseService.setServerResponseCookies(cookiesArray)
+            //Assert
+            expect(httpResponseHelper.setCookie).toHaveBeenCalledTimes(2);
+        } );
+    });
+
+    describe('Function: setServerResponseHeaders', function(){
+        //Arrange
+        let mockHttpResponse = {
+            set : function(key, value){
+                mockHttpResponse.headers[key] = value
+            },
+            headers: {}
+        }
+
+        let header1 = {key:'Accept', value:'text/json'}
+        let header2 = {key:'Content-Type', value:'text/html'}
+        let headersArray = [header1, header2];
+        httpResponseService.setHttpResponseProperty(mockHttpResponse);
+        //Act
+        httpResponseService.setServerResponseHeaders(headersArray);
+        let result = httpResponseService.getHttpResponseProperty();
+        let resultAccept = result.headers.Accept;
+        //Assert
+        expect(resultAccept).toEqual('text/json');
+    });
+
     describe('Function : getResponseResultStatus', function(){
 
         test('When Status code IS NOT EXISTING, response is 422 Unprocessable Entity', function(){

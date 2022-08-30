@@ -9,7 +9,7 @@ let context = '';
 let tokenTableName = '';
 
 
-
+//Test: DONE
 const insertTokenIntoTableTransactionAsync = async function (connectionPool, tokenDomainModel , utcDateExpired) {
     console.log('tokenDomainModel', tokenDomainModel);
     let tokenDtoModel = tokenRepositoryHelper.getTokenDtoModelMappedFromDomain (tokenDomainModel);
@@ -20,7 +20,7 @@ const insertTokenIntoTableTransactionAsync = async function (connectionPool, tok
 
     return statementResult;
 }
-
+//Test: DONE
 const getTokensFromDatabaseAsync = async function(tokenDomainModel){
     console.log('context', context);
     console.log('tokenTableName', tokenTableName);
@@ -34,7 +34,7 @@ const getTokensFromDatabaseAsync = async function(tokenDomainModel){
     let tokenDtoResult = tokenRepositoryHelper.getTokensDtoModelMappedFromDatabase(statementResult[0]);
     return tokenDtoResult;
 }
-
+//Test: DONE
 let deleteTokenFromDatabaseAsync = async function(tokenDomainModel){
     let tokenDtoModel = tokenRepositoryHelper.getTokenDtoModelMappedFromDomain(tokenDomainModel);
     let propertiesArray = [tokenDtoModel.TokenId, tokenDtoModel.Token];
@@ -43,7 +43,7 @@ let deleteTokenFromDatabaseAsync = async function(tokenDomainModel){
 
     return statementResult;
 }
-
+//Test: DONE
 let updateTokenTableSetColumnValuesWhereAsync = async function(tokenDomainModel){
 
     let tokenDtoModel = tokenRepositoryHelper.getTokenDtoModelMappedFromDomain(tokenDomainModel);

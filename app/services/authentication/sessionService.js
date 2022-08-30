@@ -10,6 +10,7 @@ const generateSessionTokenAsync = async function(){
     let sessionToken = await encryptionService.encryptStringInputAsync(sessionUuid);
     return sessionToken;
 }
+
 //Test: DONE
 const sessionIsExpired = function(dateExpiredUTCAsDate ){
     let localeDateNow = new Date();

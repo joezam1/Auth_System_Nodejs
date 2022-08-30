@@ -33,6 +33,18 @@ describe('File: Helper.js', function () {
         });
     });
 
+    describe('Function: convertISOStringDateToUTCFormatForDatabase', function(){
+        test('Can convert ISO String Date To UTC Format For Database', function(){
+            //Arrange
+            let dateNow = new Date();
+            let dateNowIsoString = dateNow.toISOString();
+            //Act
+            let result = helper.convertISOStringDateToUTCFormatForDatabase(dateNowIsoString);
+            //Assert
+            expect(result).not.toContain('T')
+        });
+    });
+
     describe('Function: composeUTCDateToUTCFormatForDatabase', function () {
         test('When a UTC DATE is provided, the function converts it to UTC Database format OK', function () {
             //Arrange

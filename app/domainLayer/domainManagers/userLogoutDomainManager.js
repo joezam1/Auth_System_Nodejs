@@ -1,8 +1,7 @@
-
 const httpResponseStatus = require('../../library/enumerations/httpResponseStatus.js');
 const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
-const uuidV4 = require('uuid');
-const uuid = uuidV4.v4;
+//const uuidV4 = require('uuid');
+//const uuid = uuidV4.v4;
 
 const domainManagerHelper = require('./domainManagerHelper.js');
 
@@ -13,7 +12,7 @@ const sortOrder = require('../../library/enumerations/sortOrder.js');
 
 
 
-
+//Test:DONE
 async function processUserLogoutCreateSessionActivityDomainModelAsync(sessionDomainModel, userAgent) {
 
     let sessionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(sessionDomainModel);
@@ -35,7 +34,7 @@ async function processUserLogoutCreateSessionActivityDomainModelAsync(sessionDom
     }
     return httpResponseService.getResponseResultStatus(sessionInfo, httpResponseStatus._200ok);
 }
-
+//Test:DONE
 async function processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync(sessionModel, sessionActivityModel, sessionUtcDateCreatedDbFormatted) {
     let sessionActivitiesResultArray = await sessionRepository.getSessionActivitiesFromDatabaseAsync(sessionActivityModel, sessionUtcDateCreatedDbFormatted);
     if (sessionActivitiesResultArray instanceof Error) {

@@ -10,7 +10,7 @@ const userLogingDomainManager = require('./userLoginDomainManager.js');
 const userLogoutDomainManager = require('./userLogoutDomainManager.js');
 
 
-
+//Test: DONE
 let resolveUserRegistrationAsync = async function (request) {
     let _userViewModel = new userRegisterViewModel(request.body);
 
@@ -22,7 +22,7 @@ let resolveUserRegistrationAsync = async function (request) {
     }
     return resultInspection;
 }
-
+//Test: DONE
 let resolveUserLoginSessionAsync = async function (request) {
     console.log('resolveUserLoginSessionAsync-request', request);
     let _user = new userLoginViewModel(request.body);
@@ -39,7 +39,7 @@ let resolveUserLoginSessionAsync = async function (request) {
     }
     return resultInspection;
 }
-
+//Test: DONE
 let resolveUserLogoutSessionAsync = async function (request) {
     let _userAgent = request.body.userAgent;
     let _sessionToken = request.body.session;

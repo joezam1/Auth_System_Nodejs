@@ -7,19 +7,24 @@ const httpResponseHelper = require('./httpResponseHelper.js');
 
 let _httpResponse = null;
 
-
+//Test: DONE
 const setHttpResponseProperty = function(httpResponse){
 
     _httpResponse = httpResponse;
 }
 
+//Test: DONE
+const getHttpResponseProperty = function(){
+    return _httpResponse;
+}
+//Test:DONE
 const setServerResponseCookies = function(cookiesArray){
     for(let a = 0; a < cookiesArray.length; a++){
         let cookieObj = cookiesArray[a];
         httpResponseHelper.setCookie(_httpResponse, cookieObj);
     }
 }
-
+//Test: DONE
 const setServerResponseHeaders = function(headersArray){
 
     for(let a = 0; a < headersArray.length; a++){
@@ -61,6 +66,7 @@ const sendHttpResponse = function(resultObj){
 
 let service = Object.freeze({
     setHttpResponseProperty : setHttpResponseProperty,
+    getHttpResponseProperty : getHttpResponseProperty,
     setServerResponseHeaders : setServerResponseHeaders,
     setServerResponseCookies : setServerResponseCookies,
     getResponseResultStatus : getResponseResultStatus,
