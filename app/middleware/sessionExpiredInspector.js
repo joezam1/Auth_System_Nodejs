@@ -83,7 +83,7 @@ function updateExpiredSessionRemovalIdDataStore(intervalId){
 function updateInspectorStateDataStore(status){
     let payload = {};
     payload[ _dataStoreSessionInspectorProperty] = status;
-    let action = { type: reducerServiceAction.startSessionInspector };
+    let action = (status === true) ? { type: reducerServiceAction.startSessionInspector } : { type: reducerServiceAction.stopSessionInspector };
     let result = reducerServices.dispatch(payload, action);
     console.log('reducerService-dispatch-result', result);
     return result;
@@ -106,7 +106,7 @@ function removeSingleRowWhereQuery(sessionId){
 }
 
 function queryWorkerCallback(event){
-    console.log('INSPECTOR-queryWorkerCallback-event', event);
+    console.log('SessionExpiredINSPECTOR-queryWorkerCallback-event', event);
     if(inputCommonInspector.inputExist(event.data) && Array.isArray(event.data)){
         let resultEventArray = event.data[0];
         let firstItem = {};

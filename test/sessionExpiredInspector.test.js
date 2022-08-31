@@ -1,8 +1,10 @@
 const sessionExpiredInspector = require("../app/middleware/sessionExpiredInspector.js");
 const reducerServices = require('../app/services/inMemoryStorage/reducerService.js');
 const workerThreadManager = require("../app/backgroundWorkers/workerThreadManager.js");
+const sessionConfig = require('../configuration/authentication/sessionConfig.js');
 
-
+jest.useFakeTimers();
+jest.spyOn(global, 'setInterval');
 
 jest.mock('../app/services/inMemoryStorage/reducerService.js');
 jest.mock('../app/backgroundWorkers/workerThreadManager.js');
@@ -11,7 +13,20 @@ describe('File sessionExpiredInspector', function(){
     afterAll(()=>{
         jest.resetAllMocks();
     });
+
+
     describe('function: resolveRemoveExpiredSessions', function(){
+        test('When StoreInspector Property is FALSE, the function calls the setInterval Function', function(){
+            //Arrange
+            let mockDataStoreInspectorProperty = false;
+            reducerServices.getCurrentStateByProperty = jest.fn().mockReturnValueOnce(mockDataStoreInspectorProperty);
+            //Act
+            sessionExpiredInspector.resolveRemoveExpiredSessions();
+            //Assert
+
+            expect(setInterval).toHaveBeenCalledTimes(1);
+            expect(setInterval).toHaveBeenLastCalledWith(expect.any(Function), sessionConfig.EXPIRED_SESSION_CLEANUP_FREQUENCY_IN_MILLISECONDS);
+        });
         test('When StoreInspector Property is TRUE, the worker threads WILL NOT RUN', function(){
             //Arrange
             let mockDataStoreInspectorProperty = true;

@@ -37,8 +37,7 @@ const getTokensFromDatabaseAsync = async function(tokenDomainModel){
 //Test: DONE
 let deleteTokenFromDatabaseAsync = async function(tokenDomainModel){
     let tokenDtoModel = tokenRepositoryHelper.getTokenDtoModelMappedFromDomain(tokenDomainModel);
-    let propertiesArray = [tokenDtoModel.TokenId, tokenDtoModel.Token];
-
+    let propertiesArray = [tokenDtoModel.Token, tokenDtoModel.Type];
     let statementResult = await repositoryManager.resolveStatementAsync(propertiesArray, genericQueryStatement.deleteFromTableWhere, tokenTableName);
 
     return statementResult;

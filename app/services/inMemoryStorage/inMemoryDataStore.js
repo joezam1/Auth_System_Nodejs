@@ -1,6 +1,8 @@
 let dataStore = {
     _sessionInspectorIsActive: null,
-    _expiredSessionCleanupIntervalId : null
+    _expiredSessionCleanupIntervalId : null,
+    _jwtInspectorIsActive: null,
+    _expiredJwtCleanupIntervalId: null
 }
 
 

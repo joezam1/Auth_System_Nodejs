@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for app/middleware/sessionExpiredInspector.js</title>
+    <title>Code coverage report for app/middleware/jsonWebTokenExpiredInspector.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">app/middleware</a> sessionExpiredInspector.js</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">app/middleware</a> jsonWebTokenExpiredInspector.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">46.61% </span>
+                <span class="strong">50.6% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>55/118</span>
+                <span class='fraction'>42/83</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.33% </span>
+                <span class="strong">15.38% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/45</span>
+                <span class='fraction'>6/39</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">29.41% </span>
+                <span class="strong">41.66% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/17</span>
+                <span class='fraction'>5/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.41% </span>
+                <span class="strong">50.6% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>55/116</span>
+                <span class='fraction'>42/83</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -223,69 +223,7 @@
 <a name='L158'></a><a href='#L158'>158</a>
 <a name='L159'></a><a href='#L159'>159</a>
 <a name='L160'></a><a href='#L160'>160</a>
-<a name='L161'></a><a href='#L161'>161</a>
-<a name='L162'></a><a href='#L162'>162</a>
-<a name='L163'></a><a href='#L163'>163</a>
-<a name='L164'></a><a href='#L164'>164</a>
-<a name='L165'></a><a href='#L165'>165</a>
-<a name='L166'></a><a href='#L166'>166</a>
-<a name='L167'></a><a href='#L167'>167</a>
-<a name='L168'></a><a href='#L168'>168</a>
-<a name='L169'></a><a href='#L169'>169</a>
-<a name='L170'></a><a href='#L170'>170</a>
-<a name='L171'></a><a href='#L171'>171</a>
-<a name='L172'></a><a href='#L172'>172</a>
-<a name='L173'></a><a href='#L173'>173</a>
-<a name='L174'></a><a href='#L174'>174</a>
-<a name='L175'></a><a href='#L175'>175</a>
-<a name='L176'></a><a href='#L176'>176</a>
-<a name='L177'></a><a href='#L177'>177</a>
-<a name='L178'></a><a href='#L178'>178</a>
-<a name='L179'></a><a href='#L179'>179</a>
-<a name='L180'></a><a href='#L180'>180</a>
-<a name='L181'></a><a href='#L181'>181</a>
-<a name='L182'></a><a href='#L182'>182</a>
-<a name='L183'></a><a href='#L183'>183</a>
-<a name='L184'></a><a href='#L184'>184</a>
-<a name='L185'></a><a href='#L185'>185</a>
-<a name='L186'></a><a href='#L186'>186</a>
-<a name='L187'></a><a href='#L187'>187</a>
-<a name='L188'></a><a href='#L188'>188</a>
-<a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a>
-<a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a>
-<a name='L194'></a><a href='#L194'>194</a>
-<a name='L195'></a><a href='#L195'>195</a>
-<a name='L196'></a><a href='#L196'>196</a>
-<a name='L197'></a><a href='#L197'>197</a>
-<a name='L198'></a><a href='#L198'>198</a>
-<a name='L199'></a><a href='#L199'>199</a>
-<a name='L200'></a><a href='#L200'>200</a>
-<a name='L201'></a><a href='#L201'>201</a>
-<a name='L202'></a><a href='#L202'>202</a>
-<a name='L203'></a><a href='#L203'>203</a>
-<a name='L204'></a><a href='#L204'>204</a>
-<a name='L205'></a><a href='#L205'>205</a>
-<a name='L206'></a><a href='#L206'>206</a>
-<a name='L207'></a><a href='#L207'>207</a>
-<a name='L208'></a><a href='#L208'>208</a>
-<a name='L209'></a><a href='#L209'>209</a>
-<a name='L210'></a><a href='#L210'>210</a>
-<a name='L211'></a><a href='#L211'>211</a>
-<a name='L212'></a><a href='#L212'>212</a>
-<a name='L213'></a><a href='#L213'>213</a>
-<a name='L214'></a><a href='#L214'>214</a>
-<a name='L215'></a><a href='#L215'>215</a>
-<a name='L216'></a><a href='#L216'>216</a>
-<a name='L217'></a><a href='#L217'>217</a>
-<a name='L218'></a><a href='#L218'>218</a>
-<a name='L219'></a><a href='#L219'>219</a>
-<a name='L220'></a><a href='#L220'>220</a>
-<a name='L221'></a><a href='#L221'>221</a>
-<a name='L222'></a><a href='#L222'>222</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<a name='L161'></a><a href='#L161'>161</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -300,25 +238,19 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -338,23 +270,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -377,60 +303,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -438,12 +310,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -454,38 +323,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -502,43 +339,77 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const reducerServices = require('../services/inMemoryStorage/reducerService.js');
 const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
 const reducerServiceAction = require('../library/enumerations/reducerServiceAction.js');
 const workerThreadManager = require('../backgroundWorkers/workerThreadManager.js');
 const databaseQueryWorkerFile = '../backgroundWorkers/databaseQueryWorker.js';
-const sessionConfig = require('../../configuration/authentication/sessionConfig.js');
+const jwtConfig = require('../../configuration/authorization/jwtConfig.js');
 const dbContext = require('../dataAccessLayer/mysqlDataStore/context/dbContext.js');
-const expiredSessionEventCode = require('../library/enumerations/expiredSessionEventCode.js');
-const helpers = require('../library/common/helpers.js');
+const expiredJwtEventCode = require('../library/enumerations/expiredJwtEventCode.js');
 &nbsp;
 &nbsp;
 &nbsp;
 let _context = null;
-let _sessionTableName = null;
-let _sessionDto = null;
-let _columnNameSessionId = null;
+let _tokenTableName = null;
+let _tokenDto = null;
 let _columNameUTCDateExpired = null;
 &nbsp;
-let _sessionActivityTableName = null;
-let _sessionActivityDto = null;
-let _columnNameUserId = null;
-let _columnNameUTCLoginDate = null;
-let _columnNameUTCLogoutDate = null;
+&nbsp;
 &nbsp;
 const _stopIntervalId = -1;
-const _dataStoreSessionInspectorProperty = '_sessionInspectorIsActive';
-const _dataStoreCleanupIntervalId = '_expiredSessionCleanupIntervalId';
+const _dataStoreJwtInspectorProperty = '_jwtInspectorIsActive';
+const _dataStoreJwtCleanupIntervalId = '_expiredJwtCleanupIntervalId';
 &nbsp;
+const jsonWebTokenExpiredInspector = (function(){
 &nbsp;
-const sessionExpiredInspector = (function(){
-    //Test:DONE
-    const resolveRemoveExpiredSessions = function(){
+    const resolveRemoveExpiredTokens = function(){
 &nbsp;
-        let inspectorStateIsActive = reducerServices.getCurrentStateByProperty(_dataStoreSessionInspectorProperty);
+        let inspectorStateIsActive = reducerServices.getCurrentStateByProperty(_dataStoreJwtInspectorProperty);
         if(inspectorStateIsActive != true &amp;&amp; (inspectorStateIsActive === null || inspectorStateIsActive === false)){
 &nbsp;
             workerThreadManager.starNewtWorkerThread(databaseQueryWorkerFile ,queryWorkerCallback);
@@ -550,38 +421,32 @@ const sessionExpiredInspector = (function(){
                 }
 <span class="cstat-no" title="statement not covered" >                workerThreadManager.sendMessageToWorker(messageObj);</span>
 &nbsp;
-            },sessionConfig.EXPIRED_SESSION_CLEANUP_FREQUENCY_IN_MILLISECONDS );
+            }, jwtConfig.EXPIRED_JWT_TOKEN_CLEANUP_FREQUENCY_IN_MILLISECONDS );
             updateInspectorStateDataStore(true);
-            updateExpiredSessionRemovalIdDataStore(intervalId);
+            updateExpiredJwtTokenRemovalIdDataStore(intervalId);
         }
     }
     return {
-        resolveRemoveExpiredSessions : resolveRemoveExpiredSessions
+        resolveRemoveExpiredTokens : resolveRemoveExpiredTokens
     }
 })();
-&nbsp;
 onInit();
-module.exports = sessionExpiredInspector;
+module.exports = jsonWebTokenExpiredInspector;
+&nbsp;
 &nbsp;
 //#REGION Private Functions
 function onInit(){
     _context = dbContext.getSequelizeContext();
-    _sessionTableName = dbContext.getActiveDatabaseName() + '.' + _context.sessionDtoModel.tableName;
-    _sessionDto = new _context.sessionDtoModel();
-    _columnNameSessionId = _sessionDto.rawAttributes.SessionId.fieldName;
-    _columNameUTCDateExpired = _sessionDto.rawAttributes.UTCDateExpired.fieldName;
-&nbsp;
-    _sessionActivityTableName = dbContext.getActiveDatabaseName() + '.' + _context.sessionActivityDtoModel.tableName;
-    _sessionActivityDto = new _context.sessionActivityDtoModel();
-    _columnNameUserId = _sessionActivityDto.rawAttributes.UserId.fieldName;
-    _columnNameUTCLoginDate = _sessionActivityDto.rawAttributes.UTCLoginDate.fieldName;
-    _columnNameUTCLogoutDate = _sessionActivityDto.rawAttributes.UTCLogoutDate.fieldName;
+    _tokenTableName = dbContext.getActiveDatabaseName() + '.' + _context.tokenDtoModel.tableName;
+    _tokenDto = new _context.tokenDtoModel();
+    _columNameUTCDateExpired = _tokenDto.rawAttributes.UTCDateExpired.fieldName;
 }
 &nbsp;
-function updateExpiredSessionRemovalIdDataStore(intervalId){
+&nbsp;
+function updateExpiredJwtTokenRemovalIdDataStore(intervalId){
     let payload = {}
-    payload[_dataStoreCleanupIntervalId] = intervalId ;
-    let action = { type: reducerServiceAction.updateCleanupIntervalId };
+    payload[_dataStoreJwtCleanupIntervalId] = intervalId ;
+    let action = { type: reducerServiceAction.updateJwtRemovalIntervalId };
     let result = reducerServices.dispatch(payload, action);
     console.log('reducerService-dispatch-result', result);
     return result;
@@ -589,55 +454,62 @@ function updateExpiredSessionRemovalIdDataStore(intervalId){
 &nbsp;
 function updateInspectorStateDataStore(status){
     let payload = {};
-    payload[ _dataStoreSessionInspectorProperty] = status;
-    let action = (status === true) ? { type: reducerServiceAction.startSessionInspector } : <span class="branch-1 cbranch-no" title="branch not covered" >{ type: reducerServiceAction.stopSessionInspector };</span>
+    payload[ _dataStoreJwtInspectorProperty] = status;
+    let action = (status === true) ? { type: reducerServiceAction.startJwtInspector } : <span class="branch-1 cbranch-no" title="branch not covered" >{ type: reducerServiceAction.stopJwtInspector };</span>
     let result = reducerServices.dispatch(payload, action);
     console.log('reducerService-dispatch-result', result);
     return result;
 }
 &nbsp;
+function <span class="fstat-no" title="function not covered" >stopTokenExpiredInspector(</span>){
+    let intervalId = <span class="cstat-no" title="statement not covered" >reducerServices.getCurrentStateByProperty(_dataStoreJwtCleanupIntervalId);</span>
+<span class="cstat-no" title="statement not covered" >    clearInterval(intervalId);</span>
+<span class="cstat-no" title="statement not covered" >    updateExpiredJwtTokenRemovalIdDataStore(_stopIntervalId);</span>
+    let inspectorIsActive = <span class="cstat-no" title="statement not covered" >reducerServices.getCurrentStateByProperty(_dataStoreJwtInspectorProperty);</span>
+<span class="cstat-no" title="statement not covered" >    if(inputCommonInspector.inputExist(inspectorIsActive) &amp;&amp; inspectorIsActive ){</span>
+<span class="cstat-no" title="statement not covered" >        updateInspectorStateDataStore(false);</span>
+    }
+<span class="cstat-no" title="statement not covered" >    workerThreadManager.terminateActiveWorker();</span>
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >executeRemoveAllExpiredTokensMessage(</span>){
+    let removeExpiredRows = <span class="cstat-no" title="statement not covered" >removeAllRowsWhereQuery();</span>
+    let reply =<span class="cstat-no" title="statement not covered" >{</span>
+        message : 'query',
+        statement : removeExpiredRows,
+        valuesArray : null
+    }
+<span class="cstat-no" title="statement not covered" >    workerThreadManager.sendMessageToWorker(reply);</span>
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >removeAllRowsWhereQuery(</span>){
+<span class="cstat-no" title="statement not covered" >    return `DELETE FROM ${ _tokenTableName } WHERE ${ _columNameUTCDateExpired } &lt; UTC_TIMESTAMP();`;</span>
+}
+&nbsp;
+&nbsp;
 function <span class="fstat-no" title="function not covered" >countRowsFromTable(</span>){
-<span class="cstat-no" title="statement not covered" >    return `SELECT COUNT(*) FROM ${_sessionTableName};`;</span>
+<span class="cstat-no" title="statement not covered" >    return `SELECT COUNT(*) FROM ${_tokenTableName};`;</span>
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >selectAllExpiredSessionsOrderByAsc(</span>){
-<span class="cstat-no" title="statement not covered" >    return `SELECT * FROM ${_sessionTableName} WHERE ${_columNameUTCDateExpired} &lt; UTC_TIMESTAMP() ORDER BY ${_columNameUTCDateExpired} ASC`;</span>
-}
-&nbsp;
-function <span class="fstat-no" title="function not covered" >updateSessionActivityWhere(</span>userId, utcLoginDate){
-<span class="cstat-no" title="statement not covered" >    return `UPDATE ${_sessionActivityTableName} SET ${_columnNameUTCLogoutDate} = UTC_TIMESTAMP() WHERE ${_columnNameUserId} = '${userId}' and ${_columnNameUTCLoginDate} = '${utcLoginDate}' `;</span>
-}
-&nbsp;
-function <span class="fstat-no" title="function not covered" >removeSingleRowWhereQuery(</span>sessionId){
-<span class="cstat-no" title="statement not covered" >    return `DELETE FROM ${_sessionTableName} WHERE ${_columnNameSessionId} = '${sessionId}' `;</span>
-}
 &nbsp;
 function <span class="fstat-no" title="function not covered" >queryWorkerCallback(</span>event){
 <span class="cstat-no" title="statement not covered" >    console.log('SessionExpiredINSPECTOR-queryWorkerCallback-event', event);</span>
 <span class="cstat-no" title="statement not covered" >    if(inputCommonInspector.inputExist(event.data) &amp;&amp; Array.isArray(event.data)){</span>
-        let resultEventArray = <span class="cstat-no" title="statement not covered" >event.data[0];</span>
+        let _resultEvent = <span class="cstat-no" title="statement not covered" >event.data[0];</span>
         let firstItem = <span class="cstat-no" title="statement not covered" >{};</span>
-<span class="cstat-no" title="statement not covered" >        if(resultEventArray.length&gt;0){</span>
-<span class="cstat-no" title="statement not covered" >            firstItem = resultEventArray[0];</span>
-        }else <span class="cstat-no" title="statement not covered" >if(inputCommonInspector.objectIsValid(resultEventArray)){</span>
-<span class="cstat-no" title="statement not covered" >            firstItem = resultEventArray;</span>
+<span class="cstat-no" title="statement not covered" >        if(_resultEvent.length&gt;0){</span>
+<span class="cstat-no" title="statement not covered" >            firstItem = _resultEvent[0];</span>
+        }else <span class="cstat-no" title="statement not covered" >if(inputCommonInspector.objectIsValid(_resultEvent)){</span>
+<span class="cstat-no" title="statement not covered" >            firstItem = _resultEvent;</span>
         }
 &nbsp;
         let eventResult = <span class="cstat-no" title="statement not covered" >getEventCode(firstItem);</span>
-<span class="cstat-no" title="statement not covered" >        if(eventResult.code === expiredSessionEventCode.expiredSessionsTargeted &amp;&amp; eventResult.count === -1){</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >            updateSessionActivitiesAndRemoveSessions(resultEventArray);</span>
+<span class="cstat-no" title="statement not covered" >        if( eventResult.code === expiredJwtEventCode.expiredJwtsCount &amp;&amp; eventResult.count &gt; 0){</span>
+<span class="cstat-no" title="statement not covered" >            executeRemoveAllExpiredTokensMessage()</span>
+        }else <span class="cstat-no" title="statement not covered" >if( eventResult.code === expiredJwtEventCode.expiredJwtsCount &amp;&amp; eventResult.count === 0){</span>
+<span class="cstat-no" title="statement not covered" >            stopTokenExpiredInspector();</span>
         }
-        else <span class="cstat-no" title="statement not covered" >if( eventResult.code === expiredSessionEventCode.expiredSessionsCount &amp;&amp; eventResult.count &gt; 0){</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >            getAllExpiredSessions();</span>
-&nbsp;
-        }else <span class="cstat-no" title="statement not covered" >if( eventResult.code === expiredSessionEventCode.expiredSessionsCount &amp;&amp; eventResult.count === 0){</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >            stopSessionExpiredInspector();</span>
-&nbsp;
-        }
-        else <span class="cstat-no" title="statement not covered" >if(eventResult.code === expiredSessionEventCode.expiredSessionsRemoved &amp;&amp; eventResult.count === null){</span>
+        else <span class="cstat-no" title="statement not covered" >if(eventResult.code === expiredJwtEventCode.expiredJwtsRemoved &amp;&amp; eventResult.count === null){</span>
             //do nothing
         }
     }
@@ -654,17 +526,12 @@ function <span class="fstat-no" title="function not covered" >getEventCode(</spa
 <span class="cstat-no" title="statement not covered" >    for(let key in resultEventObj){</span>
 <span class="cstat-no" title="statement not covered" >        if(resultEventObj.hasOwnProperty(key)){</span>
 <span class="cstat-no" title="statement not covered" >            if(key === 'COUNT(*)' &amp;&amp;  key.toLowerCase().includes('count')){</span>
-<span class="cstat-no" title="statement not covered" >                event.code = expiredSessionEventCode.expiredSessionsCount;</span>
+<span class="cstat-no" title="statement not covered" >                event.code = expiredJwtEventCode.expiredJwtsCount;</span>
 <span class="cstat-no" title="statement not covered" >                event.count = resultEventObj[key];</span>
 <span class="cstat-no" title="statement not covered" >                break;</span>
             }
-<span class="cstat-no" title="statement not covered" >            if(key === 'SessionId'){</span>
-<span class="cstat-no" title="statement not covered" >                event.code = expiredSessionEventCode.expiredSessionsTargeted;</span>
-<span class="cstat-no" title="statement not covered" >                event.count = -1;</span>
-<span class="cstat-no" title="statement not covered" >                break;</span>
-            }
 <span class="cstat-no" title="statement not covered" >            if(key === 'affectedRows'){</span>
-<span class="cstat-no" title="statement not covered" >                event.code = expiredSessionEventCode.expiredSessionsRemoved;</span>
+<span class="cstat-no" title="statement not covered" >                event.code = expiredJwtEventCode.expiredJwtsRemoved;</span>
 <span class="cstat-no" title="statement not covered" >                event.count = null;</span>
 <span class="cstat-no" title="statement not covered" >                break;</span>
             }
@@ -675,58 +542,8 @@ function <span class="fstat-no" title="function not covered" >getEventCode(</spa
 }
 &nbsp;
 &nbsp;
-function <span class="fstat-no" title="function not covered" >getAllExpiredSessions(</span>){
-    let reply = <span class="cstat-no" title="statement not covered" >{</span>
-        message : 'query',
-        statement : selectAllExpiredSessionsOrderByAsc(),
-        valuesArray : null
-    }
-<span class="cstat-no" title="statement not covered" >    workerThreadManager.sendMessageToWorker(reply);</span>
-}
-function <span class="fstat-no" title="function not covered" >updateSessionActivitiesAndRemoveSessions(</span>allExpiredSessionsArray){
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    executeUpdateSessionActivities(allExpiredSessionsArray);</span>
-<span class="cstat-no" title="statement not covered" >    executeRemoveExpiredSessions(allExpiredSessionsArray);</span>
-}
-&nbsp;
-function <span class="fstat-no" title="function not covered" >executeUpdateSessionActivities(</span>itemsArray){
-<span class="cstat-no" title="statement not covered" >    for(let a=<span class="cstat-no" title="statement not covered" >0;</span> a&lt;itemsArray.length; a++){</span>
-        let userId = <span class="cstat-no" title="statement not covered" >itemsArray[a].UserId;</span>
-        let utcLoginDateDbFormat = <span class="cstat-no" title="statement not covered" >helpers.composeUTCDateToUTCFormatForDatabase(itemsArray[a].UTCDateCreated);</span>
-        let updateSessionActivity = <span class="cstat-no" title="statement not covered" >updateSessionActivityWhere(userId ,utcLoginDateDbFormat )</span>
-        let reply = <span class="cstat-no" title="statement not covered" >{</span>
-            message : 'query',
-            statement : updateSessionActivity,
-            valuesArray : null
-        }
-<span class="cstat-no" title="statement not covered" >        workerThreadManager.sendMessageToWorker(reply);</span>
-    }
-}
-&nbsp;
-function <span class="fstat-no" title="function not covered" >executeRemoveExpiredSessions(</span>itemsArray){
-<span class="cstat-no" title="statement not covered" >    for(let a=<span class="cstat-no" title="statement not covered" >0;</span> a&lt;itemsArray.length; a++){</span>
-        let sessionId = <span class="cstat-no" title="statement not covered" >itemsArray[a].SessionId;</span>
-        let removeSession = <span class="cstat-no" title="statement not covered" >removeSingleRowWhereQuery(sessionId);</span>
-        let reply = <span class="cstat-no" title="statement not covered" >{</span>
-            message : 'query',
-            statement : removeSession,
-            valuesArray : null
-        }
-<span class="cstat-no" title="statement not covered" >        workerThreadManager.sendMessageToWorker(reply);</span>
-    }
-}
-&nbsp;
-function <span class="fstat-no" title="function not covered" >stopSessionExpiredInspector(</span>){
-    let intervalId = <span class="cstat-no" title="statement not covered" >reducerServices.getCurrentStateByProperty(_dataStoreCleanupIntervalId);</span>
-<span class="cstat-no" title="statement not covered" >    clearInterval(intervalId);</span>
-<span class="cstat-no" title="statement not covered" >    updateExpiredSessionRemovalIdDataStore(_stopIntervalId);</span>
-    let inspectorIsActive = <span class="cstat-no" title="statement not covered" >reducerServices.getCurrentStateByProperty(_dataStoreSessionInspectorProperty);</span>
-<span class="cstat-no" title="statement not covered" >    if(inputCommonInspector.objectIsValid(inspectorIsActive) &amp;&amp; inspectorIsActive ){</span>
-<span class="cstat-no" title="statement not covered" >        updateInspectorStateDataStore(false);</span>
-    }
-<span class="cstat-no" title="statement not covered" >    workerThreadManager.terminateActiveWorker();</span>
-}
-//#ENDREGION Private Function</pre></td></tr></table></pre>
+//ENDREGION Private Functions</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->

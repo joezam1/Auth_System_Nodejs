@@ -16,11 +16,20 @@ const isValidJson = function(input){
     return true;
 }
 
+//Test:DONE
+let safeJsonParse = function (input) {
+    var value = input;
+    if (isValidJson(input)) {
+        value = JSON.parse(input);
+    }
+    return value;
+}
 
 
 
 const service = Object.freeze({
-    isValidJson:isValidJson
+    isValidJson:isValidJson,
+    safeJsonParse : safeJsonParse
 });
 
 module.exports = service;

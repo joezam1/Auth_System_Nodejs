@@ -9,15 +9,37 @@ function reducerService(payloadObj, action){
         case reducerServiceAction.startSessionInspector:
         case reducerServiceAction.stopSessionInspector:
             newDataStore = getUpdatedDataStore(payloadObj, originalDataStore);
+        break;
 
         case reducerServiceAction.updateCleanupIntervalId:
-            if(inputCommonInspector.objectIsValid(payloadObj._expiredSessionCleanupIntervalId)){
+            if(inputCommonInspector.inputExist(payloadObj._expiredSessionCleanupIntervalId)){
                 newDataStore = getUpdatedDataStore(payloadObj , originalDataStore);
+                break;
             }
+            newDataStore = getOriginalDataStore(originalDataStore);
+            break;
+
+        case reducerServiceAction.startJwtInspector:
+        case reducerServiceAction.stopJwtInspector:
+            newDataStore = getUpdatedDataStore(payloadObj, originalDataStore);
         break;
+
+        case reducerServiceAction.updateJwtRemovalIntervalId:
+            if(inputCommonInspector.inputExist(payloadObj._expiredJwtCleanupIntervalId)){
+                newDataStore = getUpdatedDataStore(payloadObj , originalDataStore);
+                break;
+            }
+            newDataStore = getOriginalDataStore(originalDataStore);
+            break;
+
     }
     inMemoryDataStore.updateDataStore(newDataStore);
     return newDataStore;
+}
+
+function getOriginalDataStore(originalDataStoreObj){
+    let dataStoreCopy = Object.assign({}, originalDataStoreObj);
+    return dataStoreCopy;
 }
 
 function getUpdatedDataStore(temporaryStateObj, originalDataStoreObj){

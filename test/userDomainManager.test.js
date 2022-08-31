@@ -83,19 +83,25 @@ describe('File: userDomainManager.js', function(){
                 status: 200,
                 statusText:'ok'
             }
-            userLogoutDomainManager.processUserLogoutCreateSessionActivityDomainModelAsync = jest.fn().mockReturnValueOnce(returnValue);
+            userLogoutDomainManager.processUserLogoutCreateTempSessionActivityDomainModelAsync = jest.fn().mockReturnValueOnce(returnValue);
+            userLogoutDomainManager.processUserlogoutDeleteJwtRefreshTokenAsync = jest.fn();
             userLogoutDomainManager.processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync = jest.fn();
             let request= {
                 body:{
                     userAgent:'Mozilla Firefox',
                     session:'abcd'
+                },
+                headers:{
+                    authorization: 'Bearer adfadlkfaoiew',
+                    refresh_token: 'adklwoinapekah'
                 }
             }
             //Act
             let resultTest = await userDomainManager.resolveUserLogoutSessionAsync(request);
 
             //Assert
-            expect(userLogoutDomainManager.processUserLogoutCreateSessionActivityDomainModelAsync).toHaveBeenCalledTimes(1);
+            expect(userLogoutDomainManager.processUserLogoutCreateTempSessionActivityDomainModelAsync).toHaveBeenCalledTimes(1);
+            expect(userLogoutDomainManager.processUserlogoutDeleteJwtRefreshTokenAsync).toHaveBeenCalledTimes(1);
             expect(userLogoutDomainManager.processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync).toHaveBeenCalledTimes(1);
         });
     });

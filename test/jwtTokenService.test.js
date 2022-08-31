@@ -309,7 +309,7 @@ describe('File: jwtTokenService.js', function () {
     })
 
 
-    describe('Function: resolveJwtAccessTokenPayloadAsync ', function(){
+    describe('Function: resolveCreateJwtAccessTokenPayloadAsync ', function(){
         test('When the internal functions are called payload is created', async function(){
             //Arrange
             userRepository.getAllUserRolesByUserIdAsync = jest.fn();
@@ -318,7 +318,7 @@ describe('File: jwtTokenService.js', function () {
             let userDomainModel = new user();
             userDomainModel.setUserId('abcd');
             //Act
-            let result = await jwtTokenService.resolveJwtAccessTokenPayloadAsync(userDomainModel);
+            let result = await jwtTokenService.resolveCreateJwtAccessTokenPayloadAsync(userDomainModel);
 
             //Assert
             expect(result).not.toEqual(null);
@@ -329,12 +329,12 @@ describe('File: jwtTokenService.js', function () {
     });
 
 
-    describe('Function: resolveJwtRefreshTokenPayloadAsync', function(){
+    describe('Function: resolveCreateJwtRefreshTokenPayloadAsync', function(){
         test('When function is called the payload is created', async function(){
             //Arrange
             let fingerprint = 'abcd';
             //Act
-            let resultRefreshTokenPayload = await jwtTokenService.resolveJwtRefreshTokenPayloadAsync(fingerprint);
+            let resultRefreshTokenPayload = await jwtTokenService.resolveCreateJwtRefreshTokenPayloadAsync(fingerprint);
             let resultFingerprint = resultRefreshTokenPayload.encryptedSessionFingerprint;
             //Assert
             expect(resultRefreshTokenPayload).not.toEqual(null);

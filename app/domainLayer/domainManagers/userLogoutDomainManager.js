@@ -1,19 +1,16 @@
 const httpResponseStatus = require('../../library/enumerations/httpResponseStatus.js');
 const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
-//const uuidV4 = require('uuid');
-//const uuid = uuidV4.v4;
-
 const domainManagerHelper = require('./domainManagerHelper.js');
-
 const sessionRepository = require('../../dataAccessLayer/repositories/sessionRepository.js');
+const tokenRepository = require('../../dataAccessLayer/repositories/tokenRepository.js');
 const notificationService = require('../../services/notifications/notificationService.js');
 const helpers = require('../../library/common/helpers.js');
 const sortOrder = require('../../library/enumerations/sortOrder.js');
-
+const tokenType = require('../../library/enumerations/tokenType.js');
 
 
 //Test:DONE
-async function processUserLogoutCreateSessionActivityDomainModelAsync(sessionDomainModel, userAgent) {
+const processUserLogoutCreateTempSessionActivityDomainModelAsync = async function(sessionDomainModel, userAgent) {
 
     let sessionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(sessionDomainModel);
     console.log('sesionsDtoModelResultArray', sessionsDtoModelResultArray);
@@ -35,7 +32,41 @@ async function processUserLogoutCreateSessionActivityDomainModelAsync(sessionDom
     return httpResponseService.getResponseResultStatus(sessionInfo, httpResponseStatus._200ok);
 }
 //Test:DONE
-async function processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync(sessionModel, sessionActivityModel, sessionUtcDateCreatedDbFormatted) {
+const processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync =async function(sessionModel, sessionActivityModel, sessionUtcDateCreatedDbFormatted) {
+
+    let resultUpdate = await updateSessionActivitiesAsync(sessionActivityModel, sessionUtcDateCreatedDbFormatted);
+    if (resultUpdate instanceof Error) {
+        return httpResponseService.getResponseResultStatus(resultUpdate, httpResponseStatus._400badRequest);
+    }
+    return await deleteSessionAsync(sessionModel);
+
+}
+
+const processUserlogoutDeleteJwtRefreshTokenAsync = async function(jwtRefreshToken){
+
+    let tempUserId = null;
+    let tempPayload = null;
+    let tempTokenModel = domainManagerHelper.createTokenModel(tempUserId, jwtRefreshToken, tokenType.jwtRefreshToken, tempPayload);
+    let resultTokenDeleted = await tokenRepository.deleteTokenFromDatabaseAsync(tempTokenModel);
+    if (resultTokenDeleted instanceof Error) {
+        return httpResponseService.getResponseResultStatus(resultTokenDeleted, httpResponseStatus._400badRequest);
+    }
+    return httpResponseService.getResponseResultStatus(resultTokenDeleted, httpResponseStatus._200ok);
+}
+
+const service = {
+    processUserLogoutCreateTempSessionActivityDomainModelAsync: processUserLogoutCreateTempSessionActivityDomainModelAsync,
+    processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync: processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync,
+    processUserlogoutDeleteJwtRefreshTokenAsync : processUserlogoutDeleteJwtRefreshTokenAsync
+}
+
+module.exports = service;
+
+
+//#REGION Private Functions
+
+async function updateSessionActivitiesAsync(sessionActivityModel, sessionUtcDateCreatedDbFormatted) {
+
     let sessionActivitiesResultArray = await sessionRepository.getSessionActivitiesFromDatabaseAsync(sessionActivityModel, sessionUtcDateCreatedDbFormatted);
     if (sessionActivitiesResultArray instanceof Error) {
         return httpResponseService.getResponseResultStatus(sessionActivitiesResultArray, httpResponseStatus._400badRequest);
@@ -52,30 +83,10 @@ async function processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseA
             return httpResponseService.getResponseResultStatus(updateSessionActivityResult, httpResponseStatus._400badRequest);
         }
     }
-    let sessionResultArray = await sessionRepository.deleteSessionFromDatabaseAsync(sessionModel);
-    if (sessionResultArray instanceof Error) {
-        return httpResponseService.getResponseResultStatus(sessionResultArray, httpResponseStatus._400badRequest);
-    }
-    else if (sessionResultArray.length === 0) {
-        return httpResponseService.getResponseResultStatus(notificationService.sessionRemoved, httpResponseStatus._422unprocessableEntity);
-    }
-    else if (sessionResultArray.length > 0 && sessionResultArray[0].affectedRows === 1) {
-        return httpResponseService.getResponseResultStatus(notificationService.sessionRemoved, httpResponseStatus._200ok);
-    }
-
-    return httpResponseService.getResponseResultStatus(notificationService.sessionNoLongerActive, httpResponseStatus._401unauthorized);
+    return httpResponseService.getResponseResultStatus(sessionActivitiesResultArray, httpResponseStatus._200ok);
 }
 
 
-const service = {
-    processUserLogoutCreateSessionActivityDomainModelAsync : processUserLogoutCreateSessionActivityDomainModelAsync,
-    processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync : processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync
-}
-
-module.exports = service;
-
-
-//#REGION Private Functions
 
 
 function getSortedArray(ArrayOfObjects, orderType) {
@@ -99,4 +110,20 @@ function getSortedArray(ArrayOfObjects, orderType) {
 
 }
 
+
+async function deleteSessionAsync(sessionModel){
+
+    let sessionResultArray = await sessionRepository.deleteSessionFromDatabaseAsync(sessionModel);
+    if (sessionResultArray instanceof Error) {
+        return httpResponseService.getResponseResultStatus(sessionResultArray, httpResponseStatus._400badRequest);
+    }
+    else if (sessionResultArray.length === 0) {
+        return httpResponseService.getResponseResultStatus(notificationService.sessionRemoved, httpResponseStatus._422unprocessableEntity);
+    }
+    else if (sessionResultArray.length > 0 && sessionResultArray[0].affectedRows === 1) {
+        return httpResponseService.getResponseResultStatus(notificationService.sessionRemoved, httpResponseStatus._200ok);
+    }
+
+    return httpResponseService.getResponseResultStatus(notificationService.sessionNoLongerActive, httpResponseStatus._401unauthorized);
+}
 //#ENDREGION Private Functions

@@ -1,5 +1,5 @@
 const userLogoutDomainManager = require('../app/domainLayer/domainManagers/userLogoutDomainManager.js');
-
+const tokenRepository = require('../app/dataAccessLayer/repositories/tokenRepository.js');
 const sessionRepository = require('../app/dataAccessLayer/repositories/sessionRepository.js');
 const sessionModel = require('../app/domainLayer/domainModels/session.js');
 const sessionActivityModel = require('../app/domainLayer/domainModels/sessionActivity.js');
@@ -7,14 +7,14 @@ const helpers = require('../app/library/common/helpers.js');
 
 
 jest.mock('../app/dataAccessLayer/repositories/sessionRepository.js');
-
+jest.mock('../app/dataAccessLayer/repositories/tokenRepository.js');
 
 
 describe('File: userLogoutDomainManager.js', function(){
     afterAll(()=>{
         jest.resetAllMocks();
     });
-    describe('Function: processUserLogoutCreateSessionActivityDomainModelAsync', function(){
+    describe('Function: processUserLogoutCreateTempSessionActivityDomainModelAsync', function(){
         test('CAN process User Logout Create Session Activity Domain Model ', async function(){
             //Arrange
             let resolvedValue = {
@@ -27,7 +27,7 @@ describe('File: userLogoutDomainManager.js', function(){
             _sessionModel.setSessionId('123465');
             let userAgent = 'Mozilla Firefox';
             //Act
-            let resultTest = await userLogoutDomainManager.processUserLogoutCreateSessionActivityDomainModelAsync(_sessionModel, userAgent);
+            let resultTest = await userLogoutDomainManager.processUserLogoutCreateTempSessionActivityDomainModelAsync(_sessionModel, userAgent);
 
             //Assert
             expect(resultTest.statusText).toEqual('ok');
@@ -59,6 +59,24 @@ describe('File: userLogoutDomainManager.js', function(){
             expect(resultTest.statusText).toEqual('ok');
             expect(sessionRepository.getSessionActivitiesFromDatabaseAsync).toHaveBeenCalledTimes(1);
             expect(sessionRepository.deleteSessionFromDatabaseAsync).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('Function: processUserlogoutDeleteJwtRefreshTokenAsync', function(){
+        test('CAN process User logout Delete JwtRefresh Token', async function(){
+
+            //Arrange
+            let mockResultDb = {
+                affectedRows:1
+            }
+            let resultDb = [mockResultDb]
+            tokenRepository.deleteTokenFromDatabaseAsync = jest.fn().mockResolvedValueOnce(resultDb);
+            let refreshToken = 'adfkwies';
+            //Act
+            let resultTest =await userLogoutDomainManager.processUserlogoutDeleteJwtRefreshTokenAsync(refreshToken);
+
+            //Assert
+            expect( tokenRepository.deleteTokenFromDatabaseAsync ).toHaveBeenCalledTimes(1);
         });
     });
 });

@@ -46,8 +46,16 @@ let resolveUserLogoutSessionAsync = async function (request) {
     let _sessionModel = new session();
     _sessionModel.setSessionToken(_sessionToken);
 
-    let sessionInfo = await userLogoutDomainManager.processUserLogoutCreateSessionActivityDomainModelAsync(_sessionModel, _userAgent);
+    let authorizationToken = request.headers.authorization;
+    let accessToken = authorizationToken.split(' ');
+    let _currentAccessTokenFromApi = accessToken[1] ;
+    let _currentRefreshToken = request.headers.refresh_token;
+
+    let sessionInfo = await userLogoutDomainManager.processUserLogoutCreateTempSessionActivityDomainModelAsync(_sessionModel, _userAgent);
     if (sessionInfo.status === httpResponseStatus._200ok) {
+
+        userLogoutDomainManager.processUserlogoutDeleteJwtRefreshTokenAsync(_currentRefreshToken);
+
         let sessionActivityModel = sessionInfo.result.tempSessionActivityModel;
         let sessionUtcDateCreatedDbFormatted = sessionInfo.result.sessionUtcDateCreatedDbFormatted;
 

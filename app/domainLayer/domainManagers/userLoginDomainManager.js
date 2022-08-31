@@ -20,7 +20,8 @@ const helpers = require('../../library/common/helpers.js');
 const jwtTokenService = require('../../services/authorization/jwtTokenService.js');
 const tokenType = require('../../library/enumerations/tokenType.js');
 const encryptDecryptService = require('../../services/encryption/encryptDecryptService.js');
-
+const sessionExpiredInspector = require('../../middleware/sessionExpiredInspector.js');
+const jsonWebTokenExpiredInspector = require('../../middleware/jsonWebTokenExpiredInspector.js');
 
 //Test: DONE
 async function processUserLoginValidationAsync(userViewModel) {
@@ -72,7 +73,7 @@ async function processUserLoginStorageToDatabaseAsync(userDtoModel, sessionActiv
 
         //sessionExpiredInspector.resolveRemoveExpiredSessions();
         //Create remover jwt expired tokens
-
+        jsonWebTokenExpiredInspector.resolveRemoveExpiredTokens();
         let authModel = {
             jwtAccessToken : allJwtTokens.jwtAccessToken,
             jwtRefreshToken : allJwtTokens.jwtRefreshToken,
@@ -115,11 +116,11 @@ function getSessionActivityModel(userDtoModel, sessionActivityViewModel) {
 
 async function createJsonWebTokensAsync(userDtoModel) {
     let userDomainModel = domainManagerHelper.getUserDomainModelMappedFromUserDtoModel(userDtoModel);
-    let jwtAccessTokenPayload = await jwtTokenService.resolveJwtAccessTokenPayloadAsync(userDomainModel);
+    let jwtAccessTokenPayload = await jwtTokenService.resolveCreateJwtAccessTokenPayloadAsync(userDomainModel);
     let jwtAccessToken = await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(jwtAccessTokenPayload);
 
     let fingerprint = uuid();
-    let jwtRefreshTokenPayload = await jwtTokenService.resolveJwtRefreshTokenPayloadAsync(fingerprint);
+    let jwtRefreshTokenPayload = await jwtTokenService.resolveCreateJwtRefreshTokenPayloadAsync(fingerprint);
 
     let jwtRefreshTokenPayloadString = helpers.convertToStringOrStringifyForDataStorage(jwtRefreshTokenPayload);
     let encryptedJwtRefreshTokenPayload = encryptDecryptService.encryptWithAES(jwtRefreshTokenPayloadString);
