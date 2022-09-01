@@ -5,7 +5,6 @@ const httpResponseService = require('../../services/httpProtocol/httpResponseSer
 const httpResponseStatus = require('../../library/enumerations/httpResponseStatus.js');
 const notificationService = require('../../services/notifications/notificationService.js');
 const jwtTokenService = require('../../services/authorization/jwtTokenService.js');
-const helpers = require('../../library/common/helpers.js');
 const authViewModel = require('../../presentationLayer/viewModels/authViewModel.js');
 const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
@@ -22,6 +21,11 @@ const resolveJsonWebTokenUpdateAsync = async function (request) {
     let tokenInfo = await processJWTUpdateGetTokenFromDatabaseAsync(_currentRefreshToken);
     if(tokenInfo.status === httpResponseStatus._200ok){
         let refreshTokenDtoModelFound = tokenInfo.result;
+        if(jwtTokenService.tokenIsExpired(refreshTokenDtoModelFound.UTCDateExpired.value)){
+            let resultTokenRemovedFromDb = await resolveRemoveTokenFromDatabaseAsync(refreshTokenDtoModelFound);
+            return resultTokenRemovedFromDb;
+        }
+
         return await processJWTUpdateSaveNewTokenToDatabaseAsync( accessTokenFromApi , refreshTokenDtoModelFound );
     }
     return tokenInfo;
@@ -57,31 +61,11 @@ async function processJWTUpdateGetTokenFromDatabaseAsync(currentRefreshToken){
 
 async function processJWTUpdateSaveNewTokenToDatabaseAsync(accessTokenFromApi, refreshTokenDtoModel){
 
-    let localeDateNow = new Date();
-    let utcDateNow = helpers.convertLocaleDateToUTCDate(localeDateNow);
-    let accessToken = accessTokenFromApi;
-    let tokenUTCDateExpiredTime = refreshTokenDtoModel.UTCDateExpired.value.getTime();
-    let utcDateNowTime = utcDateNow.getTime();
-    if(tokenUTCDateExpiredTime < utcDateNowTime && refreshTokenDtoModel.Type.value === tokenType.jwtRefreshToken)
-    {
-        let resultTokenRemovedFromDb = await resolveRemoveTokenFromDatabaseAsync(refreshTokenDtoModel);
-        return resultTokenRemovedFromDb;
-    }
-
-    let accessTokenPayload = await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync (accessTokenFromApi);
-    let accessTokenLocaleDate = new Date(accessTokenPayload.tokenUTCDateExpiry);
-    let accessTokenUtcDate = helpers.convertLocaleDateToUTCDate(accessTokenLocaleDate);
-    let accessTokenUtcDateTime = accessTokenUtcDate.getTime();
-    if( accessTokenUtcDateTime < utcDateNowTime){
-        accessTokenPayload.tokenUTCDateCreated = localeDateNow.toISOString();
-        let localeDateExpiry = jwtTokenService.getCalculatedJwtAccessTokenLocaleExpiryDate(localeDateNow);
-        accessTokenPayload.tokenUTCDateExpiry = localeDateExpiry.toISOString();
-        accessToken = await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(accessTokenPayload);
-    }
+    let accessToken = await resolveAccessTokenUpdateAsync(accessTokenFromApi);
 
     let jwtRefreshTokenPayload = await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync (refreshTokenDtoModel.Token.value);
     let fingerprint = uuid();
-    jwtRefreshTokenPayload.encryptedSessionFingerprint = fingerprint;
+    jwtRefreshTokenPayload.sessionFingerprint = fingerprint;
     let refreshToken = await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(jwtRefreshTokenPayload);
     if(refreshTokenDtoModel.Token.value != refreshToken){
 
@@ -103,6 +87,20 @@ async function processJWTUpdateSaveNewTokenToDatabaseAsync(accessTokenFromApi, r
     return httpResponseService.getResponseResultStatus(_authViewModel, httpResponseStatus._200ok);
 }
 
+async function resolveAccessTokenUpdateAsync(accessTokenFromApi){
+
+    let accessToken = accessTokenFromApi;
+    let accessTokenPayload = await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync (accessTokenFromApi);
+
+    if(jwtTokenService.tokenIsExpired(accessTokenPayload.tokenUTCDateExpiry)){
+        let localeDateNow = new Date();
+        accessTokenPayload.tokenUTCDateCreated = localeDateNow.toISOString();
+        let localeDateExpiry = jwtTokenService.getCalculatedJwtAccessTokenLocaleExpiryDate(localeDateNow);
+        accessTokenPayload.tokenUTCDateExpiry = localeDateExpiry.toISOString();
+        accessToken = await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(accessTokenPayload);
+    }
+    return accessToken;
+}
 
 async function resolveRemoveTokenFromDatabaseAsync(tokenDtoModel){
 

@@ -7,7 +7,7 @@ const userRepository = require('../../dataAccessLayer/repositories/userRepositor
 const commonValidators = require('../validation/commonValidators.js');
 
 //Test: DONE
-let createAccessTokenPayload = function(userDomainModel, userRolesArray, utcDateExpiry, utcDateCreated){
+const createAccessTokenPayload = function(userDomainModel, userRolesArray, utcDateExpiry, utcDateCreated){
     let payload = {
         userInfo : {
             userId: userDomainModel.getUserId(),
@@ -21,9 +21,9 @@ let createAccessTokenPayload = function(userDomainModel, userRolesArray, utcDate
     return payload;
 }
 //Test: DONE
-let createRefreshTokenPayload = function(sessionFingerprintSHA256Hash, utcDateExpiry, utcDateCreated){
+const createRefreshTokenPayload = function(fingerprint, utcDateExpiry, utcDateCreated){
     let payload = {
-        encryptedSessionFingerprint: sessionFingerprintSHA256Hash,
+        sessionFingerprint: fingerprint,
         tokenUTCDateExpiry : utcDateExpiry,
         tokenUTCDateCreated : utcDateCreated
     }
@@ -31,7 +31,7 @@ let createRefreshTokenPayload = function(sessionFingerprintSHA256Hash, utcDateEx
     return payload;
 }
 //Test: DONE
-let createJsonWebTokenPromiseAsync = async function( payloadObject ){
+const createJsonWebTokenPromiseAsync = async function( payloadObject ){
     let promise = new Promise(function(resolve, reject){
 
         function jwtCallback(err, token) {
@@ -47,7 +47,7 @@ let createJsonWebTokenPromiseAsync = async function( payloadObject ){
     return result;
 }
 //Test: DONE
-let getDecodedJWTPayloadPromiseAsync = async function(selectedJwtToken){
+const getDecodedJWTPayloadPromiseAsync = async function(selectedJwtToken){
 
     let promise = new Promise(function(resolve, reject){
         function decodedTokenCallback(error, jwtDecodedPayload) {
@@ -72,7 +72,7 @@ const getCalculatedJwtAccessTokenLocaleExpiryDate = function(localeDateNowAsDate
 }
 
 //Test: DONE
-async function CreateJsonWebTokenWithEncryptedPayloadAsync(originalUnencryptedTokenPayload){
+const CreateJsonWebTokenWithEncryptedPayloadAsync = async function(originalUnencryptedTokenPayload){
     let jwtTokenPayloadString = helpers.convertToStringOrStringifyForDataStorage(originalUnencryptedTokenPayload);
 
     let encryptedJwtTokenPayload = encryptDecryptService.encryptWithAES(jwtTokenPayloadString);
@@ -81,7 +81,7 @@ async function CreateJsonWebTokenWithEncryptedPayloadAsync(originalUnencryptedTo
 }
 
 //Test: DONE
-async function getDecryptedPayloadFromDecodedJsonWedTokenAsync(selectedJsonWebtoken){
+const getDecryptedPayloadFromDecodedJsonWedTokenAsync = async function (selectedJsonWebtoken){
 
     let encryptedTokenPayload =await getDecodedJWTPayloadPromiseAsync(selectedJsonWebtoken);
     let decryptedTokenPayload = encryptDecryptService.decryptWithAES(encryptedTokenPayload);
@@ -91,7 +91,7 @@ async function getDecryptedPayloadFromDecodedJsonWedTokenAsync(selectedJsonWebto
 
 
 //Test: DONE
-async function resolveCreateJwtAccessTokenPayloadAsync(userDomainModel){
+const resolveCreateJwtAccessTokenPayloadAsync= async function (userDomainModel){
 
     let allUserRolesDtoModelArray = await userRepository.getAllUserRolesByUserIdAsync(userDomainModel);
     if (allUserRolesDtoModelArray instanceof Error) {
@@ -113,7 +113,7 @@ async function resolveCreateJwtAccessTokenPayloadAsync(userDomainModel){
     return accessTokenPayload;
 }
 //Test: DONE
-async function resolveCreateJwtRefreshTokenPayloadAsync(fingerprint){
+const resolveCreateJwtRefreshTokenPayloadAsync = async function (fingerprint){
 
     let localeDateNow = new Date();
     let utcDateNow = localeDateNow.toISOString();
@@ -124,7 +124,22 @@ async function resolveCreateJwtRefreshTokenPayloadAsync(fingerprint){
 
     return refreshTokenPayload;
 }
+//Test: DONE
+const tokenIsExpired = function (tokenUTCDateExpired){
 
+    let localeDateNow = new Date();
+    let utcDateNow = helpers.convertLocaleDateToUTCDate(localeDateNow);
+    let utcDateNowTime = utcDateNow.getTime();
+    let tokenLocaleDateExpired = new Date(tokenUTCDateExpired);
+    let tokenUTCDateExpiredAsDate = helpers.convertLocaleDateToUTCDate(tokenLocaleDateExpired);
+    let tokenUTCDateExpiredTime = tokenUTCDateExpiredAsDate.getTime();
+
+    if( tokenUTCDateExpiredTime < utcDateNowTime ){
+        return true;
+    }
+
+    return false;
+}
 
 const service = Object.freeze({
     createAccessTokenPayload : createAccessTokenPayload,
@@ -138,7 +153,8 @@ const service = Object.freeze({
     createJsonWebTokenPromiseAsync : createJsonWebTokenPromiseAsync,
     getDecodedJWTPayloadPromiseAsync : getDecodedJWTPayloadPromiseAsync,
     CreateJsonWebTokenWithEncryptedPayloadAsync : CreateJsonWebTokenWithEncryptedPayloadAsync,
-    getDecryptedPayloadFromDecodedJsonWedTokenAsync : getDecryptedPayloadFromDecodedJsonWedTokenAsync
+    getDecryptedPayloadFromDecodedJsonWedTokenAsync : getDecryptedPayloadFromDecodedJsonWedTokenAsync,
+    tokenIsExpired : tokenIsExpired
 });
 
 module.exports = service;

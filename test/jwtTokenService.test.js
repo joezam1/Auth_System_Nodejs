@@ -64,7 +64,7 @@ describe('File: jwtTokenService.js', function () {
             let expiryUTCDate = helpers.convertLocaleDateToUTCDate(expiryLocaleDate);
             //Act
             let result = jwtTokenService.createRefreshTokenPayload(encryptedFingerprint, expiryUTCDate, dateNowUTC);
-            let resultPayloadFingerprint = result.encryptedSessionFingerprint;
+            let resultPayloadFingerprint = result.sessionFingerprint;
             let areTheSame = await encryptionService.validateEncryptedStringInputAsync(fingerprint, resultPayloadFingerprint)
             //Assert
             expect(resultPayloadFingerprint).toEqual(encryptedFingerprint);
@@ -335,10 +335,44 @@ describe('File: jwtTokenService.js', function () {
             let fingerprint = 'abcd';
             //Act
             let resultRefreshTokenPayload = await jwtTokenService.resolveCreateJwtRefreshTokenPayloadAsync(fingerprint);
-            let resultFingerprint = resultRefreshTokenPayload.encryptedSessionFingerprint;
+            let resultFingerprint = resultRefreshTokenPayload.sessionFingerprint;
             //Assert
             expect(resultRefreshTokenPayload).not.toEqual(null);
             expect(resultFingerprint).toEqual(fingerprint);
         })
+    });
+
+    describe('Function: tokenIsExpired', function(){
+        test('When token UTCDate Expired is in the FUTURE the function returns FALSE', function(){
+
+            //Arrange
+
+            let localeDateNow = new Date();
+            let localeDateTomorrowTime = localeDateNow.setDate(localeDateNow.getDate() + 1);
+
+            let localeDateTomorrow = new Date(localeDateTomorrowTime);
+            let utcDateTomorrow = helpers.convertLocaleDateToUTCDate(localeDateTomorrow);
+            //Act
+
+            let resultTest = jwtTokenService.tokenIsExpired(utcDateTomorrow);
+            //Assert
+            expect(resultTest).toEqual(false);
+        });
+
+        test('When token UTCDate Expired is in the PAST the function returns TRUE', function(){
+
+            //Arrange
+
+            let localeDateNow = new Date();
+            let localeDateYesterdayTime = localeDateNow.setDate(localeDateNow.getDate() - 1);
+
+            let localeDateYesterday = new Date(localeDateYesterdayTime);
+            let utcDateYesterday = helpers.convertLocaleDateToUTCDate(localeDateYesterday);
+            //Act
+
+            let resultTest = jwtTokenService.tokenIsExpired(utcDateYesterday);
+            //Assert
+            expect(resultTest).toEqual(true);
+        });
     });
 });

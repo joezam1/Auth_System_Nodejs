@@ -5,7 +5,6 @@ const domainManagerHelper = require('./domainManagerHelper.js');
 const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
 const sessionService = require('../../services/authentication/sessionService.js');
 const notificationService = require('../../services/notifications/notificationService.js');
-const userDomainManager = require('./userDomainManager.js');
 const dbAction = require('../../dataAccessLayer/mysqlDataStore/context/dbAction.js');
 const tokenRepository = require('../../dataAccessLayer/repositories/tokenRepository.js');
 const helpers = require('../../library/common/helpers.js');
@@ -18,6 +17,12 @@ const resolveSessionUpdateAsync = async function (request) {
     let sessionInfo = await processSessionUpdateGetSessionFromDatabaseAsync(_currentSessionToken);
     if(sessionInfo.status === httpResponseStatus._200ok){
         let sessionDtoModel = sessionInfo.result;
+        if(sessionService.sessionIsExpired(sessionDtoModel.UTCDateExpired.value)){
+
+            let resultSessionRemoved = await resolveRemoveSessionFromDatabaseAsync(sessionDtoModel);
+            return resultSessionRemoved;
+        }
+
         return await processSessionUpdateSaveNewTokenToDatabaseAsync(sessionDtoModel);
     }
     return sessionInfo;
@@ -40,7 +45,8 @@ const resolveGetSessionAsync = async function(request){
 
     let currentSessionDtoModel = sessionsDtoModelResultArray[0];
     if(sessionService.sessionIsExpired(currentSessionDtoModel.UTCDateExpired.value)){
-        return userDomainManager.resolveUserLogoutSessionAsync(request);
+        let resultSessionRemoved = await resolveRemoveSessionFromDatabaseAsync(currentSessionDtoModel);
+            return resultSessionRemoved;
     }
 
     let currentSessionViewModel = domainManagerHelper.getSessionViewModelMappedFromSessionDtoModel(currentSessionDtoModel);
@@ -117,10 +123,6 @@ async function processSessionUpdateGetSessionFromDatabaseAsync(currentSessionTok
 
 async function processSessionUpdateSaveNewTokenToDatabaseAsync(currentSessionDtoModel){
 
-    if(sessionService.sessionIsExpired(currentSessionDtoModel.UTCDateExpired.value)){
-        return userDomainManager.resolveUserLogoutSessionAsync(request);
-    }
-
     let newSessionToken = await sessionService.generateSessionTokenAsync();
     let newCookieObj = domainManagerHelper.createCookieObj(newSessionToken);
     let newCookieJson = JSON.stringify(newCookieObj);
@@ -143,4 +145,16 @@ async function processSessionUpdateSaveNewTokenToDatabaseAsync(currentSessionDto
     return httpResponseService.getResponseResultStatus(notificationService.errorProcessingNewSession, httpResponseStatus._422unprocessableEntity);
 
 }
+
+async function resolveRemoveSessionFromDatabaseAsync(sessionDtoModel){
+
+    let currentSessionDomainModel = domainManagerHelper.getSessionDomainModelMappedFromSessionDtoModel(sessionDtoModel);
+    let sessionResultArray = await sessionRepository.deleteSessionFromDatabaseAsync(currentSessionDomainModel);
+    if (sessionResultArray instanceof Error) {
+        return httpResponseService.getResponseResultStatus(sessionResultArray, httpResponseStatus._400badRequest);
+    }
+
+    return httpResponseService.getResponseResultStatus(notificationService.sessionRemoved, httpResponseStatus._401unauthorized);
+}
+
 //#ENDREGION Private Functions

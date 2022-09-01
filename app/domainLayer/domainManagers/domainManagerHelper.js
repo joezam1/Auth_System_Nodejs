@@ -127,6 +127,18 @@ const getSessionViewModelMappedFromSessionDtoModel = function (sessionDtoModel) 
     return currentSessionViewModel;
 }
 
+const getSessionDomainModelMappedFromSessionDtoModel = function(sessionDtoModel){
+
+    let _sessionModel = new session();
+    _sessionModel.setSessionId(sessionDtoModel.SessionId.value);
+    _sessionModel.setUserId(sessionDtoModel.UserId.value);
+    _sessionModel.setSessionToken(sessionDtoModel.SessionToken.value);
+    _sessionModel.setExpiryInMilliseconds(sessionDtoModel.Expires.value);
+    _sessionModel.setData(sessionDtoModel.Data.value);
+    _sessionModel.setSessionStatusIsActive(sessionDtoModel.IsActive.value);
+
+    return _sessionModel;
+}
 
 const service = Object.freeze({
 
@@ -138,7 +150,8 @@ const service = Object.freeze({
     createTokenModel: createTokenModel,
     getUserDomainModelMappedFromUserDtoModel: getUserDomainModelMappedFromUserDtoModel,
     getTokenDomainModelMappedFromTokenDtoModel: getTokenDomainModelMappedFromTokenDtoModel,
-    getSessionViewModelMappedFromSessionDtoModel : getSessionViewModelMappedFromSessionDtoModel
+    getSessionViewModelMappedFromSessionDtoModel : getSessionViewModelMappedFromSessionDtoModel,
+    getSessionDomainModelMappedFromSessionDtoModel : getSessionDomainModelMappedFromSessionDtoModel
 });
 
 module.exports = service;

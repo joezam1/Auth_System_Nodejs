@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.42% </span>
+                <span class="strong">55.38% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>43/70</span>
+                <span class='fraction'>36/65</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.88% </span>
+                <span class="strong">31.25% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/18</span>
+                <span class='fraction'>5/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">60% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>3/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.42% </span>
+                <span class="strong">55.38% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>43/70</span>
+                <span class='fraction'>36/65</span>
             </div>
         
             
@@ -178,10 +178,7 @@
 <a name='L113'></a><a href='#L113'>113</a>
 <a name='L114'></a><a href='#L114'>114</a>
 <a name='L115'></a><a href='#L115'>115</a>
-<a name='L116'></a><a href='#L116'>116</a>
-<a name='L117'></a><a href='#L117'>117</a>
-<a name='L118'></a><a href='#L118'>118</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L116'></a><a href='#L116'>116</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -205,6 +202,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -239,27 +241,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -284,6 +266,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -304,7 +300,6 @@ const httpResponseService = require('../../services/httpProtocol/httpResponseSer
 const httpResponseStatus = require('../../library/enumerations/httpResponseStatus.js');
 const notificationService = require('../../services/notifications/notificationService.js');
 const jwtTokenService = require('../../services/authorization/jwtTokenService.js');
-const helpers = require('../../library/common/helpers.js');
 const authViewModel = require('../../presentationLayer/viewModels/authViewModel.js');
 const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
@@ -321,7 +316,12 @@ const resolveJsonWebTokenUpdateAsync = async function (request) {
     let tokenInfo = await processJWTUpdateGetTokenFromDatabaseAsync(_currentRefreshToken);
     <span class="missing-if-branch" title="else path not taken" >E</span>if(tokenInfo.status === httpResponseStatus._200ok){
         let refreshTokenDtoModelFound = tokenInfo.result;
-        return await processJWTUpdateSaveNewTokenToDatabaseAsync( accessTokenFromApi , refreshTokenDtoModelFound );
+        <span class="missing-if-branch" title="else path not taken" >E</span>if(jwtTokenService.tokenIsExpired(refreshTokenDtoModelFound.UTCDateExpired.value)){
+            let resultTokenRemovedFromDb = await resolveRemoveTokenFromDatabaseAsync(refreshTokenDtoModelFound);
+            return resultTokenRemovedFromDb;
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return await processJWTUpdateSaveNewTokenToDatabaseAsync( accessTokenFromApi , refreshTokenDtoModelFound );</span>
     }
 <span class="cstat-no" title="statement not covered" >    return tokenInfo;</span>
 }
@@ -354,33 +354,13 @@ async function processJWTUpdateGetTokenFromDatabaseAsync(currentRefreshToken){
     return httpResponseService.getResponseResultStatus(foundTokenDtoModel, httpResponseStatus._200ok);
 }
 &nbsp;
-async function processJWTUpdateSaveNewTokenToDatabaseAsync(accessTokenFromApi, refreshTokenDtoModel){
+async function <span class="fstat-no" title="function not covered" >processJWTUpdateSaveNewTokenToDatabaseAsync(</span>accessTokenFromApi, refreshTokenDtoModel){
 &nbsp;
-    let localeDateNow = new Date();
-    let utcDateNow = helpers.convertLocaleDateToUTCDate(localeDateNow);
-    let accessToken = accessTokenFromApi;
-    let tokenUTCDateExpiredTime = refreshTokenDtoModel.UTCDateExpired.value.getTime();
-    let utcDateNowTime = utcDateNow.getTime();
-    <span class="missing-if-branch" title="else path not taken" >E</span>if(tokenUTCDateExpiredTime &lt; utcDateNowTime &amp;&amp; refreshTokenDtoModel.Type.value === tokenType.jwtRefreshToken)
-    {
-        let resultTokenRemovedFromDb = await resolveRemoveTokenFromDatabaseAsync(refreshTokenDtoModel);
-        return resultTokenRemovedFromDb;
-    }
-&nbsp;
-    let accessTokenPayload = <span class="cstat-no" title="statement not covered" >await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync (accessTokenFromApi);</span>
-    let accessTokenLocaleDate = <span class="cstat-no" title="statement not covered" >new Date(accessTokenPayload.tokenUTCDateExpiry);</span>
-    let accessTokenUtcDate = <span class="cstat-no" title="statement not covered" >helpers.convertLocaleDateToUTCDate(accessTokenLocaleDate);</span>
-    let accessTokenUtcDateTime = <span class="cstat-no" title="statement not covered" >accessTokenUtcDate.getTime();</span>
-<span class="cstat-no" title="statement not covered" >    if( accessTokenUtcDateTime &lt; utcDateNowTime){</span>
-<span class="cstat-no" title="statement not covered" >        accessTokenPayload.tokenUTCDateCreated = localeDateNow.toISOString();</span>
-        let localeDateExpiry = <span class="cstat-no" title="statement not covered" >jwtTokenService.getCalculatedJwtAccessTokenLocaleExpiryDate(localeDateNow);</span>
-<span class="cstat-no" title="statement not covered" >        accessTokenPayload.tokenUTCDateExpiry = localeDateExpiry.toISOString();</span>
-<span class="cstat-no" title="statement not covered" >        accessToken = await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(accessTokenPayload);</span>
-    }
+    let accessToken = <span class="cstat-no" title="statement not covered" >await resolveAccessTokenUpdateAsync(accessTokenFromApi);</span>
 &nbsp;
     let jwtRefreshTokenPayload = <span class="cstat-no" title="statement not covered" >await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync (refreshTokenDtoModel.Token.value);</span>
     let fingerprint = <span class="cstat-no" title="statement not covered" >uuid();</span>
-<span class="cstat-no" title="statement not covered" >    jwtRefreshTokenPayload.encryptedSessionFingerprint = fingerprint;</span>
+<span class="cstat-no" title="statement not covered" >    jwtRefreshTokenPayload.sessionFingerprint = fingerprint;</span>
     let refreshToken = <span class="cstat-no" title="statement not covered" >await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(jwtRefreshTokenPayload);</span>
 <span class="cstat-no" title="statement not covered" >    if(refreshTokenDtoModel.Token.value != refreshToken){</span>
 &nbsp;
@@ -402,6 +382,20 @@ async function processJWTUpdateSaveNewTokenToDatabaseAsync(accessTokenFromApi, r
 <span class="cstat-no" title="statement not covered" >    return httpResponseService.getResponseResultStatus(_authViewModel, httpResponseStatus._200ok);</span>
 }
 &nbsp;
+async function <span class="fstat-no" title="function not covered" >resolveAccessTokenUpdateAsync(</span>accessTokenFromApi){
+&nbsp;
+    let accessToken = <span class="cstat-no" title="statement not covered" >accessTokenFromApi;</span>
+    let accessTokenPayload = <span class="cstat-no" title="statement not covered" >await jwtTokenService.getDecryptedPayloadFromDecodedJsonWedTokenAsync (accessTokenFromApi);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if(jwtTokenService.tokenIsExpired(accessTokenPayload.tokenUTCDateExpiry)){</span>
+        let localeDateNow = <span class="cstat-no" title="statement not covered" >new Date();</span>
+<span class="cstat-no" title="statement not covered" >        accessTokenPayload.tokenUTCDateCreated = localeDateNow.toISOString();</span>
+        let localeDateExpiry = <span class="cstat-no" title="statement not covered" >jwtTokenService.getCalculatedJwtAccessTokenLocaleExpiryDate(localeDateNow);</span>
+<span class="cstat-no" title="statement not covered" >        accessTokenPayload.tokenUTCDateExpiry = localeDateExpiry.toISOString();</span>
+<span class="cstat-no" title="statement not covered" >        accessToken = await jwtTokenService.CreateJsonWebTokenWithEncryptedPayloadAsync(accessTokenPayload);</span>
+    }
+<span class="cstat-no" title="statement not covered" >    return accessToken;</span>
+}
 &nbsp;
 async function resolveRemoveTokenFromDatabaseAsync(tokenDtoModel){
 &nbsp;
@@ -421,7 +415,7 @@ async function resolveRemoveTokenFromDatabaseAsync(tokenDtoModel){
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Wed Aug 31 2022 13:49:44 GMT-0500 (Central Daylight Time)
+                at Wed Aug 31 2022 22:45:56 GMT-0500 (Central Daylight Time)
             </div>
         <script src="../../../prettify.js"></script>
         <script>

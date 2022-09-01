@@ -71,9 +71,10 @@ async function processUserLoginStorageToDatabaseAsync(userDtoModel, sessionActiv
     let isResultObjectOk = (inputCommonInspector.objectIsValid(sessionResult) && sessionResult.result && sessionResult.status === httpResponseStatus._201created);
     if (isResultArrayOk || isResultObjectOk) {
 
-        sessionExpiredInspector.resolveRemoveExpiredSessions();
-        //Create remover jwt expired tokens
-        jsonWebTokenExpiredInspector.resolveRemoveExpiredTokens();
+        //Create remover for expired sessions
+        //sessionExpiredInspector.resolveRemoveExpiredSessions();
+        //Create remover for jwt expired tokens
+        //jsonWebTokenExpiredInspector.resolveRemoveExpiredTokens();
         let authModel = {
             jwtAccessToken : allJwtTokens.jwtAccessToken,
             jwtRefreshToken : allJwtTokens.jwtRefreshToken,
