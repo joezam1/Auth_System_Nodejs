@@ -28,8 +28,11 @@ const workerThreadManager = (function(){
 
     const terminateActiveWorker = function(){
         console.log('BEGIN-terminateActiveWorker-activeWorker',activeWorker);
-        activeWorker.terminate();
-        activeWorker = undefined;
+        if(inputCommonInspector.inputExist(activeWorker)){
+            activeWorker.terminate();
+            activeWorker = undefined;
+        }
+
         console.log('END-terminateActiveWorker-activeWorker',activeWorker);
     }
 

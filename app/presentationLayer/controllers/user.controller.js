@@ -6,14 +6,14 @@ var userController = function(app){
     //METHOD
     //CREATE
     app.post('/api/users/register', async function(request, response){
-        console.log('register-request.body', request.body);
+        console.log('app.post(/api/users/register');
         var userRegistrationResult = await userDomainManager.resolveUserRegistrationAsync(request);
         httpResponseService.sendHttpResponse(userRegistrationResult);
         return;
     });
 
     app.post('/api/users/login', async function(request, response){
-        console.log('login-request.body', request.body);
+        console.log('app.post(/api/users/login');
         var userLoginResult = await userDomainManager.resolveUserLoginSessionAsync(request);
         console.log('userLoginResult', userLoginResult);
         httpResponseService.sendHttpResponse(userLoginResult);
@@ -40,7 +40,7 @@ var userController = function(app){
     });
 
     app.delete('/api/users/logout', async function(request, response){
-        console.log('request', request);
+        console.log('app.delete(/api/users/logout');
         let userLogoutResult = await userDomainManager.resolveUserLogoutSessionAsync(request);
         console.log('userLogoutResult', userLogoutResult);
         httpResponseService.sendHttpResponse(userLogoutResult);

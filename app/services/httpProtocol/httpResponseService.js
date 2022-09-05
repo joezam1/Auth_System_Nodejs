@@ -8,86 +8,87 @@ const httpResponseHelper = require('./httpResponseHelper.js');
 let _httpResponse = null;
 
 //Test: DONE
-const setHttpResponseProperty = function(httpResponse){
+const setHttpResponseProperty = function (httpResponse) {
 
     _httpResponse = httpResponse;
 }
 
 //Test: DONE
-const getHttpResponseProperty = function(){
+const getHttpResponseProperty = function () {
     return _httpResponse;
 }
 //Test:DONE
-const setServerResponseCookies = function(cookiesArray){
-    for(let a = 0; a < cookiesArray.length; a++){
+const setServerResponseCookies = function (cookiesArray) {
+    for (let a = 0; a < cookiesArray.length; a++) {
         let cookieObj = cookiesArray[a];
         httpResponseHelper.setCookie(_httpResponse, cookieObj);
     }
 }
 //Test: DONE
-const setServerResponseHeaders = function(headersArray){
+const setServerResponseHeaders = function (headersArray) {
 
-    for(let a = 0; a < headersArray.length; a++){
+    for (let a = 0; a < headersArray.length; a++) {
         let headerObj = headersArray[a];
-        _httpResponse.set(headerObj.key, headerObj.value);
+        httpResponseHelper.setHeader(_httpResponse, headerObj);
+
     }
 }
 
 //Test: DONE
-const getResponseResultStatus = function(resultObj, statusCode){
-    console.log('_httpResponse', _httpResponse);
-
+const getResponseResultStatus = function (resultObj, statusCode) {
     let responseObj = getResponseStatusObject(statusCode);
-    console.log('responseObj', responseObj);
-    let obj={
+    //console.log('responseObj', responseObj);
+    let obj = {
         result: resultObj,
-        status:responseObj.code,
-        statusText:responseObj.statusText
+        status: responseObj.code,
+        statusText: responseObj.statusText
     }
     return obj;
 }
 //Test: DONE
-const sendHttpResponse = function(resultObj){
-    console.log('_httpResponse', _httpResponse);
+const sendHttpResponse = function (resultObj) {
+    console.log('sendHttpResponse_httpResponse');
     try{
-            if(!inputCommonInspector.objectIsNullOrEmpty(resultObj) && !inputCommonInspector.objectIsNullOrEmpty(resultObj.status)){
+        if (inputCommonInspector.inputExist(resultObj) && inputCommonInspector.inputExist(resultObj.status)) {
             httpResponseHelper.executeSend(_httpResponse, resultObj.status, resultObj);
-        }else{
+        } else {
             httpResponseHelper.executeSend(_httpResponse, httpResponseStatus._404notFound, resultObj);
         }
+        return;
     }
-    catch(error){
-        let message = 'error sending HTTP Response: ' + error;
-        let err = new Error(message);
-        httpResponseHelper.executeSend(_httpResponse, httpResponseStatus._500internalServerError , err)
+    catch (error) {
+        let err = new Error(error);
+        console.log('Error WHILE Sending HTTP Response');
+        console.log('sendHttpResponse-TRY-CATCH-error', err);
+        return;
     }
 }
 
 
 let service = Object.freeze({
-    setHttpResponseProperty : setHttpResponseProperty,
-    getHttpResponseProperty : getHttpResponseProperty,
-    setServerResponseHeaders : setServerResponseHeaders,
-    setServerResponseCookies : setServerResponseCookies,
-    getResponseResultStatus : getResponseResultStatus,
-    sendHttpResponse : sendHttpResponse
+    setHttpResponseProperty: setHttpResponseProperty,
+    getHttpResponseProperty: getHttpResponseProperty,
+    setServerResponseHeaders: setServerResponseHeaders,
+    setServerResponseCookies: setServerResponseCookies,
+    getResponseResultStatus: getResponseResultStatus,
+    sendHttpResponse: sendHttpResponse
 });
 
 module.exports = service;
 
 //#REGION Private Functions
 
-function getResponseStatusObject(statusCode){
+function getResponseStatusObject(statusCode) {
 
     let responseObj = {
         code: httpResponseStatusCodes.unprocessableEntity422.code,
-        statusText:httpResponseStatusCodes.unprocessableEntity422.statusText
+        statusText: httpResponseStatusCodes.unprocessableEntity422.statusText
     };
 
-    for(let key in httpResponseStatusCodes){
-        if(httpResponseStatusCodes.hasOwnProperty(key)){
+    for (let key in httpResponseStatusCodes) {
+        if (httpResponseStatusCodes.hasOwnProperty(key)) {
             let valObj = httpResponseStatusCodes[key];
-            if(valObj.code === statusCode){
+            if (valObj.code === statusCode) {
                 responseObj = valObj;
                 break;
             }

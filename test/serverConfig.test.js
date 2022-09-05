@@ -19,7 +19,7 @@ describe('FILE: ServerConfig',()=>{
 
     test('CorsOptions Origin NOT WHITELISTED will throw an Error', ()=>{
         function corsCallbackError(response){
-            console.log('corsCallback-response', response);
+
             var msg = notificationService.corsErrorNotification;
             var err = new Error(msg);
              expect(response).toEqual(err);
@@ -31,7 +31,7 @@ describe('FILE: ServerConfig',()=>{
 
     test('CorsOptions Origin WHITELISTED will continue execution', ()=>{
         function corsCallbackError(response){
-            console.log('corsCallback-response', response);
+
              expect(response).toBeNull();
         }
         let whiteListOriginArray = serverConfig.whitelistRemoteOrigins;

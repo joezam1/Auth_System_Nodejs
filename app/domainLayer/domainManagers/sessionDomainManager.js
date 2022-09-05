@@ -9,33 +9,45 @@ const dbAction = require('../../dataAccessLayer/mysqlDataStore/context/dbAction.
 const tokenRepository = require('../../dataAccessLayer/repositories/tokenRepository.js');
 const helpers = require('../../library/common/helpers.js');
 const encryptDecryptService = require('../../services/encryption/encryptDecryptService.js');
+const jsonWebTokenDomainManager = require('../domainManagers/jsonWebTokenDomainManager.js');
 
+const resolveSessionAndJsoWebTokenUpdate = async function(request){
+
+    let updatedSession = await resolveSessionUpdateAsync(request);
+    let jwtUpdate = await jsonWebTokenDomainManager.resolveJsonWebTokenUpdateAsync(request);
+    let completedResult = Object.assign({}, updatedSession.result, jwtUpdate.result);
+    updatedSession.result = completedResult;
+    return updatedSession;
+
+}
 //Test: DONE
 const resolveSessionUpdateAsync = async function (request) {
 
     let _currentSessionToken = request.body.session;
     let sessionInfo = await processSessionUpdateGetSessionFromDatabaseAsync(_currentSessionToken);
+    console.log('resolveSessionUpdateAsync-NEW-sessionInfo', sessionInfo);
     if(sessionInfo.status === httpResponseStatus._200ok){
         let sessionDtoModel = sessionInfo.result;
         if(sessionService.sessionIsExpired(sessionDtoModel.UTCDateExpired.value)){
 
             let resultSessionRemoved = await resolveRemoveSessionFromDatabaseAsync(sessionDtoModel);
             return resultSessionRemoved;
-        }
+        }else{
 
-        return await processSessionUpdateSaveNewTokenToDatabaseAsync(sessionDtoModel);
+            return await processSessionUpdateSaveNewTokenToDatabaseAsync(sessionDtoModel);
+        }
     }
     return sessionInfo;
 }
 //Test: DONE
 const resolveGetSessionAsync = async function(request){
-
     let tempUserId = null;
     let currentSessionToken = request.headers.x_session_id;
     let tempCookieJson = null;
     let tempSessionModel = domainManagerHelper.createSessionModel(tempUserId, currentSessionToken, tempCookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
     let sessionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(tempSessionModel);
     console.log('sesionsDtoModelResultArray', sessionsDtoModelResultArray);
+
     if (sessionsDtoModelResultArray instanceof Error) {
         return httpResponseService.getResponseResultStatus(sessionsDtoModelResultArray, httpResponseStatus._400badRequest);
     }
@@ -46,12 +58,13 @@ const resolveGetSessionAsync = async function(request){
     let currentSessionDtoModel = sessionsDtoModelResultArray[0];
     if(sessionService.sessionIsExpired(currentSessionDtoModel.UTCDateExpired.value)){
         let resultSessionRemoved = await resolveRemoveSessionFromDatabaseAsync(currentSessionDtoModel);
-            return resultSessionRemoved;
+        return resultSessionRemoved;
+    }else
+    {
+        let currentSessionViewModel = domainManagerHelper.getSessionViewModelMappedFromSessionDtoModel(currentSessionDtoModel);
+
+        return httpResponseService.getResponseResultStatus(currentSessionViewModel, httpResponseStatus._200ok);
     }
-
-    let currentSessionViewModel = domainManagerHelper.getSessionViewModelMappedFromSessionDtoModel(currentSessionDtoModel);
-
-    return httpResponseService.getResponseResultStatus(currentSessionViewModel, httpResponseStatus._200ok);
 }
 //Test: DONE
 const insertSessionSessionActivityAndTokenTransactionAsync = async function(sessionModel, sessionActivityModel, tokenModel){
@@ -82,13 +95,15 @@ const insertSessionSessionActivityAndTokenTransactionAsync = async function(sess
         if(insertedTokenResult instanceof Error){
             dbAction.rollbackTransactionSingleConnection(singleConnection);
             return httpResponseService.getResponseResultStatus(insertedTokenResult, httpResponseStatus._400badRequest );
+        }else
+        {
+            dbAction.commitTransactionSingleConnection(singleConnection);
+            return httpResponseService.getResponseResultStatus(insertedSessionResult, httpResponseStatus._201created );
         }
 
-        dbAction.commitTransactionSingleConnection(singleConnection);
-        return httpResponseService.getResponseResultStatus(insertedSessionResult, httpResponseStatus._201created );
     }
     catch(error){
-        console.log('message: error', error)
+        console.log('insertSessionSessionActivityAndTokenTransactionAsync: error ', error)
         dbAction.rollbackTransactionSingleConnection(singleConnection);
         return httpResponseService.getResponseResultStatus(error , httpResponseStatus._400badRequest );
     }
@@ -97,6 +112,7 @@ const insertSessionSessionActivityAndTokenTransactionAsync = async function(sess
 
 
 const service = Object.freeze({
+    resolveSessionAndJsoWebTokenUpdate : resolveSessionAndJsoWebTokenUpdate,
     resolveSessionUpdateAsync: resolveSessionUpdateAsync,
     resolveGetSessionAsync : resolveGetSessionAsync,
     insertSessionSessionActivityAndTokenTransactionAsync : insertSessionSessionActivityAndTokenTransactionAsync

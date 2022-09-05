@@ -7,7 +7,7 @@ app.get('/', (req, res)=>{
     var helloObj = {data:'hello world from Express'}
     var jsonResponse = JSON.stringify(helloObj);
     res.type('json' );
-    res.send(jsonResponse);
+    //res.send(jsonResponse);
 });
 
 app.listen(port, ()=>{

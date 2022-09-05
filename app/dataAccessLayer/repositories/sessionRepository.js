@@ -14,15 +14,15 @@ let sessionActivityTableName = null;
 
 //Test: DONE
 let insertSessionIntoTableTransactionAsync = async function ( connectionPool, sessionDomainModel ) {
-    console.log('context', context);
-    console.log('sessionTableName', sessionTableName);
-    console.log('sessionDomainModel', sessionDomainModel);
+    //console.log('context', context);
+    //console.log('sessionTableName', sessionTableName);
+    //console.log('sessionDomainModel', sessionDomainModel);
     let sessionDtoModel = sessionRepositoryHelper.getSessionDtoModelMappedFromDomain(sessionDomainModel);
-    console.log('sessionDtoModel: ', sessionDtoModel);
+    //console.log('sessionDtoModel: ', sessionDtoModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(sessionDtoModel);
 
     let statementResult = await repositoryManager.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, sessionTableName, connectionPool);
-
+    console.log('statementResult', statementResult);
     return Object.freeze({
         statementResult : statementResult,
         sessionDtoModel : sessionDtoModel
@@ -43,8 +43,8 @@ let insertSessionActivityIntoTableTransacionAsync = async function(connectionPoo
 
 //Test: DONE
 let getSessionFromDatabaseAsync = async function(sessionDomainModel){
-    console.log('context', context);
-    console.log('sessionTableName', sessionTableName);
+    //console.log('context', context);
+    //console.log('sessionTableName', sessionTableName);
     let sessionDtoModel = sessionRepositoryHelper.getSessionDtoModelMappedFromDomain(sessionDomainModel);
     let propertiesArray = [sessionDtoModel.SessionToken];
 
@@ -78,8 +78,8 @@ let updateSessionTableSetColumnValuesWhereAsync = async function(sessionDomainMo
 }
 //Test: DONE
 let getSessionActivitiesFromDatabaseAsync = async function(sessionActivityDomainModel , utcDateCreatedDbFormatted){
-    console.log('context', context);
-    console.log('sessionActivityTableName', sessionActivityTableName);
+    //console.log('context', context);
+    //console.log('sessionActivityTableName', sessionActivityTableName);
     let sessionActivityDtoModel = sessionRepositoryHelper.getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel);
     sessionActivityDtoModel.UTCLoginDate.value = utcDateCreatedDbFormatted
     sessionActivityDtoModel.UTCLogoutDate.value = null;
@@ -96,7 +96,6 @@ let getSessionActivitiesFromDatabaseAsync = async function(sessionActivityDomain
 }
 //Test: DONE
 let updateSessionActivitiesTableSetColumnValuesWhereAsync = async function(sessionActivityDomainModel){
-
     let sessionActivityDtoModel = sessionRepositoryHelper.getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel);
     let propertiesArray = [sessionActivityDtoModel.UTCLogoutDate];
     let conditionalPropertiesArray = [ sessionActivityDtoModel.SessionActivityId ];

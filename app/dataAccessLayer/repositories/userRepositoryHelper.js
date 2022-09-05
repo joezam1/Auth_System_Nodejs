@@ -5,7 +5,7 @@ let context = null;
 
 //Test:DONE
 const getUserDtoModelMappedFromDomain = function(userDomainModel) {
-    console.log('userDomainModel', userDomainModel);
+    //console.log('userDomainModel', userDomainModel);
 
     let dateNow = new Date();
     let resolvedUserStatus = (userDomainModel.getUserStatusIsActive() === true)
@@ -13,7 +13,7 @@ const getUserDtoModelMappedFromDomain = function(userDomainModel) {
         : userDomainModel.setUserIsActive(true); userDomainModel.getUserStatusIsActive();
 
     let _userDtoModel = new context.userDtoModel();
-    console.log('_userDtoModel', _userDtoModel);
+    //console.log('_userDtoModel', _userDtoModel);
     _userDtoModel.rawAttributes.UserId.value = userDomainModel.getUserId();
     _userDtoModel.rawAttributes.UserId.type.key =  _userDtoModel.rawAttributes.UserId.type.key.toString();
     _userDtoModel.rawAttributes.FirstName.value = userDomainModel.getFirstName();
@@ -43,9 +43,9 @@ const getUsersDtoModelMappedFromDatabase = function(databaseResultArray) {
     let allUsersDtoModels = [];
     for (let a = 0; a < databaseResultArray.length; a++) {
         let userDatabase = databaseResultArray[a];
-        console.log('userDatabase', userDatabase);
+        //console.log('userDatabase', userDatabase);
         let _userDtoModel =new context.userDtoModel();
-        console.log('_userDtoModel', _userDtoModel);
+        //console.log('_userDtoModel', _userDtoModel);
         _userDtoModel.rawAttributes.UserId.value = userDatabase.UserId;
         _userDtoModel.rawAttributes.FirstName.value = userDatabase.FirstName;
         _userDtoModel.rawAttributes.MiddleName.value = userDatabase.MiddleName;
@@ -65,7 +65,7 @@ const getUsersDtoModelMappedFromDatabase = function(databaseResultArray) {
 }
 //Test:DONE
 const getUserRoleDtoModelMappedFromDomain = function(userRoleDomainModel) {
-    console.log('userRoleDomainModel', userRoleDomainModel);
+    //console.log('userRoleDomainModel', userRoleDomainModel);
     let dateNow = new Date();
     let _userRoleDtoModel = new context.userRoleDtoModel();
     _userRoleDtoModel.rawAttributes.UserRoleId.value = userRoleDomainModel.getUserRoleId();
@@ -87,9 +87,9 @@ const getUserRolesDtoModelMappedFromDatabase = function(databaseResultArray) {
     let allUserRolesDtoModels = [];
     for (let a = 0; a < databaseResultArray.length; a++) {
         let userRoleDatabase = databaseResultArray[a];
-        console.log('userRoleDatabase', userRoleDatabase);
+        //console.log('userRoleDatabase', userRoleDatabase);
         let _userRoleDtoModel =new context.userRoleDtoModel();
-        console.log('_userRoleDtoModel', _userRoleDtoModel);
+        //console.log('_userRoleDtoModel', _userRoleDtoModel);
         _userRoleDtoModel.rawAttributes.UserRoleId.value = userRoleDatabase.UserRoleId;
         _userRoleDtoModel.rawAttributes.UserId.value = userRoleDatabase.UserId;
         _userRoleDtoModel.rawAttributes.RoleId.value = userRoleDatabase.RoleId;

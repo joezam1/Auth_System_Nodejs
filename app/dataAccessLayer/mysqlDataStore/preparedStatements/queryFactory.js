@@ -26,7 +26,6 @@ let selectWherePropertyEqualsAndIsNull = function(tableName, sequelizeProperties
     let totalArrayElements = sequelizePropertiesArray.length;
     for(let a = 0; a < totalArrayElements; a++){
         let valueFound = isNullOrderOfAppearenceInPropertiesArray.find((value)=>{
-            console.log('value', value);
             return value === a;});
         if(valueFound){
             allProperties += sequelizePropertiesArray[a].field +' IS NULL '

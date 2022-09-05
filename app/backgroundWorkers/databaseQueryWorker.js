@@ -55,7 +55,7 @@ function createMysqlPool() {
 }
 
 let executeStatementAsync = async function (statement, valuesArray = null) {
-    try {
+    try{
         var pool = getPool();
         var poolPromise = pool.promise();
 

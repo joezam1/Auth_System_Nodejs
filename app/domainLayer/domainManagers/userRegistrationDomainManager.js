@@ -92,7 +92,7 @@ async function createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj) 
     let newUuid = uuid();
     userInfo.setUserId(newUuid);
     let singleConnection = await dbAction.getSingleConnectionFromPoolPromiseAsync();
-    try {
+    try{
         await dbAction.beginTransactionSingleConnectionAsync(singleConnection);
         let insertedUserResult = await userRepository.insertUserIntoTableTransactionAsync(singleConnection, userInfo);
 
@@ -121,7 +121,7 @@ async function createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj) 
         return httpResponseService.getResponseResultStatus(registerCreated, httpResponseStatus._201created);
     }
     catch (error) {
-        console.log('message: error', error)
+        console.log('createAndRegisterUserTransactionAsync: error ', error)
         dbAction.rollbackTransactionSingleConnection(singleConnection);
         return httpResponseService.getResponseResultStatus(error, httpResponseStatus._400badRequest);
     }

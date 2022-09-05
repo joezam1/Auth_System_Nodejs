@@ -14,8 +14,8 @@ let userRoleTableName = null;
 
 //Test: DONE
 const getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
-    console.log('context', context);
-    console.log('userTableName', userTableName);
+    //console.log('context', context);
+    //console.log('userTableName', userTableName);
     let userDtoModel = userRepositoryHelper.getUserDtoModelMappedFromDomain (userDomainModel);
     let propertiesArray = [userDtoModel.Username, userDtoModel.Email];
     let statementResult = await repositoryManager.resolveStatementAsync(propertiesArray, genericQueryStatement.selectWherePropertyEqualsAnd, userTableName);
@@ -30,8 +30,8 @@ const getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
 //Test: DONE
 const getAllUserRolesByUserIdAsync = async function (userDomainModel) {
 
-    console.log('context', context);
-    console.log('userRoleTableName', userRoleTableName);
+    //console.log('context', context);
+    //console.log('userRoleTableName', userRoleTableName);
     let userDtoModel = userRepositoryHelper.getUserDtoModelMappedFromDomain(userDomainModel);
     let propertiesArray = [userDtoModel.UserId];
     let statementResult = await repositoryManager.resolveStatementAsync(propertiesArray, genericQueryStatement.selectWherePropertyEqualsAnd, userRoleTableName);
@@ -72,7 +72,7 @@ const convertAllUserRolesFromDatabaseToUserRoleEnumsAsync = async function (allU
 
 //Test: DONE
 const insertUserIntoTableTransactionAsync = async function (connectionPool, userDomainModel) {
-    console.log('userDomainModel', userDomainModel);
+    //console.log('userDomainModel', userDomainModel);
     let userDtoModel = userRepositoryHelper.getUserDtoModelMappedFromDomain(userDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(userDtoModel);
     let statementResult = await repositoryManager.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, userTableName, connectionPool);

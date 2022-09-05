@@ -1,13 +1,14 @@
 const httpResponseStatus = require('../../library/enumerations/httpResponseStatus.js');
 const userRegisterViewModel = require('../../presentationLayer/viewModels/userRegisterViewModel.js');
 const userLoginViewModel = require('../../presentationLayer/viewModels/userLoginViewModel.js');
-const uuidV4 = require('uuid');
-const uuid = uuidV4.v4;
+//const uuidV4 = require('uuid');
+//const uuid = uuidV4.v4;
 const session = require('../domainModels/session.js');
 const sessionActivityViewModel = require('../../presentationLayer/viewModels/sessionActivityViewModel.js');
 const userRegistrationDomainManager = require('./userRegistrationDomainManager.js');
 const userLogingDomainManager = require('./userLoginDomainManager.js');
 const userLogoutDomainManager = require('./userLogoutDomainManager.js');
+const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
 
 
 //Test: DONE
@@ -24,7 +25,6 @@ let resolveUserRegistrationAsync = async function (request) {
 }
 //Test: DONE
 let resolveUserLoginSessionAsync = async function (request) {
-    console.log('resolveUserLoginSessionAsync-request', request);
     let _user = new userLoginViewModel(request.body);
     let resultInspection = await userLogingDomainManager.processUserLoginValidationAsync(_user);
     if (resultInspection.status === httpResponseStatus._200ok) {
@@ -32,9 +32,9 @@ let resolveUserLoginSessionAsync = async function (request) {
         let _userDtoModel = resultInspection.result;
         let _sessionActivityViewModel = new sessionActivityViewModel();
         _sessionActivityViewModel.userId.fieldValue = _userDtoModel.UserId.value;
-        _sessionActivityViewModel.geoLocation.fieldValue = request.body.geoLocation;
-        _sessionActivityViewModel.deviceAndBrowser.fieldValue = request.body.deviceAndBrowser;
-        _sessionActivityViewModel.userAgent.fieldValue = request.body.userAgent;
+        _sessionActivityViewModel.geoLocation.fieldValue = inputCommonInspector.inputExist(request.body.geoLocation) ? request.body.geoLocation: {};
+        _sessionActivityViewModel.deviceAndBrowser.fieldValue = inputCommonInspector.inputExist(request.body.deviceAndBrowser) ? request.body.deviceAndBrowser : "No Data" ;
+        _sessionActivityViewModel.userAgent.fieldValue = inputCommonInspector.inputExist(request.body.userAgent)? request.body.userAgent : 'No Data';
         return await userLogingDomainManager.processUserLoginStorageToDatabaseAsync(_userDtoModel, _sessionActivityViewModel);
     }
     return resultInspection;

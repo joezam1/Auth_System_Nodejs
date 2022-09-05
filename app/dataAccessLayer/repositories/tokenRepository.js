@@ -11,7 +11,7 @@ let tokenTableName = '';
 
 //Test: DONE
 const insertTokenIntoTableTransactionAsync = async function (connectionPool, tokenDomainModel , utcDateExpired) {
-    console.log('tokenDomainModel', tokenDomainModel);
+    //console.log('tokenDomainModel', tokenDomainModel);
     let tokenDtoModel = tokenRepositoryHelper.getTokenDtoModelMappedFromDomain (tokenDomainModel);
     tokenDtoModel.UTCDateExpired.value = utcDateExpired;
 
@@ -22,8 +22,8 @@ const insertTokenIntoTableTransactionAsync = async function (connectionPool, tok
 }
 //Test: DONE
 const getTokensFromDatabaseAsync = async function(tokenDomainModel){
-    console.log('context', context);
-    console.log('tokenTableName', tokenTableName);
+    //console.log('context', context);
+    //console.log('tokenTableName', tokenTableName);
     let tokenDtoModel = tokenRepositoryHelper.getTokenDtoModelMappedFromDomain(tokenDomainModel);
     let propertiesArray = [tokenDtoModel.Token, tokenDtoModel.Type];
     let statementResult = await repositoryManager.resolveStatementAsync(propertiesArray,genericQueryStatement.selectWherePropertyEqualsAnd, tokenTableName);

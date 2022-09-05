@@ -14,8 +14,8 @@ const setCookie = function(response, cookieObj){
 const executeSend = function(response, status, resultObj ){
 
     let resultJson = JSON.stringify( resultObj );
-    response.status(status);
-    response.send(resultJson);
+    response.status(status).send(resultJson);
+    return;
 }
 
 

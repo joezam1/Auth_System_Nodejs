@@ -72,17 +72,17 @@ async function processUserLoginStorageToDatabaseAsync(userDtoModel, sessionActiv
     if (isResultArrayOk || isResultObjectOk) {
 
         //Create remover for expired sessions
-        //sessionExpiredInspector.resolveRemoveExpiredSessions();
+        sessionExpiredInspector.resolveRemoveExpiredSessions();
         //Create remover for jwt expired tokens
-        //jsonWebTokenExpiredInspector.resolveRemoveExpiredTokens();
+        jsonWebTokenExpiredInspector.resolveRemoveExpiredTokens();
         let authModel = {
             jwtAccessToken : allJwtTokens.jwtAccessToken,
             jwtRefreshToken : allJwtTokens.jwtRefreshToken,
             session : cookieObj
         }
-        let _authnViewModel = new authViewModel(authModel);
+        let _authViewModel = new authViewModel(authModel);
 
-        return httpResponseService.getResponseResultStatus( _authnViewModel, httpResponseStatus._200ok);
+        return httpResponseService.getResponseResultStatus( _authViewModel, httpResponseStatus._200ok);
     }
 
     return httpResponseService.getResponseResultStatus(notificationService.errorProcessingUserLogin, httpResponseStatus._422unprocessableEntity);

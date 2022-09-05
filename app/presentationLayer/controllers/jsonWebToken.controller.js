@@ -10,9 +10,9 @@ let jsonWebTokenController = function(app){
     //READ
     //UPDATE
     app.put('/api/jsonwebtokens/update', async function(request, response){
-        console.log('jsonwebtokens-update-request', request);
+        console.log('jsonwebtokens-update-request');
         var tokenResult = await jsonWebTokenDomainManager.resolveJsonWebTokenUpdateAsync(request);
-        console.log('tokenResult', tokenResult);
+        console.log('app.put(/api/jsonwebtokens/update-RESPONSE-tokenResult', tokenResult);
         httpResponseService.sendHttpResponse(tokenResult);
         return;
     });

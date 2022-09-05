@@ -5,7 +5,7 @@ let context = null;
 
 //Test: DONE
 const getTokenDtoModelMappedFromDomain = function(tokenDomainModel) {
-    console.log('tokenDomainModel', tokenDomainModel);
+    //console.log('tokenDomainModel', tokenDomainModel);
 
     let dateNow = new Date();
     let resolvedTokenStatus = (tokenDomainModel.getTokenStatusIsActive() === true)
@@ -13,7 +13,7 @@ const getTokenDtoModelMappedFromDomain = function(tokenDomainModel) {
         : tokenDomainModel.setTokenStatusIsActive(true); tokenDomainModel.getTokenStatusIsActive();
 
     let _tokenDtoModel = new context.tokenDtoModel();
-    console.log('_tokenDtoModel', _tokenDtoModel);
+    //console.log('_tokenDtoModel', _tokenDtoModel);
 
     _tokenDtoModel.rawAttributes.TokenId.value = tokenDomainModel.getTokenId();
     _tokenDtoModel.rawAttributes.TokenId.type.key =  _tokenDtoModel.rawAttributes.TokenId.type.key.toString();
@@ -42,9 +42,9 @@ const getTokensDtoModelMappedFromDatabase = function(databaseResultArray) {
     let allTokensDtoModels = [];
     for (let a = 0; a < databaseResultArray.length; a++) {
         let tokenDatabase = databaseResultArray[a];
-        console.log('tokenDatabase', tokenDatabase);
+        //console.log('tokenDatabase', tokenDatabase);
         let _tokenDtoModel = new context.tokenDtoModel();
-        console.log('_tokenDtoModel', _tokenDtoModel);
+        //console.log('_tokenDtoModel', _tokenDtoModel);
 
         _tokenDtoModel.rawAttributes.TokenId.value = tokenDatabase.TokenId;
         _tokenDtoModel.rawAttributes.UserId.value = tokenDatabase.UserId;

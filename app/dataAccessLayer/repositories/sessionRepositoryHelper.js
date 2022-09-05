@@ -45,9 +45,9 @@ const getSessionsDtoModelMappedFromDatabase = function(databaseResultArray) {
     let allSessionsDtoModels = [];
     for (let a = 0; a < databaseResultArray.length; a++) {
         let sessionDatabase = databaseResultArray[a];
-        console.log('sessionDatabase', sessionDatabase);
+        //console.log('sessionDatabase', sessionDatabase);
         let _sessionDtoModel =new context.sessionDtoModel();
-        console.log('_sessionDtoModel', _sessionDtoModel);
+        //console.log('_sessionDtoModel', _sessionDtoModel);
 
         _sessionDtoModel.rawAttributes.SessionId.value = sessionDatabase.SessionId;
         _sessionDtoModel.rawAttributes.UserId.value = sessionDatabase.UserId;
@@ -106,9 +106,9 @@ const getSessionActitiviesDtoModelMappedFromDatabase = function(databaseResultAr
     let allSessionActivitiesDtoModels = [];
     for (let a = 0; a < databaseResultArray.length; a++) {
         let sessionActivityDatabase = databaseResultArray[a];
-        console.log('sessionActivityDatabase', sessionActivityDatabase);
+        //console.log('sessionActivityDatabase', sessionActivityDatabase);
         let _sessionActivityDtoModel = new context.sessionActivityDtoModel();
-        console.log('_sessionActivityDtoModel', _sessionActivityDtoModel);
+        //console.log('_sessionActivityDtoModel', _sessionActivityDtoModel);
 
         _sessionActivityDtoModel.rawAttributes.SessionActivityId.value = sessionActivityDatabase.SessionActivityId;
         _sessionActivityDtoModel.rawAttributes.UserId.value = sessionActivityDatabase.UserId;
