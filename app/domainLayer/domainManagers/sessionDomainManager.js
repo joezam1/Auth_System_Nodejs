@@ -17,6 +17,10 @@ const resolveSessionAndJsoWebTokenUpdate = async function(request){
     let jwtUpdate = await jsonWebTokenDomainManager.resolveJsonWebTokenUpdateAsync(request);
     let completedResult = Object.assign({}, updatedSession.result, jwtUpdate.result);
     updatedSession.result = completedResult;
+    if(updatedSession.status === httpResponseStatus._200ok && jwtUpdate.status !== httpResponseStatus._200ok){
+        updatedSession.status = jwtUpdate.status;
+        updatedSession.statusText = jwtUpdate.statusText;
+    }
     return updatedSession;
 
 }

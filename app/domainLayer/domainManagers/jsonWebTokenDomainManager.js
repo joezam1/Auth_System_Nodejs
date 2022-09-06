@@ -22,7 +22,9 @@ const resolveJsonWebTokenUpdateAsync = async function (request) {
     console.log('resolveJsonWebTokenUpdateAsync-NEW token-info', tokenInfo);
     if(tokenInfo.status === httpResponseStatus._200ok){
         let refreshTokenDtoModelFound = tokenInfo.result;
+        console.log('refreshTokenDtoModelFound', refreshTokenDtoModelFound);
         if(jwtTokenService.tokenIsExpired(refreshTokenDtoModelFound.UTCDateExpired.value)){
+            console.log('REFRESH-TOKEN-Is EXPIRED-ok')
             let resultTokenRemovedFromDb = await resolveRemoveTokenFromDatabaseAsync(refreshTokenDtoModelFound);
             return resultTokenRemovedFromDb;
         }
