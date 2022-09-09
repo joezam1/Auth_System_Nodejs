@@ -2,7 +2,7 @@ const httpResponseService = require('../services/httpProtocol/httpResponseServic
 
 
 
-
+//Test: DONE
 const propertyInitializer = async function(request, response, next) {
 
     httpResponseService.setHttpResponseProperty(response);

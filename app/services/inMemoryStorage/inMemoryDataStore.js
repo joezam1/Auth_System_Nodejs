@@ -2,7 +2,10 @@ let dataStore = {
     _sessionInspectorIsActive: null,
     _expiredSessionCleanupIntervalId : null,
     _jwtInspectorIsActive: null,
-    _expiredJwtCleanupIntervalId: null
+    _expiredJwtCleanupIntervalId: null,
+    antiforgeryTokens : [],
+    _expiredCsrfTokenInspectorIsActive : null,
+    _expiredCsrfTokenCleanupIntervalId : null
 }
 
 

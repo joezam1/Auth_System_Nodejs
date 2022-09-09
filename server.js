@@ -6,6 +6,8 @@ const propertyInitializer = require('./app/middleware/propertyInitializer.js');
 const userController = require('./app/presentationLayer/controllers/user.controller.js');
 const sessionController = require('./app/presentationLayer/controllers/session.controller.js');
 const jsonWebTokenController = require('./app/presentationLayer/controllers/jsonWebToken.controller.js');
+const homeController = require('./app/presentationLayer/controllers/home.controller.js');
+
 console.log(`server-NODE_ENV=${envConfig.NODE_ENV}`);
 
 const session = require('express-session');
@@ -29,7 +31,7 @@ app.use(propertyInitializer);
 userController(app);
 sessionController(app);
 jsonWebTokenController(app);
-
+homeController(app);
 
 const httpServer = http.createServer(app);
 httpServer.listen(httpPort, function(){

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.15% </span>
+                <span class="strong">64.78% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>43/66</span>
+                <span class='fraction'>46/71</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/7</span>
+                <span class='fraction'>5/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.15% </span>
+                <span class="strong">64.78% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>43/66</span>
+                <span class='fraction'>46/71</span>
             </div>
         
             
@@ -191,7 +191,16 @@
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
 <a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -223,6 +232,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -248,6 +258,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -322,6 +338,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const httpResponseStatus = require('../../library/enumerations/httpResponseStatus.js');
 const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
 const domainManagerHelper = require('./domainManagerHelper.js');
+const antiForgeryTokenHelper = require('../../services/csrfProtection/antiForgeryTokenHelper.js');
 const sessionRepository = require('../../dataAccessLayer/repositories/sessionRepository.js');
 const tokenRepository = require('../../dataAccessLayer/repositories/tokenRepository.js');
 const notificationService = require('../../services/notifications/notificationService.js');
@@ -350,7 +367,8 @@ const processUserLogoutCreateTempSessionActivityDomainModelAsync = async functio
         tempSessionActivityModel: tempSessionActivityModel,
         sessionUtcDateCreatedDbFormatted: sessionUtcDateCreatedDbFormatted
     }
-    return httpResponseService.getResponseResultStatus(sessionInfo, httpResponseStatus._200ok);
+    let info = httpResponseService.getResponseResultStatus(sessionInfo, httpResponseStatus._200ok);
+    return info;
 }
 //Test:DONE
 const processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync =async function(sessionModel, sessionActivityModel, sessionUtcDateCreatedDbFormatted) {
@@ -362,7 +380,7 @@ const processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync =asy
     return await deleteSessionAsync(sessionModel);
 &nbsp;
 }
-&nbsp;
+//Test: DONE
 const processUserlogoutDeleteJwtRefreshTokenAsync = async function(jwtRefreshToken){
 &nbsp;
     let tempUserId = null;
@@ -375,10 +393,16 @@ const processUserlogoutDeleteJwtRefreshTokenAsync = async function(jwtRefreshTok
     return httpResponseService.getResponseResultStatus(resultTokenDeleted, httpResponseStatus._200ok);
 }
 &nbsp;
+const processUserlogoutDeleteCsrfTokenAsync = <span class="fstat-no" title="function not covered" >as</span>ync function(csrfToken){
+    let result = <span class="cstat-no" title="statement not covered" >antiForgeryTokenHelper.removeCsrfTokenFromDataStorage(csrfToken);</span>
+<span class="cstat-no" title="statement not covered" >    console.log('antiforgeryToken-removed-result', result);</span>
+}
+&nbsp;
 const service = {
     processUserLogoutCreateTempSessionActivityDomainModelAsync: processUserLogoutCreateTempSessionActivityDomainModelAsync,
     processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync: processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync,
-    processUserlogoutDeleteJwtRefreshTokenAsync : processUserlogoutDeleteJwtRefreshTokenAsync
+    processUserlogoutDeleteJwtRefreshTokenAsync : processUserlogoutDeleteJwtRefreshTokenAsync,
+    processUserlogoutDeleteCsrfTokenAsync : processUserlogoutDeleteCsrfTokenAsync
 }
 &nbsp;
 module.exports = service;
@@ -454,7 +478,7 @@ async function deleteSessionAsync(sessionModel){
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Wed Aug 31 2022 22:45:56 GMT-0500 (Central Daylight Time)
+                at Fri Sep 09 2022 17:46:01 GMT-0500 (Central Daylight Time)
             </div>
         <script src="../../../prettify.js"></script>
         <script>

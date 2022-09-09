@@ -1,6 +1,7 @@
 const httpResponseStatus = require('../../library/enumerations/httpResponseStatus.js');
 const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
 const domainManagerHelper = require('./domainManagerHelper.js');
+const antiForgeryTokenHelper = require('../../services/csrfProtection/antiForgeryTokenHelper.js');
 const sessionRepository = require('../../dataAccessLayer/repositories/sessionRepository.js');
 const tokenRepository = require('../../dataAccessLayer/repositories/tokenRepository.js');
 const notificationService = require('../../services/notifications/notificationService.js');
@@ -29,7 +30,8 @@ const processUserLogoutCreateTempSessionActivityDomainModelAsync = async functio
         tempSessionActivityModel: tempSessionActivityModel,
         sessionUtcDateCreatedDbFormatted: sessionUtcDateCreatedDbFormatted
     }
-    return httpResponseService.getResponseResultStatus(sessionInfo, httpResponseStatus._200ok);
+    let info = httpResponseService.getResponseResultStatus(sessionInfo, httpResponseStatus._200ok);
+    return info;
 }
 //Test:DONE
 const processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync =async function(sessionModel, sessionActivityModel, sessionUtcDateCreatedDbFormatted) {
@@ -41,7 +43,7 @@ const processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync =asy
     return await deleteSessionAsync(sessionModel);
 
 }
-
+//Test: DONE
 const processUserlogoutDeleteJwtRefreshTokenAsync = async function(jwtRefreshToken){
 
     let tempUserId = null;
@@ -54,10 +56,16 @@ const processUserlogoutDeleteJwtRefreshTokenAsync = async function(jwtRefreshTok
     return httpResponseService.getResponseResultStatus(resultTokenDeleted, httpResponseStatus._200ok);
 }
 
+const processUserlogoutDeleteCsrfTokenAsync = async function(csrfToken){
+    let result = antiForgeryTokenHelper.removeCsrfTokenFromDataStorage(csrfToken);
+    console.log('antiforgeryToken-removed-result', result);
+}
+
 const service = {
     processUserLogoutCreateTempSessionActivityDomainModelAsync: processUserLogoutCreateTempSessionActivityDomainModelAsync,
     processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync: processUserLogoutDeleteSessionAndUpdateSessionActivityInDatabaseAsync,
-    processUserlogoutDeleteJwtRefreshTokenAsync : processUserlogoutDeleteJwtRefreshTokenAsync
+    processUserlogoutDeleteJwtRefreshTokenAsync : processUserlogoutDeleteJwtRefreshTokenAsync,
+    processUserlogoutDeleteCsrfTokenAsync : processUserlogoutDeleteCsrfTokenAsync
 }
 
 module.exports = service;

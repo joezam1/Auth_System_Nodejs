@@ -1,18 +1,24 @@
 const mysql = require('mysql2');
 const {workerData, parentPort, isMainThread } = require("worker_threads");
 
+console.log('workerData', workerData);
 console.log('parentPort', parentPort);
-
+console.log('isMainThread', isMainThread);
+if(parentPort === null){ return; }
 
 parentPort.on("message", async function (event) {
     console.log('WORKER-FUNCTION-on.message-event', event);
     console.log('manager-worker-connection:');
+    const originWorker = 'jwtTokenQueryWorker';
     let  replyObj = {};
     let receivedMessage = event.message;
     switch(receivedMessage){
 
         case 'open':
-            replyObj = { message:'ok' }
+            replyObj = {
+                message:'ok',
+                origin:originWorker,
+             }
             parentPort.postMessage(replyObj);
             break;
 
@@ -22,6 +28,7 @@ parentPort.on("message", async function (event) {
             let sessionResultArray = await executeStatementAsync(statement, valuesArray);
             replyObj = {
                 message:'ok',
+                origin:originWorker,
                 data: sessionResultArray
              }
             parentPort.postMessage(replyObj);

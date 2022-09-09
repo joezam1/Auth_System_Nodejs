@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.14% </span>
+                <span class="strong">96.82% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>68/70</span>
+                <span class='fraction'>61/63</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.14% </span>
+                <span class="strong">96.82% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>68/70</span>
+                <span class='fraction'>61/63</span>
             </div>
         
             
@@ -190,8 +190,7 @@
 <a name='L125'></a><a href='#L125'>125</a>
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
-<a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">6x</span>
+<a name='L128'></a><a href='#L128'>128</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -207,37 +206,37 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -271,8 +270,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -289,7 +288,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -335,15 +333,15 @@ let sessionActivityTableName = null;
 &nbsp;
 //Test: DONE
 let insertSessionIntoTableTransactionAsync = async function ( connectionPool, sessionDomainModel ) {
-    console.log('context', context);
-    console.log('sessionTableName', sessionTableName);
-    console.log('sessionDomainModel', sessionDomainModel);
+    //console.log('context', context);
+    //console.log('sessionTableName', sessionTableName);
+    //console.log('sessionDomainModel', sessionDomainModel);
     let sessionDtoModel = sessionRepositoryHelper.getSessionDtoModelMappedFromDomain(sessionDomainModel);
-    console.log('sessionDtoModel: ', sessionDtoModel);
+    //console.log('sessionDtoModel: ', sessionDtoModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(sessionDtoModel);
 &nbsp;
     let statementResult = await repositoryManager.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, sessionTableName, connectionPool);
-&nbsp;
+    console.log('statementResult', statementResult);
     return Object.freeze({
         statementResult : statementResult,
         sessionDtoModel : sessionDtoModel
@@ -364,8 +362,8 @@ let insertSessionActivityIntoTableTransacionAsync = async function(connectionPoo
 &nbsp;
 //Test: DONE
 let getSessionFromDatabaseAsync = async function(sessionDomainModel){
-    console.log('context', context);
-    console.log('sessionTableName', sessionTableName);
+    //console.log('context', context);
+    //console.log('sessionTableName', sessionTableName);
     let sessionDtoModel = sessionRepositoryHelper.getSessionDtoModelMappedFromDomain(sessionDomainModel);
     let propertiesArray = [sessionDtoModel.SessionToken];
 &nbsp;
@@ -399,8 +397,8 @@ let updateSessionTableSetColumnValuesWhereAsync = async function(sessionDomainMo
 }
 //Test: DONE
 let getSessionActivitiesFromDatabaseAsync = async function(sessionActivityDomainModel , utcDateCreatedDbFormatted){
-    console.log('context', context);
-    console.log('sessionActivityTableName', sessionActivityTableName);
+    //console.log('context', context);
+    //console.log('sessionActivityTableName', sessionActivityTableName);
     let sessionActivityDtoModel = sessionRepositoryHelper.getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel);
     sessionActivityDtoModel.UTCLoginDate.value = utcDateCreatedDbFormatted
     sessionActivityDtoModel.UTCLogoutDate.value = null;
@@ -417,7 +415,6 @@ let getSessionActivitiesFromDatabaseAsync = async function(sessionActivityDomain
 }
 //Test: DONE
 let updateSessionActivitiesTableSetColumnValuesWhereAsync = async function(sessionActivityDomainModel){
-&nbsp;
     let sessionActivityDtoModel = sessionRepositoryHelper.getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel);
     let propertiesArray = [sessionActivityDtoModel.UTCLogoutDate];
     let conditionalPropertiesArray = [ sessionActivityDtoModel.SessionActivityId ];
@@ -454,7 +451,7 @@ function onInit(){
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Wed Aug 31 2022 22:45:56 GMT-0500 (Central Daylight Time)
+                at Fri Sep 09 2022 17:46:01 GMT-0500 (Central Daylight Time)
             </div>
         <script src="../../../prettify.js"></script>
         <script>

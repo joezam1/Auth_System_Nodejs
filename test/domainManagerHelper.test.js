@@ -1,4 +1,3 @@
-
 const domainManagerHelper = require('../app/domainLayer/domainManagers/domainManagerHelper.js');
 
 
@@ -28,7 +27,6 @@ describe('File: domainManagerHelper', function(){
         })
     });
 
-
     describe('Function: createSessionModel', function(){
         test('Can create a SessionModel', function(){
             //Arrange
@@ -44,7 +42,6 @@ describe('File: domainManagerHelper', function(){
         })
     });
 
-
     describe('Function: createSessionActivityModel', function(){
         test('Can create a SessionActivityModel', function(){
             //Arrange
@@ -59,7 +56,6 @@ describe('File: domainManagerHelper', function(){
             expect(sessionActivityUserId).toEqual(userId);
         })
     });
-
 
     describe('Function: createCookieObj', function(){
         test('Can create a CookieObject', function(){
@@ -144,4 +140,46 @@ describe('File: domainManagerHelper', function(){
             expect(resultSessionToken).toEqual(sessionDtoModel.SessionToken.value);
         });
     });
+
+    describe('Function: getSessionDomainModelMappedFromSessionDtoModel', function(){
+        test('CAN get Session DomainModel Mapped From Session DtoModel', function(){
+
+            //Arrange
+            let mockSessionDtoModel = {
+                SessionId:{value:'adfad'},
+                UserId:{value:'adf'},
+                SessionToken:{value:'aadsf'},
+                Expires:{value:6000},
+                Data:{value:'abc'},
+                IsActive:{value:true},
+            }
+            //Act
+            let sessionResult = domainManagerHelper.getSessionDomainModelMappedFromSessionDtoModel(mockSessionDtoModel);
+            let sessionResultUserId = sessionResult.getUserId();
+            //Assert
+            expect(sessionResultUserId).toEqual(mockSessionDtoModel.UserId.value);
+        });
+    });
+
+    describe('Function: createAuthViewModelFromRequest', function(){
+        test('CAN createAuthViewModelFromRequest', function(){
+            //Arrange
+            let requestMock ={
+                headers:{
+                    x_csrf_token:'ads',
+                    x_csrf_token_client:'eee',
+                    referer:'abc',
+                    origin:'abc',
+                    'user-agent':'Mozilla Firefox'
+                }
+            }
+            //Act
+            let result = domainManagerHelper.createAuthViewModelFromRequest(requestMock);
+            let resultOrigin = result.origin.fieldValue;
+
+            //Assert
+            expect(resultOrigin).toEqual(requestMock.headers.origin);
+        })
+    });
+
 });

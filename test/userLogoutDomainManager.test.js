@@ -6,11 +6,18 @@ const sessionActivityModel = require('../app/domainLayer/domainModels/sessionAct
 const helpers = require('../app/library/common/helpers.js');
 
 
+
+
 jest.mock('../app/dataAccessLayer/repositories/sessionRepository.js');
 jest.mock('../app/dataAccessLayer/repositories/tokenRepository.js');
 
 
+
+
 describe('File: userLogoutDomainManager.js', function(){
+    beforeEach(()=>{
+
+    });
     afterAll(()=>{
         jest.resetAllMocks();
     });

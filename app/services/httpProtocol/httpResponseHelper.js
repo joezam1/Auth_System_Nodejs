@@ -1,4 +1,4 @@
-
+const helpers = require('../../library/common/helpers.js');
 
 const setHeader = function(response, headerObj){
 
@@ -13,6 +13,7 @@ const setCookie = function(response, cookieObj){
 
 const executeSend = function(response, status, resultObj ){
 
+    resultObj.result = (resultObj.result instanceof Error ) ? helpers.composeErrorObjectToStringify(resultObj.result) : resultObj.result;
     let resultJson = JSON.stringify( resultObj );
     response.status(status).send(resultJson);
     return;

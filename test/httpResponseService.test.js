@@ -1,6 +1,8 @@
 const httpResponseService = require('../app/services/httpProtocol/httpResponseService.js');
 const httpResponseStatusCodes = require('../app/services/httpProtocol/httpResponseStatusCodes.js');
 const httpResponseHelper = require('../app/services/httpProtocol/httpResponseHelper.js');
+
+
 jest.mock('../app/services/httpProtocol/httpResponseHelper.js');
 
 describe('File: httpResponseService.js', function(){
@@ -50,12 +52,15 @@ describe('File: httpResponseService.js', function(){
         let header2 = {key:'Content-Type', value:'text/html'}
         let headersArray = [header1, header2];
         httpResponseService.setHttpResponseProperty(mockHttpResponse);
+        httpResponseHelper.setHeader = jest.fn();
+
         //Act
         httpResponseService.setServerResponseHeaders(headersArray);
         let result = httpResponseService.getHttpResponseProperty();
         let resultAccept = result.headers.Accept;
         //Assert
-        expect(resultAccept).toEqual('text/json');
+        //expect(resultAccept).toEqual('text/json');
+        expect(httpResponseHelper.setHeader ).toHaveBeenCalledTimes(2);
     });
 
     describe('Function : getResponseResultStatus', function(){

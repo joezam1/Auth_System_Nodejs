@@ -1,17 +1,26 @@
 const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
 const { Worker } = require('worker_threads');
 const path = require('path');
+const expiredCsrfTokenDeletionWorker = './expiredCsrfTokenDeletionWorker.js';
 
-const workerThreadManager = (function(){
+
+
+const expiredCsrfTokenManager = (function(){
     let activeWorker = undefined;
-    const starNewtWorkerThread = function(workerFileName, inspectorCallbackFunction){
-        activeWorker = new Worker(path.join(__dirname, workerFileName));
+    const createNewtWorkerThread = function( inspectorCallbackFunction ){
+
+        if(inputCommonInspector.inputExist(activeWorker)){ return; }
+
+        console.log('__dirname', __dirname);
+        console.log('workerFileName', expiredCsrfTokenDeletionWorker);
+        let workerScript = path.join(__dirname, expiredCsrfTokenDeletionWorker);
+        activeWorker = new Worker(workerScript);
         let event = { message:'open' }
         activeWorker.postMessage(event);
 
         if(inputCommonInspector.objectIsValid(activeWorker)){
             activeWorker.on('message', function(event){
-                console.log(`Manager-For=Worker.${workerFileName}-onmessage:MESSAGE RECEIVED: `,event);
+                console.log(`Manager-For-Worker-onmessage:MESSAGE RECEIVED: `,event);
                 if(inputCommonInspector.inputExist(inspectorCallbackFunction)){
                     inspectorCallbackFunction(event);
                 }
@@ -32,15 +41,14 @@ const workerThreadManager = (function(){
             activeWorker.terminate();
             activeWorker = undefined;
         }
-
         console.log('END-terminateActiveWorker-activeWorker',activeWorker);
     }
 
     return Object.freeze({
-        starNewtWorkerThread : starNewtWorkerThread,
+        createNewtWorkerThread : createNewtWorkerThread,
         sendMessageToWorker : sendMessageToWorker,
         terminateActiveWorker : terminateActiveWorker
     });
 })();
 
-module.exports = workerThreadManager;
+module.exports = expiredCsrfTokenManager;

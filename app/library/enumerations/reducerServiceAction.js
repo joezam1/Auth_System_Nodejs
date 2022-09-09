@@ -1,16 +1,22 @@
 const reducerServiceAction = Object.freeze({
-    startSessionInspector : 0,
-    stopSessionInspector : 1,
-    updateCleanupIntervalId:2,
-    startJwtInspector:3,
-    stopJwtInspector:4,
-    updateJwtRemovalIntervalId:5,
-    0:'startSessionInspector',
-    1:'stopSessionInspector',
-    2:'updateCleanupIntervalId',
-    3:'startJwtInspector',
-    4:'stopJwtInspector',
-    5:'updateJwtRemovalIntervalId'
+    setStateSessionInspector : 0,
+    updateCleanupIntervalId:1,
+    setStateJwtInspector:2,
+    updateJwtRemovalIntervalId:3,
+    addDataToAntiforgeryTokensArray:4,
+    updateDataInAntiforgeryTokensArray:5,
+    removeDataFromAntiforgeryTokensArray:6,
+    setExpiredTokensInspectorStatus:7,
+    removeAllExpiredAntiForgeryTokensFromArray:8,
+    0:'setStateSessionInspector',
+    1:'updateCleanupIntervalId',
+    2:'setStateJwtInspector',
+    3:'updateJwtRemovalIntervalId',
+    4:'addDataToAntiforgeryTokensArray',
+    5:'updateDataInAntiforgeryTokensArray',
+    6:'removeDataFromAntiforgeryTokensArray',
+    7:'setExpiredTokensInspectorStatus',
+    8:'removeAllExpiredAntiForgeryTokensFromArray'
 });
 
 module.exports = reducerServiceAction;

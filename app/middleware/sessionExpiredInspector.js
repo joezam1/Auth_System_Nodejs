@@ -1,13 +1,12 @@
 const reducerServices = require('../services/inMemoryStorage/reducerService.js');
 const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
 const reducerServiceAction = require('../library/enumerations/reducerServiceAction.js');
-const workerThreadManager = require('../backgroundWorkers/workerThreadManager.js');
-const databaseQueryWorkerFile = '../backgroundWorkers/databaseQueryWorker.js';
+const sessionThreadManager = require('../backgroundWorkers/sessionThreadManager.js');
 const sessionConfig = require('../../configuration/authentication/sessionConfig.js');
 const dbContext = require('../dataAccessLayer/mysqlDataStore/context/dbContext.js');
 const expiredSessionEventCode = require('../library/enumerations/expiredSessionEventCode.js');
 const helpers = require('../library/common/helpers.js');
-
+const backgroundWorker = require('../library/enumerations/backgroundWorker.js');
 
 
 let _context = null;
@@ -34,14 +33,14 @@ const sessionExpiredInspector = (function(){
         let inspectorStateIsActive = reducerServices.getCurrentStateByProperty(_dataStoreSessionInspectorProperty);
         if(inspectorStateIsActive != true && (inspectorStateIsActive === null || inspectorStateIsActive === false)){
 
-            workerThreadManager.starNewtWorkerThread(databaseQueryWorkerFile ,queryWorkerCallback);
             let intervalId = setInterval(function(){
+                sessionThreadManager.createNewtWorkerThread(SessionExpiredQueryWorkerCallback);
                 let messageObj ={
                     message : 'query',
                     statement : countRowsFromTable(),
                     valuesArray : null
                 }
-                workerThreadManager.sendMessageToWorker(messageObj);
+                sessionThreadManager.sendMessageToWorker(messageObj);
 
             },sessionConfig.EXPIRED_SESSION_CLEANUP_FREQUENCY_IN_MILLISECONDS );
             updateInspectorStateDataStore(true);
@@ -83,7 +82,7 @@ function updateExpiredSessionRemovalIdDataStore(intervalId){
 function updateInspectorStateDataStore(status){
     let payload = {};
     payload[ _dataStoreSessionInspectorProperty] = status;
-    let action = (status === true) ? { type: reducerServiceAction.startSessionInspector } : { type: reducerServiceAction.stopSessionInspector };
+    let action = {type: reducerServiceAction.setStateSessionInspector } ;
     let result = reducerServices.dispatch(payload, action);
     console.log('reducerService-dispatch-result', result);
     return result;
@@ -105,8 +104,14 @@ function removeSingleRowWhereQuery(sessionId){
     return `DELETE FROM ${_sessionTableName} WHERE ${_columnNameSessionId} = '${sessionId}' `;
 }
 
-function queryWorkerCallback(event){
-    console.log('SessionExpiredINSPECTOR-queryWorkerCallback-event', event);
+function SessionExpiredQueryWorkerCallback(event){
+    console.log('SessionExpiredQueryWorkerCallback-event', event);
+    let sessionWorkerName = backgroundWorker[backgroundWorker.sessionQueryWorker ];
+    if((!inputCommonInspector.inputExist(event.origin)) ||
+        (inputCommonInspector.inputExist(event.origin) && event.origin !== sessionWorkerName)){
+        return;
+    }
+
     if(inputCommonInspector.inputExist(event.data) && Array.isArray(event.data)){
         let resultEventArray = event.data[0];
         let firstItem = {};
@@ -174,8 +179,9 @@ function getAllExpiredSessions(){
         statement : selectAllExpiredSessionsOrderByAsc(),
         valuesArray : null
     }
-    workerThreadManager.sendMessageToWorker(reply);
+    sessionThreadManager.sendMessageToWorker(reply);
 }
+
 function updateSessionActivitiesAndRemoveSessions(allExpiredSessionsArray){
 
     executeUpdateSessionActivities(allExpiredSessionsArray);
@@ -192,7 +198,7 @@ function executeUpdateSessionActivities(itemsArray){
             statement : updateSessionActivity,
             valuesArray : null
         }
-        workerThreadManager.sendMessageToWorker(reply);
+        sessionThreadManager.sendMessageToWorker(reply);
     }
 }
 
@@ -205,7 +211,7 @@ function executeRemoveExpiredSessions(itemsArray){
             statement : removeSession,
             valuesArray : null
         }
-        workerThreadManager.sendMessageToWorker(reply);
+        sessionThreadManager.sendMessageToWorker(reply);
     }
 }
 
@@ -217,6 +223,6 @@ function stopSessionExpiredInspector(){
     if(inputCommonInspector.objectIsValid(inspectorIsActive) && inspectorIsActive ){
         updateInspectorStateDataStore(false);
     }
-    workerThreadManager.terminateActiveWorker();
+    sessionThreadManager.terminateActiveWorker();
 }
 //#ENDREGION Private Function

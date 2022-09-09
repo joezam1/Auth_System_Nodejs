@@ -217,4 +217,20 @@ describe('File: Helper.js', function () {
         });
     });
 
+    describe('Function: composeErrorObjectToStringify', function(){
+        test('ERROR objects CAN be stringified', function(){
+            //Arrange
+            let message = 'This is a test';
+            let err = new Error(message);
+            //Act
+            let result = helper.composeErrorObjectToStringify(err);
+            let errStringified = JSON.stringify(result);
+            let errObject = JSON.parse(errStringified);
+            let isTypeString = (typeof(errStringified) === 'string');
+            //Assert
+            expect(isTypeString).toBe(true);
+            expect(errObject.message).toEqual(message);
+        })
+    });
+
 });

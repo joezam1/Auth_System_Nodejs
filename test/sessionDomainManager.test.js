@@ -8,17 +8,67 @@ const tokenDomainModel = require('../app/domainLayer/domainModels/token.js');
 const sessionDomainModel = require('../app/domainLayer/domainModels/session.js');
 const sessionActivityDomainModel = require('../app/domainLayer/domainModels/sessionActivity.js');
 const encryptDecryptService = require('../app/services/encryption/encryptDecryptService.js');
+const jsonWebTokenDomainManager = require('../app/domainLayer/domainManagers/jsonWebTokenDomainManager.js');
+
 
 jest.mock('../app/dataAccessLayer/repositories/sessionRepository.js');
 jest.mock('../app/dataAccessLayer/mysqlDataStore/context/dbAction.js');
 jest.mock('../app/dataAccessLayer/repositories/tokenRepository.js');
+jest.mock('../app/domainLayer/domainManagers/jsonWebTokenDomainManager.js');
 
 
 describe('File: sessionDomainManager.js', function(){
 
+    beforeEach(()=>{
+        jest.resetAllMocks();
+    });
     afterAll(()=>{
         jest.resetAllMocks();
     });
+
+    describe('function: resolveSessionAndJsoWebTokenUpdate', function(){
+        test('CAN resolve Session And JsoWebToken Update', async function(){
+
+            //Arrange
+            let localeDateNow = new Date();
+            let utcDateNow = helpers.convertLocaleDateToUTCDate(localeDateNow);
+            let expiry1HourInMilliseconds = 1000 * 60 * 60;
+            let localeExpiryDate = sessionService.calculateSessionDateExpiry(localeDateNow, expiry1HourInMilliseconds);
+            let utcExpiryDate = helpers.convertLocaleDateToUTCDate(localeExpiryDate);
+            let mockSessionResult = {
+                SessionId: {value:'123'},
+                UserId: {value:'abc'},
+                SessionToken: {value:'fapoidlkevnaopie'},
+                Expires:{value: 60000},
+                Data:{value: 'this is the data section'},
+                IsActive: {value:1},
+                UTCDateCreated:{value: utcDateNow },
+                UTCDateExpired: {value: utcExpiryDate}
+            }
+            let resultDb = [mockSessionResult]
+            sessionRepository.getSessionFromDatabaseAsync = jest.fn().mockResolvedValueOnce(resultDb);
+            let mockSessionUpdate = {
+                affectedRows: 1
+            }
+            let mockSessionResultUpdate = [mockSessionUpdate]
+            let mockJwtTokenResult = {};
+            jsonWebTokenDomainManager.resolveJsonWebTokenUpdateAsync = jest.fn().mockResolvedValueOnce(mockJwtTokenResult);
+            sessionRepository.updateSessionTableSetColumnValuesWhereAsync = jest.fn().mockResolvedValueOnce(mockSessionResultUpdate);
+            let request = {
+                body:{
+                    session: 'adklerpoivnei'
+                }
+            }
+            //Act
+
+            let resultTest =await sessionDomainManager.resolveSessionAndJsoWebTokenUpdate(request);
+            //Assert
+            expect(jsonWebTokenDomainManager.resolveJsonWebTokenUpdateAsync).toHaveBeenCalledTimes(1);
+            expect(sessionRepository.getSessionFromDatabaseAsync).toHaveBeenCalledTimes(1);
+            expect(sessionRepository.updateSessionTableSetColumnValuesWhereAsync).toHaveBeenCalledTimes(1);
+        });
+    });
+
     describe('function: resolveSessionUpdateAsync', function(){
         test('CAN resolve Session Update', async function(){
 
@@ -58,7 +108,6 @@ describe('File: sessionDomainManager.js', function(){
             expect(sessionRepository.updateSessionTableSetColumnValuesWhereAsync).toHaveBeenCalledTimes(1);
         });
     });
-
 
     describe('function: resolveGetSessionAsync', function(){
         test('CAN resolve Geting Session', async function(){

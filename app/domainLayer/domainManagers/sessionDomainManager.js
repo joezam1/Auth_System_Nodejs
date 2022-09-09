@@ -11,6 +11,10 @@ const helpers = require('../../library/common/helpers.js');
 const encryptDecryptService = require('../../services/encryption/encryptDecryptService.js');
 const jsonWebTokenDomainManager = require('../domainManagers/jsonWebTokenDomainManager.js');
 
+
+
+
+//Test: DONE
 const resolveSessionAndJsoWebTokenUpdate = async function(request){
 
     let updatedSession = await resolveSessionUpdateAsync(request);
@@ -113,8 +117,6 @@ const insertSessionSessionActivityAndTokenTransactionAsync = async function(sess
     }
 }
 
-
-
 const service = Object.freeze({
     resolveSessionAndJsoWebTokenUpdate : resolveSessionAndJsoWebTokenUpdate,
     resolveSessionUpdateAsync: resolveSessionUpdateAsync,
@@ -125,6 +127,7 @@ const service = Object.freeze({
 module.exports = service;
 
 //#REGION Private Functions
+
 async function processSessionUpdateGetSessionFromDatabaseAsync(currentSessionToken){
     let tempUserId = null;
     let tempCookieJson = null;

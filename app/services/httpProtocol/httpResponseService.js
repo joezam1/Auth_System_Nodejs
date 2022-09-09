@@ -37,12 +37,13 @@ const setServerResponseHeaders = function (headersArray) {
 //Test: DONE
 const getResponseResultStatus = function (resultObj, statusCode) {
     let responseObj = getResponseStatusObject(statusCode);
-    //console.log('responseObj', responseObj);
+
     let obj = {
         result: resultObj,
         status: responseObj.code,
         statusText: responseObj.statusText
     }
+     //console.log('getResponseResultStatus-obj', obj);
     return obj;
 }
 //Test: DONE

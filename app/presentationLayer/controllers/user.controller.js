@@ -41,7 +41,7 @@ var userController = function(app){
 
     app.delete('/api/users/logout', async function(request, response){
         console.log('app.delete(/api/users/logout');
-        let userLogoutResult = await userDomainManager.resolveUserLogoutSessionAsync(request);
+        let userLogoutResult = await userDomainManager.resolveUserLogoutSessionAsync( request );
         console.log('userLogoutResult', userLogoutResult);
         httpResponseService.sendHttpResponse(userLogoutResult);
         return;

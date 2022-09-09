@@ -10,7 +10,7 @@ const sessionConfig = require('../../../configuration/authentication/sessionConf
 const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
 const helpers = require('../../library/common/helpers.js');
-
+const authViewModel = require('../../presentationLayer/viewModels/authViewModel.js');
 
 //Test: DONE
 const createUserRoleModel = function (userId, roleId) {
@@ -126,7 +126,7 @@ const getSessionViewModelMappedFromSessionDtoModel = function (sessionDtoModel) 
     currentSessionViewModel.utcDateExpired.fieldValue = sessionDtoModel.UTCDateExpired.value.toString();
     return currentSessionViewModel;
 }
-
+//Test: DONE
 const getSessionDomainModelMappedFromSessionDtoModel = function(sessionDtoModel){
 
     let _sessionModel = new session();
@@ -140,6 +140,22 @@ const getSessionDomainModelMappedFromSessionDtoModel = function(sessionDtoModel)
     return _sessionModel;
 }
 
+//Test: DONE
+const createAuthViewModelFromRequest = function(request){
+
+    let model = {
+        csrfToken : request.headers.x_csrf_token,
+        csrfTokenClient : request.headers.x_csrf_token_client,
+        referer : request.headers.referer,
+        origin: request.headers.origin,
+        userAgent: request.headers['user-agent']
+
+    }
+    let _authViewModel = new authViewModel( model );
+    return _authViewModel;
+}
+
+
 const service = Object.freeze({
 
     createUserRoleModel: createUserRoleModel,
@@ -151,7 +167,8 @@ const service = Object.freeze({
     getUserDomainModelMappedFromUserDtoModel: getUserDomainModelMappedFromUserDtoModel,
     getTokenDomainModelMappedFromTokenDtoModel: getTokenDomainModelMappedFromTokenDtoModel,
     getSessionViewModelMappedFromSessionDtoModel : getSessionViewModelMappedFromSessionDtoModel,
-    getSessionDomainModelMappedFromSessionDtoModel : getSessionDomainModelMappedFromSessionDtoModel
+    getSessionDomainModelMappedFromSessionDtoModel : getSessionDomainModelMappedFromSessionDtoModel,
+    createAuthViewModelFromRequest : createAuthViewModelFromRequest
 });
 
 module.exports = service;

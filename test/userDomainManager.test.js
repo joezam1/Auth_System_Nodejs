@@ -2,12 +2,12 @@ const userDomainManager = require('../app/domainLayer/domainManagers/userDomainM
 const userRegistrationDomainManager = require('../app/domainLayer/domainManagers/userRegistrationDomainManager.js');
 const userLoginDomainManager = require('../app/domainLayer/domainManagers/userLoginDomainManager.js');
 const userLogoutDomainManager = require('../app/domainLayer/domainManagers/userLogoutDomainManager.js');
-
+const antiForgeryTokenService = require('../app/services/csrfProtection/antiForgeryTokenService.js');
 
 jest.mock('../app/domainLayer/domainManagers/userRegistrationDomainManager.js');
 jest.mock('../app/domainLayer/domainManagers/userLoginDomainManager.js');
 jest.mock('../app/domainLayer/domainManagers/userLogoutDomainManager.js');
-
+jest.mock('../app/services/csrfProtection/antiForgeryTokenService.js');
 
 
 
@@ -25,13 +25,24 @@ describe('File: userDomainManager.js', function(){
                 status: 200,
                 statusText:'ok'
             }
-            userRegistrationDomainManager.processUserRegistrationValidationAsync = jest.fn().mockReturnValueOnce(returnValue);
-            userRegistrationDomainManager.processUserRegistrationStorageToDatabaseAsync = jest.fn();
+            userRegistrationDomainManager.processUserRegistrationValidationAsync = jest.fn().mockResolvedValueOnce(returnValue);
+            let mockResult ={
+                csrfToken: 'abcd'
+            }
+            userRegistrationDomainManager.processUserRegistrationStorageToDatabaseAsync = jest.fn().mockResolvedValueOnce(mockResult);
+            antiForgeryTokenService.resolveAntiForgeryTokenValidationAsync = jest.fn().mockResolvedValueOnce('ok');
             //Act
 
             let request={
                 body:{
                     userRole:2
+                },
+                headers:{
+                    x_csrf_token:'adfadfad',
+                    x_csrf_token_client:'fpoisffd',
+                    referer:'abcd',
+                    origin:'abc.com',
+                    'user-agent':'Mozilla Firefox'
                 }
             }
             let resultTest = await userDomainManager.resolveUserRegistrationAsync(request);
@@ -39,6 +50,8 @@ describe('File: userDomainManager.js', function(){
             //Assert
             expect(userRegistrationDomainManager.processUserRegistrationValidationAsync).toHaveBeenCalledTimes(1);
             expect(userRegistrationDomainManager.processUserRegistrationStorageToDatabaseAsync).toHaveBeenCalledTimes(1);
+            expect(antiForgeryTokenService.resolveAntiForgeryTokenValidationAsync).toHaveBeenCalledTimes(1);
+
         });
     });
 
@@ -55,13 +68,28 @@ describe('File: userDomainManager.js', function(){
                 statusText:'ok'
             }
             userLoginDomainManager.processUserLoginValidationAsync = jest.fn().mockReturnValueOnce(returnValue);
-            userLoginDomainManager.processUserLoginStorageToDatabaseAsync = jest.fn();
+            let resultobj = {
+                result:{
+                    csrfToken:{
+                        fieldValue:'xdkad'
+                    }
+                }
+            }
+            userLoginDomainManager.processUserLoginStorageToDatabaseAsync = jest.fn().mockResolvedValueOnce(resultobj);
+            antiForgeryTokenService.resolveAntiForgeryTokenValidationAsync = jest.fn().mockResolvedValueOnce('ok');
 
             let request={
                 body:{
                     geoLocation: 'lat:xxx;long:yyy',
                     deviceAndBrowser:'Mozilla Firefox - Tablet',
                     userAgent: 'Mozilla Firefox'
+                },
+                headers:{
+                    x_csrf_token:'adfadfad',
+                    x_csrf_token_client:'fpoisffd',
+                    referer:'abcd',
+                    origin:'abc.com',
+                    'user-agent':'Mozilla Firefox'
                 }
             }
             //Act
@@ -69,6 +97,7 @@ describe('File: userDomainManager.js', function(){
             //Assert
             expect(userLoginDomainManager.processUserLoginValidationAsync).toHaveBeenCalledTimes(1);
             expect(userLoginDomainManager.processUserLoginStorageToDatabaseAsync).toHaveBeenCalledTimes(1);
+            expect(antiForgeryTokenService.resolveAntiForgeryTokenValidationAsync ).toHaveBeenCalledTimes(1);
         })
     });
 

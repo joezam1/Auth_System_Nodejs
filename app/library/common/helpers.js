@@ -103,6 +103,28 @@ const convertToStringOrStringifyForDataStorage = function(input){
     }
     return '';
 }
+//Test: DONE
+const composeErrorObjectToStringify = function(errorObj){
+    console.log('composeErrorObjectToStringify-errorObj', errorObj);
+    let newErrorObj = Object.assign({}, errorObj);
+    let propertyExist  =  (('toJSON' in Error.prototype));
+    if (!propertyExist){
+        Object.defineProperty(newErrorObj, 'toJSON', {
+            value: function () {
+                var alt = {};
+                Object.getOwnPropertyNames(errorObj).forEach(function (key) {
+                    alt[key] = errorObj[key];
+                }, errorObj);
+                return alt;
+            },
+            configurable: true,
+            writable: true
+        });
+    }
+
+    return newErrorObj;
+}
+
 
 const service= Object.freeze({
     removeLeadingAndTrailingSpaces : removeLeadingAndTrailingSpaces,
@@ -112,7 +134,8 @@ const service= Object.freeze({
     formatStringFirstLetterCapital : formatStringFirstLetterCapital,
     convertToStringOrStringifyForDataStorage : convertToStringOrStringifyForDataStorage,
     composeUTCDateToUTCFormatForDatabase : composeUTCDateToUTCFormatForDatabase,
-    convertLocaleDateToUTCDate : convertLocaleDateToUTCDate
+    convertLocaleDateToUTCDate : convertLocaleDateToUTCDate,
+    composeErrorObjectToStringify : composeErrorObjectToStringify
 });
 
 module.exports = service;

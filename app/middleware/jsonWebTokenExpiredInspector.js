@@ -1,20 +1,18 @@
 const reducerServices = require('../services/inMemoryStorage/reducerService.js');
 const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
 const reducerServiceAction = require('../library/enumerations/reducerServiceAction.js');
-const workerThreadManager = require('../backgroundWorkers/workerThreadManager.js');
-const databaseQueryWorkerFile = '../backgroundWorkers/databaseQueryWorker.js';
+
+const jwtTokenThreadManager = require('../backgroundWorkers/jwtTokenThreadManager.js');
 const jwtConfig = require('../../configuration/authorization/jwtConfig.js');
 const dbContext = require('../dataAccessLayer/mysqlDataStore/context/dbContext.js');
 const expiredJwtEventCode = require('../library/enumerations/expiredJwtEventCode.js');
-
+const backgroundWorker = require('../library/enumerations/backgroundWorker.js');
 
 
 let _context = null;
 let _tokenTableName = null;
 let _tokenDto = null;
 let _columNameUTCDateExpired = null;
-
-
 
 const _stopIntervalId = -1;
 const _dataStoreJwtInspectorProperty = '_jwtInspectorIsActive';
@@ -28,14 +26,14 @@ const jsonWebTokenExpiredInspector = (function(){
         let inspectorStateIsActive = reducerServices.getCurrentStateByProperty(_dataStoreJwtInspectorProperty);
         if(inspectorStateIsActive != true && (inspectorStateIsActive === null || inspectorStateIsActive === false)){
 
-            workerThreadManager.starNewtWorkerThread(databaseQueryWorkerFile ,queryWorkerCallback);
             let intervalId = setInterval(function(){
+                jwtTokenThreadManager.createNewtWorkerThread( jwtExpiredQueryWorkerCallback);
                 let messageObj ={
                     message : 'query',
                     statement : countRowsFromTable(),
                     valuesArray : null
                 }
-                workerThreadManager.sendMessageToWorker(messageObj);
+                jwtTokenThreadManager.sendMessageToWorker(messageObj);
 
             }, jwtConfig.EXPIRED_JWT_TOKEN_CLEANUP_FREQUENCY_IN_MILLISECONDS );
             updateInspectorStateDataStore(true);
@@ -71,7 +69,7 @@ function updateExpiredJwtTokenRemovalIdDataStore(intervalId){
 function updateInspectorStateDataStore(status){
     let payload = {};
     payload[ _dataStoreJwtInspectorProperty] = status;
-    let action = (status === true) ? { type: reducerServiceAction.startJwtInspector } : { type: reducerServiceAction.stopJwtInspector };
+    let action = { type: reducerServiceAction.setStateJwtInspector };
     let result = reducerServices.dispatch(payload, action);
     console.log('reducerService-dispatch-result', result);
     return result;
@@ -85,7 +83,7 @@ function stopTokenExpiredInspector(){
     if(inputCommonInspector.inputExist(inspectorIsActive) && inspectorIsActive ){
         updateInspectorStateDataStore(false);
     }
-    workerThreadManager.terminateActiveWorker();
+    jwtTokenThreadManager.terminateActiveWorker();
 }
 
 function executeRemoveAllExpiredTokensMessage(){
@@ -95,7 +93,7 @@ function executeRemoveAllExpiredTokensMessage(){
         statement : removeExpiredRows,
         valuesArray : null
     }
-    workerThreadManager.sendMessageToWorker(reply);
+    jwtTokenThreadManager.sendMessageToWorker(reply);
 }
 
 function removeAllRowsWhereQuery(){
@@ -108,8 +106,14 @@ function countRowsFromTable(){
 }
 
 
-function queryWorkerCallback(event){
-    console.log('SessionExpiredINSPECTOR-queryWorkerCallback-event', event);
+function jwtExpiredQueryWorkerCallback(event){
+    console.log('jwtExpiredQueryWorkerCallback-event', event);
+    let jwtWorkerName = backgroundWorker[backgroundWorker.jwtTokenQueryWorker] ;
+    if((!inputCommonInspector.inputExist(event.origin)) ||
+        (inputCommonInspector.inputExist(event.origin) && event.origin !== jwtWorkerName)){
+        return;
+    }
+
     if(inputCommonInspector.inputExist(event.data) && Array.isArray(event.data)){
         let _resultEvent = event.data[0];
         let firstItem = {};
