@@ -34,7 +34,7 @@ const sessionThreadManager = (function(){
 
     const terminateActiveWorker = function(){
         console.log('BEGIN-terminateActiveWorker-sessionWorker',sessionWorker);
-        if(inputCommonInspector.inputExist(activeWorker)){
+        if(inputCommonInspector.inputExist(sessionWorker)){
             sessionWorker.terminate();
             sessionWorker = undefined;
         }
