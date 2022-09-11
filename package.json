@@ -24,13 +24,13 @@
     "express-session": "^1.17.3",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
-    "sequelize": "^6.21.0",
-    "sequelize-cli": "^6.4.1",
     "token-validator": "^0.0.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "eslint": "^8.16.0",
-    "jest": "^28.1.0"
+    "jest": "^28.1.0",
+    "sequelize": "^6.21.6",
+    "sequelize-cli": "^6.4.1"
   }
 }

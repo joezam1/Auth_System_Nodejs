@@ -1,13 +1,15 @@
 'use strict';
 module.exports = {
     async up(queryInterface, Sequelize) {
+
+
         await queryInterface.createTable('UserRoles', {
 
             UserRoleId: {
                 type: Sequelize.UUID,
                 allowNull: false,
                 primaryKey: true,
-                defaultValue:Sequelize.UUIDV4
+                defaultValue: Sequelize.UUIDV4
             },
             UserId: {
                 type: Sequelize.UUID,
@@ -34,10 +36,11 @@ module.exports = {
                 type: Sequelize.DATE
             },
             UTCDateUpdated: {
-                allowNull: false,
+                allowNull: true,
                 type: Sequelize.DATE
             }
         });
+
     },
     async down(queryInterface, Sequelize) {
         await queryInterface.dropTable('UserRoles');

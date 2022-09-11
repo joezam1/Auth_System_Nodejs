@@ -71,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
             value: undefined
         },
         Password: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
             value: undefined
         },
@@ -87,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         UTCDateUpdated: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             value: undefined
         }
     }, {

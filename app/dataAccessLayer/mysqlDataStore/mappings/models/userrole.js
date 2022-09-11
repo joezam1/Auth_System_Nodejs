@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         UTCDateUpdated: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             value: undefined
         }
     }, {

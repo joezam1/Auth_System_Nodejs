@@ -35,7 +35,7 @@ module.exports = {
             },
             UTCDateClosed: {
                 type: Sequelize.DATE,
-                allowNull: false
+                allowNull: true
             }
         });
     },

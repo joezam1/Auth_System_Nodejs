@@ -1,7 +1,7 @@
 const mysqlConfig = {
     host:'localhost',
     user:'root',
-    password:'abcd1234',
+    password:'',
     database:'auth_server',
     port:3306,
     waitForConnections:true,

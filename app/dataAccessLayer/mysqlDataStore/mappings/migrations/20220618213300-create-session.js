@@ -40,9 +40,9 @@ module.exports = {
                 type: Sequelize.DATE,
                 allowNull: false
             },
-            UTCDateUpdated: {
+            UTCDateExpired: {
                 type: Sequelize.DATE,
-                allowNull: false
+                allowNull: true
             }
         });
     },

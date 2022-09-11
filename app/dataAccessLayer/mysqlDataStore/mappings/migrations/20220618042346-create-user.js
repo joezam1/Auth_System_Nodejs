@@ -19,6 +19,10 @@ module.exports = {
                 type: Sequelize.STRING,
                 allowNull: false
             },
+            MiddleName: {
+                type: Sequelize.STRING,
+                allowNull: true
+            },
             LastName: {
                 type: Sequelize.STRING,
                 allowNull: false
@@ -44,7 +48,7 @@ module.exports = {
                 type: Sequelize.DATE
             },
             UTCDateUpdated: {
-                allowNull: false,
+                allowNull: true,
                 type: Sequelize.DATE
             }
         });
