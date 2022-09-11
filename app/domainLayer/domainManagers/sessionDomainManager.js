@@ -10,8 +10,8 @@ const tokenRepository = require('../../dataAccessLayer/repositories/tokenReposit
 const helpers = require('../../library/common/helpers.js');
 const encryptDecryptService = require('../../services/encryption/encryptDecryptService.js');
 const jsonWebTokenDomainManager = require('../domainManagers/jsonWebTokenDomainManager.js');
-
-
+const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
+const monitorService = require('../../services/monitoring/monitorService.js');
 
 
 //Test: DONE
@@ -33,7 +33,7 @@ const resolveSessionUpdateAsync = async function (request) {
 
     let _currentSessionToken = request.body.session;
     let sessionInfo = await processSessionUpdateGetSessionFromDatabaseAsync(_currentSessionToken);
-    console.log('resolveSessionUpdateAsync-NEW-sessionInfo', sessionInfo);
+    monitorService.capture('resolveSessionUpdateAsync-NEW-sessionInfo', sessionInfo);
     if(sessionInfo.status === httpResponseStatus._200ok){
         let sessionDtoModel = sessionInfo.result;
         if(sessionService.sessionIsExpired(sessionDtoModel.UTCDateExpired.value)){
@@ -54,7 +54,7 @@ const resolveGetSessionAsync = async function(request){
     let tempCookieJson = null;
     let tempSessionModel = domainManagerHelper.createSessionModel(tempUserId, currentSessionToken, tempCookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
     let sessionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(tempSessionModel);
-    console.log('sesionsDtoModelResultArray', sessionsDtoModelResultArray);
+    monitorService.capture('sesionsDtoModelResultArray', sessionsDtoModelResultArray);
 
     if (sessionsDtoModelResultArray instanceof Error) {
         return httpResponseService.getResponseResultStatus(sessionsDtoModelResultArray, httpResponseStatus._400badRequest);
@@ -111,7 +111,7 @@ const insertSessionSessionActivityAndTokenTransactionAsync = async function(sess
 
     }
     catch(error){
-        console.log('insertSessionSessionActivityAndTokenTransactionAsync: error ', error)
+        monitorService.capture('insertSessionSessionActivityAndTokenTransactionAsync: error ', error)
         dbAction.rollbackTransactionSingleConnection(singleConnection);
         return httpResponseService.getResponseResultStatus(error , httpResponseStatus._400badRequest );
     }
@@ -133,7 +133,7 @@ async function processSessionUpdateGetSessionFromDatabaseAsync(currentSessionTok
     let tempCookieJson = null;
     let tempSessionModel = domainManagerHelper.createSessionModel(tempUserId, currentSessionToken, tempCookieJson, sessionConfig.SESSION_EXPIRATION_TIME_IN_MILLISECONDS);
     let sesionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(tempSessionModel);
-    console.log('sesionsDtoModelResultArray', sesionsDtoModelResultArray);
+    monitorService.capture('sesionsDtoModelResultArray', sesionsDtoModelResultArray);
     if (sesionsDtoModelResultArray instanceof Error) {
         return httpResponseService.getResponseResultStatus(sesionsDtoModelResultArray, httpResponseStatus._400badRequest);
     }
@@ -156,7 +156,7 @@ async function processSessionUpdateSaveNewTokenToDatabaseAsync(currentSessionDto
     if (sessionsResultArray instanceof Error) {
         return httpResponseService.getResponseResultStatus(sessionsResultArray, httpResponseStatus._400badRequest);
     }
-    else if(sessionsResultArray.length>0 && sessionsResultArray[0].affectedRows ===1){
+    else if(inputCommonInspector.inputExist(sessionsResultArray) && sessionsResultArray.length>0 && sessionsResultArray[0].affectedRows ===1){
 
         let newSessionViewModel = domainManagerHelper.getSessionViewModelMappedFromSessionDtoModel(currentSessionDtoModel);
         newSessionViewModel.sessionToken.fieldValue = newSessionToken;

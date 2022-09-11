@@ -8,6 +8,7 @@ const sessionController = require('./app/presentationLayer/controllers/session.c
 const jsonWebTokenController = require('./app/presentationLayer/controllers/jsonWebToken.controller.js');
 const homeController = require('./app/presentationLayer/controllers/home.controller.js');
 
+
 console.log(`server-NODE_ENV=${envConfig.NODE_ENV}`);
 
 const session = require('express-session');

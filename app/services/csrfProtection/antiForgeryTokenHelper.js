@@ -3,6 +3,10 @@ const reducerServiceAction = require('../../library/enumerations/reducerServiceA
 const reducerService = require('../inMemoryStorage/reducerService.js');
 const antiForgeryTokenConfig = require('../../../configuration/csrfProtection/antiForgeryTokenConfig.js');
 const inputCommonInspector = require('../validation/inputCommonInspector.js');
+const monitorService = require('../monitoring/monitorService.js');
+
+
+
 
 const DATASTORAGE_PROPERTY = 'antiforgeryTokens';
 
@@ -23,7 +27,7 @@ const saveCsrfTokenDataToStorage = function(referer ,origin , userAgent, csrfTok
 
     let action = { type: reducerServiceAction.addDataToAntiforgeryTokensArray };
     let result = reducerService.dispatch(payload, action);
-    console.log('reducerService-dispatch-result', result);
+    monitorService.capture('reducerService-dispatch-result', result);
     return result;
 }
 //Test: DONE
@@ -62,7 +66,7 @@ const updateCsrfTokenDataStorage = function(index, selectedToken){
     }
     let action = { type: reducerServiceAction.updateDataInAntiforgeryTokensArray };
     let result = reducerService.dispatch(payload, action);
-    console.log('reducerService-dispatch-result', result);
+    monitorService.capture('reducerService-dispatch-result', result);
     return result;
 }
 //Test: DONE
@@ -72,7 +76,7 @@ const removeCsrfTokenFromDataStorage = function(csrfToken){
     }
     let action = { type: reducerServiceAction.removeDataFromAntiforgeryTokensArray };
     let result = reducerService.dispatch(payload, action);
-    console.log('reducerService-dispatch-result', result);
+    monitorService.capture('reducerService-dispatch-result', result);
     return result;
 }
 

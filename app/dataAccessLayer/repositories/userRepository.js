@@ -6,6 +6,9 @@ const userRepositoryHelper = require('./userRepositoryHelper.js');
 const roleRepository = require('../repositories/roleRepository.js');
 const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
 const userRoleEnum = require('../../library/enumerations/userRole.js');
+const monitorService = require('../../services/monitoring/monitorService.js');
+
+
 
 
 let context = null;
@@ -14,8 +17,8 @@ let userRoleTableName = null;
 
 //Test: DONE
 const getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
-    //console.log('context', context);
-    //console.log('userTableName', userTableName);
+    monitorService.capture('context', context);
+    monitorService.capture('userTableName', userTableName);
     let userDtoModel = userRepositoryHelper.getUserDtoModelMappedFromDomain (userDomainModel);
     let propertiesArray = [userDtoModel.Username, userDtoModel.Email];
     let statementResult = await repositoryManager.resolveStatementAsync(propertiesArray, genericQueryStatement.selectWherePropertyEqualsAnd, userTableName);
@@ -30,8 +33,8 @@ const getUserByUsernameAndEmailDataAsync = async function (userDomainModel) {
 //Test: DONE
 const getAllUserRolesByUserIdAsync = async function (userDomainModel) {
 
-    //console.log('context', context);
-    //console.log('userRoleTableName', userRoleTableName);
+    monitorService.capture('context', context);
+    monitorService.capture('userRoleTableName', userRoleTableName);
     let userDtoModel = userRepositoryHelper.getUserDtoModelMappedFromDomain(userDomainModel);
     let propertiesArray = [userDtoModel.UserId];
     let statementResult = await repositoryManager.resolveStatementAsync(propertiesArray, genericQueryStatement.selectWherePropertyEqualsAnd, userRoleTableName);
@@ -72,7 +75,7 @@ const convertAllUserRolesFromDatabaseToUserRoleEnumsAsync = async function (allU
 
 //Test: DONE
 const insertUserIntoTableTransactionAsync = async function (connectionPool, userDomainModel) {
-    //console.log('userDomainModel', userDomainModel);
+    monitorService.capture('userDomainModel', userDomainModel);
     let userDtoModel = userRepositoryHelper.getUserDtoModelMappedFromDomain(userDomainModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(userDtoModel);
     let statementResult = await repositoryManager.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, userTableName, connectionPool);

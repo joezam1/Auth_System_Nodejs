@@ -1,5 +1,6 @@
 const inputCommonInspector = require('../../../services/validation/inputCommonInspector.js');
 const dbConnection = require('./dbConnection.js');
+const monitorService = require('../../../services/monitoring/monitorService.js');
 
 let executeStatementAsync = async function(statement, valuesArray = null){
     try{
@@ -63,7 +64,7 @@ let executeSingleConnectionStatementAsync = async function(connectionPool, state
         return emptyResult;
     }
     catch(err){
-        console.log('err', err);
+        monitorService.capture('err', err);
         return new Error(err);
     }
 }

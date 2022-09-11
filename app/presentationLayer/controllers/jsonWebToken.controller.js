@@ -1,5 +1,8 @@
 const jsonWebTokenDomainManager = require('../../domainLayer/domainManagers/jsonWebTokenDomainManager.js');
 const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
+const monitorService = require('../../services/monitoring/monitorService.js');
+
+
 
 
 let jsonWebTokenController = function(app){
@@ -10,9 +13,9 @@ let jsonWebTokenController = function(app){
     //READ
     //UPDATE
     app.put('/api/jsonwebtokens/update', async function(request, response){
-        console.log('jsonwebtokens-update-request');
+        monitorService.capture('jsonwebtokens-update-request');
         var tokenResult = await jsonWebTokenDomainManager.resolveJsonWebTokenUpdateAsync(request);
-        console.log('app.put(/api/jsonwebtokens/update-RESPONSE-tokenResult', tokenResult);
+        monitorService.capture('app.put(/api/jsonwebtokens/update-RESPONSE-tokenResult', tokenResult);
         httpResponseService.sendHttpResponse(tokenResult);
         return;
     });

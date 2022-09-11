@@ -3,7 +3,7 @@ const helpers = require('../../library/common/helpers.js');
 const repositoryManager = require('../repositories/repositoryManager.js');
 const tokenRepositoryHelper = require('../repositories/tokenRepositoryHelper.js');
 const genericQueryStatement = require('../../library/enumerations/genericQueryStatement.js');
-
+const monitorService = require('../../services/monitoring/monitorService.js');
 
 let context = '';
 let tokenTableName = '';
@@ -11,7 +11,7 @@ let tokenTableName = '';
 
 //Test: DONE
 const insertTokenIntoTableTransactionAsync = async function (connectionPool, tokenDomainModel , utcDateExpired) {
-    //console.log('tokenDomainModel', tokenDomainModel);
+    monitorService.capture('tokenDomainModel', tokenDomainModel);
     let tokenDtoModel = tokenRepositoryHelper.getTokenDtoModelMappedFromDomain (tokenDomainModel);
     tokenDtoModel.UTCDateExpired.value = utcDateExpired;
 
@@ -22,8 +22,8 @@ const insertTokenIntoTableTransactionAsync = async function (connectionPool, tok
 }
 //Test: DONE
 const getTokensFromDatabaseAsync = async function(tokenDomainModel){
-    //console.log('context', context);
-    //console.log('tokenTableName', tokenTableName);
+    monitorService.capture('context', context);
+    monitorService.capture('tokenTableName', tokenTableName);
     let tokenDtoModel = tokenRepositoryHelper.getTokenDtoModelMappedFromDomain(tokenDomainModel);
     let propertiesArray = [tokenDtoModel.Token, tokenDtoModel.Type];
     let statementResult = await repositoryManager.resolveStatementAsync(propertiesArray,genericQueryStatement.selectWherePropertyEqualsAnd, tokenTableName);

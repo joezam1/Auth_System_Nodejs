@@ -1,7 +1,7 @@
 const helpers = require('../../library/common/helpers.js');
 const sessionService = require('../../services/authentication/sessionService.js');
 const dbContext = require('../mysqlDataStore/context/dbContext.js');
-
+const monitorService = require('../../services/monitoring/monitorService.js');
 
 let context = null;
 
@@ -45,9 +45,9 @@ const getSessionsDtoModelMappedFromDatabase = function(databaseResultArray) {
     let allSessionsDtoModels = [];
     for (let a = 0; a < databaseResultArray.length; a++) {
         let sessionDatabase = databaseResultArray[a];
-        //console.log('sessionDatabase', sessionDatabase);
+        monitorService.capture('sessionDatabase', sessionDatabase);
         let _sessionDtoModel =new context.sessionDtoModel();
-        //console.log('_sessionDtoModel', _sessionDtoModel);
+        monitorService.capture('_sessionDtoModel', _sessionDtoModel);
 
         _sessionDtoModel.rawAttributes.SessionId.value = sessionDatabase.SessionId;
         _sessionDtoModel.rawAttributes.UserId.value = sessionDatabase.UserId;
@@ -106,9 +106,9 @@ const getSessionActitiviesDtoModelMappedFromDatabase = function(databaseResultAr
     let allSessionActivitiesDtoModels = [];
     for (let a = 0; a < databaseResultArray.length; a++) {
         let sessionActivityDatabase = databaseResultArray[a];
-        //console.log('sessionActivityDatabase', sessionActivityDatabase);
+        monitorService.capture('sessionActivityDatabase', sessionActivityDatabase);
         let _sessionActivityDtoModel = new context.sessionActivityDtoModel();
-        //console.log('_sessionActivityDtoModel', _sessionActivityDtoModel);
+        monitorService.capture('_sessionActivityDtoModel', _sessionActivityDtoModel);
 
         _sessionActivityDtoModel.rawAttributes.SessionActivityId.value = sessionActivityDatabase.SessionActivityId;
         _sessionActivityDtoModel.rawAttributes.UserId.value = sessionActivityDatabase.UserId;

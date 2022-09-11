@@ -1,5 +1,8 @@
 const sessionDomainManager = require('../../domainLayer/domainManagers/sessionDomainManager.js');
 const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
+const monitorService = require('../../services/monitoring/monitorService.js');
+
+
 
 let sessionController = function(app){
 
@@ -7,9 +10,9 @@ let sessionController = function(app){
     //CREATE
     //READ
     app.get('/api/sessions/sessiontoken', async function(request, response, next){
-        console.log('api/sessions/sessiontoken');
+        monitorService.capture('api/sessions/sessiontoken');
         var sessionResult = await sessionDomainManager.resolveGetSessionAsync(request);
-        console.log('sessionResult', sessionResult);
+        monitorService.capture('sessionResult', sessionResult);
         httpResponseService.sendHttpResponse(sessionResult);
         return;
 
@@ -17,9 +20,9 @@ let sessionController = function(app){
 
     //UPDATE
     app.put('/api/sessions/update', async function(request, response){
-        console.log(' app.put(/api/sessions/updatesession-REQUEST-update-');
+        monitorService.capture(' app.put(/api/sessions/updatesession-REQUEST-update-');
         var sessionResult = await sessionDomainManager.resolveSessionAndJsoWebTokenUpdate(request);
-        console.log(' app.put(/api/sessions/update-RESPONSE-sessionResult', sessionResult);
+        monitorService.capture(' app.put(/api/sessions/update-RESPONSE-sessionResult', sessionResult);
         httpResponseService.sendHttpResponse(sessionResult);
         return;
     });

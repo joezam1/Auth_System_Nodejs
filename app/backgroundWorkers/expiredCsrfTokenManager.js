@@ -2,7 +2,7 @@ const inputCommonInspector = require('../services/validation/inputCommonInspecto
 const { Worker } = require('worker_threads');
 const path = require('path');
 const expiredCsrfTokenDeletionWorker = './expiredCsrfTokenDeletionWorker.js';
-
+const monitorService = require('../services/monitoring/monitorService.js');
 
 
 const expiredCsrfTokenManager = (function(){
@@ -11,8 +11,8 @@ const expiredCsrfTokenManager = (function(){
 
         if(inputCommonInspector.inputExist(activeWorker)){ return; }
 
-        console.log('__dirname', __dirname);
-        console.log('workerFileName', expiredCsrfTokenDeletionWorker);
+        monitorService.capture('__dirname', __dirname);
+        monitorService.capture('workerFileName', expiredCsrfTokenDeletionWorker);
         let workerScript = path.join(__dirname, expiredCsrfTokenDeletionWorker);
         activeWorker = new Worker(workerScript);
         let event = { message:'open' }
@@ -20,7 +20,7 @@ const expiredCsrfTokenManager = (function(){
 
         if(inputCommonInspector.objectIsValid(activeWorker)){
             activeWorker.on('message', function(event){
-                console.log(`Manager-For-Worker-onmessage:MESSAGE RECEIVED: `,event);
+                monitorService.capture(`Manager-For-Worker-onmessage:MESSAGE RECEIVED: `,event);
                 if(inputCommonInspector.inputExist(inspectorCallbackFunction)){
                     inspectorCallbackFunction(event);
                 }
@@ -29,19 +29,19 @@ const expiredCsrfTokenManager = (function(){
     }
 
     const sendMessageToWorker = function(messageObj){
-        console.log('messageObj', messageObj);
+        monitorService.capture('messageObj', messageObj);
         if(inputCommonInspector.objectIsValid(activeWorker)){
             activeWorker.postMessage(messageObj);
         }
     }
 
     const terminateActiveWorker = function(){
-        console.log('BEGIN-terminateActiveWorker-activeWorker',activeWorker);
+        monitorService.capture('BEGIN-terminateActiveWorker-activeWorker',activeWorker);
         if(inputCommonInspector.inputExist(activeWorker)){
             activeWorker.terminate();
             activeWorker = undefined;
         }
-        console.log('END-terminateActiveWorker-activeWorker',activeWorker);
+        monitorService.capture('END-terminateActiveWorker-activeWorker',activeWorker);
     }
 
     return Object.freeze({

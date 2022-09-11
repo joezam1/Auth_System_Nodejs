@@ -1,5 +1,10 @@
 const homeDomainManager = require('../../domainLayer/domainManagers/homeDomainManager.js');
 const httpResponseService = require('../../services/httpProtocol/httpResponseService.js');
+const monitorService = require('../../services/monitoring/monitorService.js');
+
+
+
+
 
 let homeController = function(app){
 
@@ -7,9 +12,9 @@ let homeController = function(app){
     //CREATE
     //READ
     app.get('/api/home/resources', async function(request, response){
-        console.log('app.get(/home/resources');
+        monitorService.capture('app.get(/home/resources');
         var resourcesResult = await homeDomainManager.resolveGetResourcesAsync(request);
-        console.log('resourcesResult', resourcesResult);
+        monitorService.capture('resourcesResult', resourcesResult);
         httpResponseService.sendHttpResponse(resourcesResult);
         return;
 

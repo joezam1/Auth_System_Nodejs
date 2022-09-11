@@ -16,6 +16,8 @@ const roleRepositoryHelper = require('../../dataAccessLayer/repositories/roleRep
 const encryptionService = require('../../services/encryption/encryptionService.js');
 const notificationService = require('../../services/notifications/notificationService.js');
 const userModel = require('../domainModels/user');
+const monitorService = require('../../services/monitoring/monitorService.js');
+
 
 
 //Test: DONE
@@ -121,7 +123,7 @@ async function createAndRegisterUserTransactionAsync(userInfo, selectedRoleObj) 
         return httpResponseService.getResponseResultStatus(registerCreated, httpResponseStatus._201created);
     }
     catch (error) {
-        console.log('createAndRegisterUserTransactionAsync: error ', error)
+        monitorService.capture('createAndRegisterUserTransactionAsync: error ', error)
         dbAction.rollbackTransactionSingleConnection(singleConnection);
         return httpResponseService.getResponseResultStatus(error, httpResponseStatus._400badRequest);
     }

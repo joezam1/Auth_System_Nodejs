@@ -1,7 +1,8 @@
 const jsDataType = require('../stringLiterals/jsDataType.js');
 const inputTypeInspector = require('../../services/validation/inputTypeInspector.js');
 const inputCommonInspector = require('../../services/validation/inputCommonInspector.js');
-const encryptionService = require('../../services/encryption/encryptionService.js');
+const monitorService = require('../../services/monitoring/monitorService.js');
+
 
 
 //Test: DONE
@@ -105,7 +106,7 @@ const convertToStringOrStringifyForDataStorage = function(input){
 }
 //Test: DONE
 const composeErrorObjectToStringify = function(errorObj){
-    console.log('composeErrorObjectToStringify-errorObj', errorObj);
+    monitorService.capture('composeErrorObjectToStringify-errorObj', errorObj);
     let newErrorObj = Object.assign({}, errorObj);
     let propertyExist  =  (('toJSON' in Error.prototype));
     if (!propertyExist){

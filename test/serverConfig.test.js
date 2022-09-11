@@ -1,9 +1,9 @@
 const serverConfig = require('../configuration/server/serverConfig.js');
 const notificationService = require('../app/services/notifications/notificationService.js');
-
+const monitorService = require('../app/services/monitoring/monitorService.js');
 
 describe('FILE: ServerConfig',()=>{
-    console.log('serverConfig', serverConfig);
+    monitorService.capture('serverConfig', serverConfig);
 
     test('HTTP Port Exist and has a number', ()=>{
         var httpPort = serverConfig.configuration.HTTPS_PORT;

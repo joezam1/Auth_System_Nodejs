@@ -1,6 +1,9 @@
 const queryFactory = require('../mysqlDataStore/preparedStatements/queryFactory.js');
 const valueSanitizer = require('../mysqlDataStore/preparedStatements/valueSanitizer.js');
 const dbAction = require('../mysqlDataStore/context/dbAction.js');
+const monitorService = require('../../services/monitoring/monitorService.js');
+
+
 
 //Test: DONE
 const resolveStatementAsync = async function(propertiesArray , genericQueryStatementsEnum , tableName){
@@ -36,8 +39,8 @@ const resolveConditionalWhereEqualsStatementAsync = async function(propertiesArr
         return statementResult;
     }catch(error){
 
-        console.log('Error while executing function resolveConditionalWhereEqualsStatementAsync()- Error:');
-        console.log(error);
+        monitorService.capture('Error while executing function resolveConditionalWhereEqualsStatementAsync()- Error:');
+        monitorService.capture(error);
         return new Error(error);
     }
 }

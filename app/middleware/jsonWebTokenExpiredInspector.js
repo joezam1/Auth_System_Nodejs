@@ -7,7 +7,7 @@ const jwtConfig = require('../../configuration/authorization/jwtConfig.js');
 const dbContext = require('../dataAccessLayer/mysqlDataStore/context/dbContext.js');
 const expiredJwtEventCode = require('../library/enumerations/expiredJwtEventCode.js');
 const backgroundWorker = require('../library/enumerations/backgroundWorker.js');
-
+const monitorService = require('../services/monitoring/monitorService.js');
 
 let _context = null;
 let _tokenTableName = null;
@@ -62,7 +62,7 @@ function updateExpiredJwtTokenRemovalIdDataStore(intervalId){
     payload[_dataStoreJwtCleanupIntervalId] = intervalId ;
     let action = { type: reducerServiceAction.updateJwtRemovalIntervalId };
     let result = reducerServices.dispatch(payload, action);
-    console.log('reducerService-dispatch-result', result);
+    monitorService.capture('reducerService-dispatch-result', result);
     return result;
 }
 
@@ -71,7 +71,7 @@ function updateInspectorStateDataStore(status){
     payload[ _dataStoreJwtInspectorProperty] = status;
     let action = { type: reducerServiceAction.setStateJwtInspector };
     let result = reducerServices.dispatch(payload, action);
-    console.log('reducerService-dispatch-result', result);
+    monitorService.capture('reducerService-dispatch-result', result);
     return result;
 }
 
@@ -107,7 +107,7 @@ function countRowsFromTable(){
 
 
 function jwtExpiredQueryWorkerCallback(event){
-    console.log('jwtExpiredQueryWorkerCallback-event', event);
+    monitorService.capture('jwtExpiredQueryWorkerCallback-event', event);
     let jwtWorkerName = backgroundWorker[backgroundWorker.jwtTokenQueryWorker] ;
     if((!inputCommonInspector.inputExist(event.origin)) ||
         (inputCommonInspector.inputExist(event.origin) && event.origin !== jwtWorkerName)){
@@ -142,7 +142,7 @@ function getEventCode(resultEventObj){
         count:null
     }
 
-    console.log('resultEventObj', resultEventObj);
+    monitorService.capture('resultEventObj', resultEventObj);
     for(let key in resultEventObj){
         if(resultEventObj.hasOwnProperty(key)){
             if(key === 'COUNT(*)' &&  key.toLowerCase().includes('count')){

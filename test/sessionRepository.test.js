@@ -4,6 +4,9 @@ const sessionActivity = require('../app/domainLayer/domainModels/sessionActivity
 const repositoryManager = require('../app/dataAccessLayer/repositories/repositoryManager.js');
 const domainManagerHelper = require('../app/domainLayer/domainManagers/domainManagerHelper.js');
 const helpers = require('../app/library/common/helpers.js');
+const monitorService = require('../app/services/monitoring/monitorService.js');
+
+
 
 jest.mock('../app/dataAccessLayer/repositories/repositoryManager.js');
 
@@ -35,7 +38,7 @@ describe('File: sessionRepository.js',function(){
             //Act
 
             let sessionResult = await sessionRepository.insertSessionIntoTableTransactionAsync(mockConnectionPool, sessionDomain);
-            console.log('sessionResult',sessionResult)
+            monitorService.capture('sessionResult',sessionResult)
             //Assert
             expect(sessionResult.statementResult).toEqual(resultDatabaseMock);
             expect(repositoryManager.resolveSingleConnectionStatementAsync).toBeCalledTimes(1);
@@ -129,7 +132,7 @@ describe('File: sessionRepository.js',function(){
             //Act
 
             let sessionResult = await sessionRepository.deleteSessionFromDatabaseAsync(sessionDomain);
-            console.log('sessionResult',sessionResult)
+            monitorService.capture('sessionResult',sessionResult)
             //Assert
             expect(sessionResult).toEqual(resultDatabaseMock);
             expect(repositoryManager.resolveStatementAsync).toBeCalledTimes(1);
@@ -156,7 +159,7 @@ describe('File: sessionRepository.js',function(){
             //Act
 
             let sessionResult = await sessionRepository.updateSessionTableSetColumnValuesWhereAsync(sessionDomain);
-            console.log('sessionResult',sessionResult)
+            monitorService.capture('sessionResult',sessionResult)
             //Assert
             expect(sessionResult).toEqual(resultDatabaseMock);
             expect(repositoryManager.resolveConditionalWhereEqualsStatementAsync).toBeCalledTimes(1);

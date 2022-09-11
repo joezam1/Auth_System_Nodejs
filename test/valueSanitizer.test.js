@@ -1,6 +1,6 @@
 const dbContext = require('../app/dataAccessLayer/mysqlDataStore/context/dbContext.js');
 const valueSanitizer = require('../app/dataAccessLayer/mysqlDataStore/preparedStatements/valueSanitizer.js');
-
+const monitorService = require('../app/services/monitoring/monitorService.js');
 
 
 describe('File: valueSanitizer.js',function(){
@@ -10,7 +10,7 @@ describe('File: valueSanitizer.js',function(){
             let dateNowUtc = dateNow.toISOString();
             let context = dbContext.getSequelizeContext();
             let _userDtoModel = new context.userDtoModel();
-            console.log('_userDtoModel', _userDtoModel);
+            monitorService.capture('_userDtoModel', _userDtoModel);
             _userDtoModel.rawAttributes.UserId.value = 'asdfaklsdfpoiuere'
             _userDtoModel.rawAttributes.UserId.type.key =  _userDtoModel.rawAttributes.UserId.type.key.toString();
             _userDtoModel.rawAttributes.FirstName.value = 'Thomas'
@@ -56,7 +56,7 @@ describe('File: valueSanitizer.js',function(){
         test('Dangerous Characters are removed', function(){
             //Arrange
             let userAttributes = getUserAttributes();
-            console.log('userAttributes', userAttributes);
+            monitorService.capture('userAttributes', userAttributes);
             userAttributes.FirstName.value = "Marcus%%%^^''''";
             userAttributes.LastName.value = "Jones'''''^^$$%%####";
             let attributesArray = [ userAttributes.FirstName, userAttributes.MiddleName, userAttributes.LastName];

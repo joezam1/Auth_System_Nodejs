@@ -8,6 +8,9 @@ const jwtTokenService = require('../../services/authorization/jwtTokenService.js
 const authViewModel = require('../../presentationLayer/viewModels/authViewModel.js');
 const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
+const monitorService = require('../../services/monitoring/monitorService.js');
+
+
 
 
 //Test: DONE
@@ -19,12 +22,12 @@ const resolveJsonWebTokenUpdateAsync = async function (request) {
     let _currentRefreshToken = request.headers.refresh_token;
 
     let tokenInfo = await processJWTUpdateGetTokenFromDatabaseAsync(_currentRefreshToken);
-    console.log('resolveJsonWebTokenUpdateAsync-NEW token-info', tokenInfo);
+    monitorService.capture('resolveJsonWebTokenUpdateAsync-NEW token-info', tokenInfo);
     if(tokenInfo.status === httpResponseStatus._200ok){
         let refreshTokenDtoModelFound = tokenInfo.result;
-        console.log('refreshTokenDtoModelFound', refreshTokenDtoModelFound);
+        monitorService.capture('refreshTokenDtoModelFound', refreshTokenDtoModelFound);
         if(jwtTokenService.tokenIsExpired(refreshTokenDtoModelFound.UTCDateExpired.value)){
-            console.log('REFRESH-TOKEN-Is EXPIRED-ok')
+            monitorService.capture('REFRESH-TOKEN-Is EXPIRED-ok')
             let resultTokenRemovedFromDb = await resolveRemoveTokenFromDatabaseAsync(refreshTokenDtoModelFound);
             return resultTokenRemovedFromDb;
         }
@@ -51,7 +54,7 @@ async function processJWTUpdateGetTokenFromDatabaseAsync(currentRefreshToken){
     let tempPayload = null;
     let tempTokenModel = domainManagerHelper.createTokenModel(tempUserId,currentRefreshToken,tokenType.jwtRefreshToken,tempPayload);
     let tokensDtoModelResultArray = await tokenRepository.getTokensFromDatabaseAsync(tempTokenModel);
-    console.log('tokensDtoModelResultArray', tokensDtoModelResultArray);
+    monitorService.capture('tokensDtoModelResultArray', tokensDtoModelResultArray);
     if (tokensDtoModelResultArray instanceof Error) {
         return httpResponseService.getResponseResultStatus(tokensDtoModelResultArray, httpResponseStatus._400badRequest);
     }

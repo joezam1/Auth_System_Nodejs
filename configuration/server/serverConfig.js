@@ -1,6 +1,8 @@
 const envConfig = require('../../configuration/environment/envConfig.js');
 const environmentDescription = require('../environment/environmentDescription.js');
 const notificationService = require('../../app/services/notifications/notificationService.js');
+const monitorService = require('../../app/services/monitoring/monitorService.js');
+
 
 const whitelistRemoteOrigins = ['http://localhost:8080']
 
@@ -23,8 +25,8 @@ module.exports = service;
 //#REGION Private functions
 function resolveOriginWhiteListing(origin, callback){
     var environment = envConfig.NODE_ENV;
-    console.log('resolveOriginWhiteListing-origin',origin);
-    console.log('resolveOriginWhiteListing-environment', environment);
+    monitorService.capture('resolve Origin WhiteListing-origin',origin);
+    monitorService.capture('resolve Origin WhiteListing-environment', environment);
     switch(environment){
 
         case environmentDescription.DEVELOPMENT:

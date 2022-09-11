@@ -2,9 +2,8 @@ const dbContext = require('../mysqlDataStore/context/dbContext.js');
 const helpers = require('../../library/common/helpers.js');
 const repositoryManager = require('./repositoryManager.js');
 const genericQueryStatement = require('../../library/enumerations/genericQueryStatement.js');
-
 const sessionRepositoryHelper = require('../repositories/sessionRepositoryHelper.js');
-
+const monitorService = require('../../services/monitoring/monitorService.js');
 
 
 let context = null;
@@ -14,15 +13,15 @@ let sessionActivityTableName = null;
 
 //Test: DONE
 let insertSessionIntoTableTransactionAsync = async function ( connectionPool, sessionDomainModel ) {
-    //console.log('context', context);
-    //console.log('sessionTableName', sessionTableName);
-    //console.log('sessionDomainModel', sessionDomainModel);
+    monitorService.capture('context', context);
+    monitorService.capture('sessionTableName', sessionTableName);
+    monitorService.capture('sessionDomainModel', sessionDomainModel);
     let sessionDtoModel = sessionRepositoryHelper.getSessionDtoModelMappedFromDomain(sessionDomainModel);
-    //console.log('sessionDtoModel: ', sessionDtoModel);
+    monitorService.capture('sessionDtoModel: ', sessionDtoModel);
     let propertiesArray = helpers.createPropertiesArrayFromObjectProperties(sessionDtoModel);
 
     let statementResult = await repositoryManager.resolveSingleConnectionStatementAsync(propertiesArray, genericQueryStatement.insertIntoTableValues, sessionTableName, connectionPool);
-    console.log('statementResult', statementResult);
+    monitorService.capture('statementResult', statementResult);
     return Object.freeze({
         statementResult : statementResult,
         sessionDtoModel : sessionDtoModel
@@ -30,7 +29,7 @@ let insertSessionIntoTableTransactionAsync = async function ( connectionPool, se
 }
 //Test: DONE
 let insertSessionActivityIntoTableTransacionAsync = async function(connectionPool,  sessionActivityDomainModel , sessionLoginDate){
-    console.log('sessionActivityDomainModel', sessionActivityDomainModel);
+    monitorService.capture('sessionActivityDomainModel', sessionActivityDomainModel);
     let sessionActivityDtoModel = sessionRepositoryHelper.getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel);
     sessionActivityDtoModel.UTCLoginDate.value = sessionLoginDate;
     sessionActivityDtoModel.UTCLogoutDate.value = null;
@@ -43,8 +42,8 @@ let insertSessionActivityIntoTableTransacionAsync = async function(connectionPoo
 
 //Test: DONE
 let getSessionFromDatabaseAsync = async function(sessionDomainModel){
-    //console.log('context', context);
-    //console.log('sessionTableName', sessionTableName);
+    //monitorService.capture('context', context);
+    //monitorService.capture('sessionTableName', sessionTableName);
     let sessionDtoModel = sessionRepositoryHelper.getSessionDtoModelMappedFromDomain(sessionDomainModel);
     let propertiesArray = [sessionDtoModel.SessionToken];
 
@@ -78,8 +77,8 @@ let updateSessionTableSetColumnValuesWhereAsync = async function(sessionDomainMo
 }
 //Test: DONE
 let getSessionActivitiesFromDatabaseAsync = async function(sessionActivityDomainModel , utcDateCreatedDbFormatted){
-    //console.log('context', context);
-    //console.log('sessionActivityTableName', sessionActivityTableName);
+    //monitorService.capture('context', context);
+    //monitorService.capture('sessionActivityTableName', sessionActivityTableName);
     let sessionActivityDtoModel = sessionRepositoryHelper.getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel);
     sessionActivityDtoModel.UTCLoginDate.value = utcDateCreatedDbFormatted
     sessionActivityDtoModel.UTCLogoutDate.value = null;

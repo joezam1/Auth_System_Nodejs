@@ -1,6 +1,8 @@
 const queryFactory = require('../app/dataAccessLayer/mysqlDataStore/preparedStatements/queryFactory.js');
 const dbContext = require('../app/dataAccessLayer/mysqlDataStore/context/dbContext.js');
 const genericQueryStatement = require('../app/library/enumerations/genericQueryStatement.js');
+const monitorService = require('../app/services/monitoring/monitorService.js');
+
 
 describe('File: queryFactory.js', function(){
     function getUserAttributes(){
@@ -8,7 +10,7 @@ describe('File: queryFactory.js', function(){
         let dateNowUtc = dateNow.toISOString();
         let context = dbContext.getSequelizeContext();
         let _userDtoModel = new context.userDtoModel();
-        console.log('_userDtoModel', _userDtoModel);
+        monitorService.capture('_userDtoModel', _userDtoModel);
         _userDtoModel.rawAttributes.UserId.value = 'asdfaklsdfpoiuere'
         _userDtoModel.rawAttributes.UserId.type.key =  _userDtoModel.rawAttributes.UserId.type.key.toString();
         _userDtoModel.rawAttributes.FirstName.value = 'Thomas'

@@ -3,6 +3,8 @@ const reducerServiceAction = require('../library/enumerations/reducerServiceActi
 const antiForgeryTokenConfig = require('../../configuration/csrfProtection/antiForgeryTokenConfig.js');
 const expiredCsrfTokenManager = require('../backgroundWorkers/expiredCsrfTokenManager');
 const inputCommonInspector = require('../services/validation/inputCommonInspector.js');
+const monitorService = require('../services/monitoring/monitorService.js');
+
 
 const _dataStoreExpiredCsrfTokenInspectorIsActive = '_expiredCsrfTokenInspectorIsActive';
 const _dataStoreCsrfTokensArray = 'antiforgeryTokens';
@@ -47,7 +49,7 @@ function setStateExpiredCsrfTokensInspector(status){
     payload[_dataStoreExpiredCsrfTokenInspectorIsActive] = status ;
     let action = { type: reducerServiceAction.setExpiredTokensInspectorStatus };
     let result = reducerServices.dispatch(payload, action);
-    console.log('reducerService-dispatch-result', result);
+    monitorService.capture('reducerService-dispatch-result', result);
 
     return result;
 }
@@ -59,7 +61,7 @@ function stopCsrfTokenExpiredInspector(intervalId){
 }
 
 function csrfTokenWorkerCallback(event){
-    console.log('SessionExpiredINSPECTOR-queryWorkerCallback-event', event);
+    monitorService.capture('SessionExpiredINSPECTOR-queryWorkerCallback-event', event);
     if(!inputCommonInspector.inputExist(event) || !inputCommonInspector.inputExist(event.data)){
         return;
     }
@@ -73,7 +75,7 @@ function csrfTokenWorkerCallback(event){
     };
     let action = { type: reducerServiceAction.removeAllExpiredAntiForgeryTokensFromArray } ;
     let result = reducerServices.dispatch(payload, action);
-    console.log('reducerService-dispatch-result', result);
+    monitorService.capture('reducerService-dispatch-result', result);
 
     return result;
 }

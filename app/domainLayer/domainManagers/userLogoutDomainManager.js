@@ -8,13 +8,15 @@ const notificationService = require('../../services/notifications/notificationSe
 const helpers = require('../../library/common/helpers.js');
 const sortOrder = require('../../library/enumerations/sortOrder.js');
 const tokenType = require('../../library/enumerations/tokenType.js');
+const monitorService = require('../../services/monitoring/monitorService.js');
+
 
 
 //Test:DONE
 const processUserLogoutCreateTempSessionActivityDomainModelAsync = async function(sessionDomainModel, userAgent) {
 
     let sessionsDtoModelResultArray = await sessionRepository.getSessionFromDatabaseAsync(sessionDomainModel);
-    console.log('sesionsDtoModelResultArray', sessionsDtoModelResultArray);
+    monitorService.capture('sesionsDtoModelResultArray', sessionsDtoModelResultArray);
     if (sessionsDtoModelResultArray instanceof Error) {
         return httpResponseService.getResponseResultStatus(sessionsDtoModelResultArray, httpResponseStatus._400badRequest);
     }
@@ -58,7 +60,7 @@ const processUserlogoutDeleteJwtRefreshTokenAsync = async function(jwtRefreshTok
 
 const processUserlogoutDeleteCsrfTokenAsync = async function(csrfToken){
     let result = antiForgeryTokenHelper.removeCsrfTokenFromDataStorage(csrfToken);
-    console.log('antiforgeryToken-removed-result', result);
+    monitorService.capture('antiforgeryToken-removed-result', result);
 }
 
 const service = {

@@ -11,6 +11,10 @@ const uuidV4 = require('uuid');
 const uuid = uuidV4.v4;
 const helpers = require('../../library/common/helpers.js');
 const authViewModel = require('../../presentationLayer/viewModels/authViewModel.js');
+const monitorService = require('../../services/monitoring/monitorService.js');
+
+
+
 
 //Test: DONE
 const createUserRoleModel = function (userId, roleId) {
@@ -105,7 +109,7 @@ const getUserDomainModelMappedFromUserDtoModel = function (userDtoModel) {
 
 //Test: DONE
 function getTokenDomainModelMappedFromTokenDtoModel(tokenDtoModel) {
-    console.log('getTokenDomainModelMappedFromTokenDtoModel--tokenDtoModel', tokenDtoModel);
+    monitorService.capture('getTokenDomainModelMappedFromTokenDtoModel--tokenDtoModel', tokenDtoModel);
     let userId = tokenDtoModel.UserId.value;
     let token = tokenDtoModel.Token.value;
     let type = tokenDtoModel.Type.value;
