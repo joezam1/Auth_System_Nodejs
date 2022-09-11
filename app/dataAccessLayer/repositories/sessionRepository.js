@@ -42,8 +42,8 @@ let insertSessionActivityIntoTableTransacionAsync = async function(connectionPoo
 
 //Test: DONE
 let getSessionFromDatabaseAsync = async function(sessionDomainModel){
-    //monitorService.capture('context', context);
-    //monitorService.capture('sessionTableName', sessionTableName);
+    monitorService.capture('context', context);
+    monitorService.capture('sessionTableName', sessionTableName);
     let sessionDtoModel = sessionRepositoryHelper.getSessionDtoModelMappedFromDomain(sessionDomainModel);
     let propertiesArray = [sessionDtoModel.SessionToken];
 
@@ -77,8 +77,8 @@ let updateSessionTableSetColumnValuesWhereAsync = async function(sessionDomainMo
 }
 //Test: DONE
 let getSessionActivitiesFromDatabaseAsync = async function(sessionActivityDomainModel , utcDateCreatedDbFormatted){
-    //monitorService.capture('context', context);
-    //monitorService.capture('sessionActivityTableName', sessionActivityTableName);
+    monitorService.capture('context', context);
+    monitorService.capture('sessionActivityTableName', sessionActivityTableName);
     let sessionActivityDtoModel = sessionRepositoryHelper.getSessionActivityDtoModelMappedFromDomain(sessionActivityDomainModel);
     sessionActivityDtoModel.UTCLoginDate.value = utcDateCreatedDbFormatted
     sessionActivityDtoModel.UTCLogoutDate.value = null;
