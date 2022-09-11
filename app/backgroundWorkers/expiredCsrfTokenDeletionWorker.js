@@ -1,14 +1,18 @@
 const {workerData, parentPort, isMainThread } = require("worker_threads");
 
-console.log('workerData', workerData);
-console.log('parentPort', parentPort);
-console.log('isMainThread', isMainThread);
+
+const monitorService = false;
+if(monitorService){
+    console.log('workerData', workerData);
+    console.log('parentPort', parentPort);
+    console.log('isMainThread', isMainThread);
+}
 
 if(parentPort ==null){ return;}
 
 parentPort.on("message", function (event) {
-    console.log('WORKER-FUNCTION-on.message-event', event);
-    console.log('manager-worker-connection:');
+    if(monitorService){console.log('WORKER-FUNCTION-on.message-event', event)};
+    if(monitorService){console.log('manager-worker-connection:')};
     let  replyObj = {};
     let receivedMessage = event.message;
     switch(receivedMessage){

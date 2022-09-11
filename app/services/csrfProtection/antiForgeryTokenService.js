@@ -3,6 +3,7 @@ const TokenValidator = require('token-validator');
 const antiForgeryTokenConfig = require('../../../configuration/csrfProtection/antiForgeryTokenConfig.js');
 const tokenDuration = require('../../library/enumerations/tokenDuration.js');
 const antiforgeryTokenHelper = require('./antiForgeryTokenHelper.js');
+const monitorService = require('../monitoring/monitorService.js');
 
 const antiforgeryTokenService = (function(){
 
@@ -103,7 +104,7 @@ const antiforgeryTokenService = (function(){
     //#REGION Private Functions
 
     function onInit(){
-        console.log('AntiforgeryTokenConfiguration: ', antiForgeryTokenConfig);
+        monitorService.capture('AntiforgeryTokenConfiguration: ', antiForgeryTokenConfig);
         _csrfToken = new CSRFToken();
 
         _nonExpiringTokenSecret = antiForgeryTokenConfig.NON_EXPIRING_ANTIFORGERY_TOKEN_SECRET;

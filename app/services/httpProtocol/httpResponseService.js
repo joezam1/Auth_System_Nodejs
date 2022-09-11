@@ -2,7 +2,7 @@ const httpResponseStatusCodes = require('./httpResponseStatusCodes.js');
 const httpResponseStatus = require('../../library/enumerations/httpResponseStatus.js');
 const inputCommonInspector = require('../validation/inputCommonInspector.js');
 const httpResponseHelper = require('./httpResponseHelper.js');
-
+const monitorService = require('../monitoring/monitorService.js');
 
 
 let _httpResponse = null;
@@ -48,7 +48,7 @@ const getResponseResultStatus = function (resultObj, statusCode) {
 }
 //Test: DONE
 const sendHttpResponse = function (resultObj) {
-    console.log('sendHttpResponse_httpResponse');
+    monitorService.capture('sendHttpResponse_httpResponse');
     try{
         if (inputCommonInspector.inputExist(resultObj) && inputCommonInspector.inputExist(resultObj.status)) {
             httpResponseHelper.executeSend(_httpResponse, resultObj.status, resultObj);

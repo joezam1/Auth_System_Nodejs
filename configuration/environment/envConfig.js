@@ -7,7 +7,7 @@ var envConfiguration = {
     path:path.resolve(__dirname, `${process.env.NODE_ENV}.env`)
 }
 
-console.log('envConfiguration:', envConfiguration);
+
 dotenv.config(envConfiguration);
 
 var envConfig = {
